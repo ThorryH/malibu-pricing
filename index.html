@@ -535,11 +535,39 @@
   <div class="pw-logo">Malibu Boats</div>
   <div class="pw-sub">MY26 Pricing Tool</div>
   <div class="pw-badge">Edition 2</div>
-  <div class="pw-box">
-    <div class="pw-label">Enter Password</div>
-    <input class="pw-input" id="pwInput" type="password" placeholder="••••••••••" onkeydown="if(event.key==='Enter')checkPw()" autocomplete="off" />
-    <button class="pw-btn" onclick="checkPw()">Unlock</button>
-    <div class="pw-error" id="pwError">Incorrect password. Please try again.</div>
+
+  <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;justify-content:center;width:100%;max-width:720px;padding:0 16px;margin-top:8px;">
+
+    <!-- Login box -->
+    <div class="pw-box" style="flex:0 0 280px;">
+      <div class="pw-label">Enter Password</div>
+      <input class="pw-input" id="pwInput" type="password" placeholder="••••••••••" onkeydown="if(event.key==='Enter')checkPw()" autocomplete="off" />
+      <button class="pw-btn" onclick="checkPw()">Unlock</button>
+      <div class="pw-error" id="pwError">Incorrect password. Please try again.</div>
+    </div>
+
+    <!-- Smartsheet setup box -->
+    <div class="pw-box" style="flex:1;min-width:260px;max-width:360px;gap:10px;">
+      <div class="pw-label" style="color:var(--gold);letter-spacing:2px;">&#9889; Smartsheet Setup</div>
+      <div style="font-size:11px;color:var(--gray-dark);line-height:1.5;margin-top:-4px;">Connect once per device. Fetch columns to enable save &amp; retrieve.</div>
+
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gray-dark);text-transform:uppercase;">Site URL</label>
+        <input class="pw-input" id="spSiteUrl" type="text" placeholder="https://malibu-my26.netlify.app" style="font-size:13px;padding:9px 12px;" />
+      </div>
+
+      <div style="display:flex;gap:6px;">
+        <button class="pw-btn" onclick="testConnection()" style="background:linear-gradient(90deg,var(--gold),var(--gold-light));color:#0a1628;flex:1;padding:10px;font-size:12px;">&#9889; Test Connection</button>
+        <button class="pw-btn" onclick="fetchColumns()" style="background:var(--surface2);border:1px solid var(--border);flex:1;padding:10px;font-size:12px;">&#8635; Fetch Columns</button>
+      </div>
+
+      <div class="sp-status" id="spStatus" style="font-size:11px;"></div>
+      <div class="sp-err" id="spErr" style="font-size:11px;color:#ff6b6b;display:none;"></div>
+      <pre class="sp-diag" id="spDiag" style="font-size:9px;color:var(--gray);background:rgba(0,0,0,0.3);border:1px solid var(--border2);border-radius:3px;padding:8px;white-space:pre-wrap;word-break:break-all;max-height:160px;overflow-y:auto;display:none;line-height:1.5;margin-top:0;"></pre>
+
+      <div id="colMappedBadge" style="display:none;font-size:11px;color:var(--success);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;"></div>
+    </div>
+
   </div>
 </div>
 
@@ -932,7 +960,7 @@ function isSsConfigured() {
 // PASSWORD
 // ════════════════════════════════════════════════════════════
 function checkPw() {
-  const v = $('pwInput').value;
+  const v = $('pwInput').value.trim();
   if (v === CORRECT_PW) {
     $('pwScreen').style.display = 'none';
     $('appWrap').style.display = '';
@@ -1057,12 +1085,12 @@ HTTP: ' + res.status + ' ' + res.statusText + '
 
 Raw response:
 ' + rawText;
-    diagEl.className = 'sp-diag show';
+    diagEl.style.display = 'block';
     let data;
     try { data = JSON.parse(rawText); } catch(e) {
       errEl.textContent = '✗ Response is not JSON (HTTP ' + res.status + ') — see raw response below';
-      errEl.className = 'sp-err show';
-      statusEl.className = 'sp-status';
+      errEl.style.display = 'block';
+      statusEl.style.display = 'none';
       return;
     }
     if (!res.ok) throw new Error(data.error || 'Search failed');
@@ -1265,11 +1293,11 @@ function buildColGrid() {
 }
 
 async function fetchColumns() {
-  $('spStatus').className = 'sp-status';
-  $('spErr').className = 'sp-err';
+  $('spStatus').style.display = 'none';
+  $('spErr').style.display = 'none';
   $('spDiag').className = 'sp-diag';
   $('spStatus').textContent = '⟳ Fetching columns… (URL: ' + FUNCTION_URL + ')';
-  $('spStatus').classList.add('show');
+  $('spStatus').style.display = 'block';
   try {
     const res = await fetch(FUNCTION_URL, {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -1281,12 +1309,12 @@ HTTP: ' + res.status + ' ' + res.statusText + '
 
 Raw response:
 ' + rawText;
-    diagEl.className = 'sp-diag show';
+    diagEl.style.display = 'block';
     let data;
     try { data = JSON.parse(rawText); } catch(e) {
       errEl.textContent = '✗ Response is not JSON (HTTP ' + res.status + ') — see raw response below';
-      errEl.className = 'sp-err show';
-      statusEl.className = 'sp-status';
+      errEl.style.display = 'block';
+      statusEl.style.display = 'none';
       return;
     }
     if (!res.ok) throw new Error(data.error || 'Fetch failed');
@@ -1318,9 +1346,9 @@ Raw response:
     hint.textContent = colList;
     $('colGrid').parentElement.appendChild(hint);
   } catch(err) {
-    $('spStatus').className = 'sp-status';
+    $('spStatus').style.display = 'none';
     $('spErr').textContent = `${err.name}: ${err.message} | URL: ${FUNCTION_URL}`;
-    $('spErr').classList.add('show');
+    $('spErr').style.display = 'block';
     $('spDiag').textContent = 'URL: ' + FUNCTION_URL + '\nhref: ' + window.location.href + '\norigin: ' + window.location.origin + '\n\n' + err.name + ': ' + err.message;
     $('spDiag').className = 'sp-diag show';
   }
@@ -1332,19 +1360,19 @@ async function testConnection() {
   const diagEl   = $('spDiag');
 
   statusEl.textContent = '⟳ Testing connection…';
-  statusEl.className = 'sp-status show';
-  errEl.className = 'sp-err';
+  statusEl.style.display = 'block';
+  errEl.style.display = 'none';
 
   // Always show the URL being used so we can diagnose
   const urlUsed = FUNCTION_URL;
   diagEl.textContent = 'URL: ' + urlUsed + '\norigin: ' + window.location.origin + '\nhref: ' + window.location.href;
-  diagEl.className = 'sp-diag show';
+  diagEl.style.display = 'block';
 
   // Validate URL before fetch — Safari throws on bad URLs
   try { new URL(urlUsed); } catch(e) {
     errEl.textContent = '✗ Invalid URL: ' + urlUsed + ' — ' + e.message;
-    errEl.className = 'sp-err show';
-    statusEl.className = 'sp-status';
+    errEl.style.display = 'block';
+    statusEl.style.display = 'none';
     return;
   }
 
@@ -1360,12 +1388,12 @@ HTTP: ' + res.status + ' ' + res.statusText + '
 
 Raw response:
 ' + rawText;
-    diagEl.className = 'sp-diag show';
+    diagEl.style.display = 'block';
     let data;
     try { data = JSON.parse(rawText); } catch(e) {
       errEl.textContent = '✗ Response is not JSON (HTTP ' + res.status + ') — see raw response below';
-      errEl.className = 'sp-err show';
-      statusEl.className = 'sp-status';
+      errEl.style.display = 'block';
+      statusEl.style.display = 'none';
       return;
     }
 
@@ -1389,22 +1417,26 @@ Raw response:
         const key = titleToKey[col.title.toLowerCase()];
         if (key) { columnMap[key] = String(col.id); const inp = $(`col_${key}`); if (inp) { inp.value = col.id; mapped++; } }
       });
-      if (mapped > 0) statusEl.textContent += ` · ${mapped} columns auto-mapped ✓`;
+      if (mapped > 0) {
+        statusEl.textContent += ` · ${mapped} columns auto-mapped ✓`;
+        const badge = $('colMappedBadge');
+        if (badge) { badge.textContent = '✓ ' + mapped + ' columns mapped — ready to save & retrieve'; badge.style.display = 'block'; }
+      }
       diagEl.textContent = 'COLUMNS FOUND:\n' + (data.columns||[]).map(c => `  ${c.title} → ID: ${c.id}  (${c.type})`).join('\n');
-      diagEl.className = 'sp-diag show';
+      diagEl.style.display = 'block';
     } else {
-      statusEl.className = 'sp-status';
+      statusEl.style.display = 'none';
       errEl.textContent = `✗ ${data.hint || data.error || 'Connection failed'}`;
-      errEl.className = 'sp-err show';
+      errEl.style.display = 'block';
       diagEl.textContent = JSON.stringify(data, null, 2);
-      diagEl.className = 'sp-diag show';
+      diagEl.style.display = 'block';
     }
   } catch (err) {
-    statusEl.className = 'sp-status';
+    statusEl.style.display = 'none';
     errEl.textContent = `✗ ${err.name}: ${err.message}`;
-    errEl.className = 'sp-err show';
+    errEl.style.display = 'block';
     diagEl.textContent = 'URL attempted: ' + urlUsed + '\nError name: ' + err.name + '\nError message: ' + err.message + '\norigin: ' + window.location.origin;
-    diagEl.className = 'sp-diag show';
+    diagEl.style.display = 'block';
   }
 }
 
@@ -3274,6 +3306,24 @@ ${custParts.length ? `
 
   // Password field focus
   document.getElementById('pwInput').focus();
+
+  // Pre-populate Site URL on login screen from localStorage
+  const spSiteUrlEl = document.getElementById('spSiteUrl');
+  if (spSiteUrlEl) {
+    try {
+      const saved = localStorage.getItem('mb_site_url') || '';
+      if (saved) spSiteUrlEl.value = saved;
+    } catch(e) {}
+  }
+  // Show colMappedBadge if already configured
+  const badge = document.getElementById('colMappedBadge');
+  if (badge) {
+    try {
+      const cm = JSON.parse(localStorage.getItem('mb_col_map') || '{}');
+      const n = Object.keys(cm).length;
+      if (n >= 5) { badge.textContent = '✓ ' + n + ' columns already mapped — ready to go'; badge.style.display = 'block'; }
+    } catch(e) {}
+  }
 
   // Discount modal — close on overlay click
   const discOverlay = document.getElementById('discModalOverlay');
