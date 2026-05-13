@@ -565,6 +565,7 @@
       <div class="sp-err" id="spErr" style="font-size:11px;color:#ff6b6b;display:none;"></div>
       <pre class="sp-diag" id="spDiag" style="font-size:9px;color:var(--gray);background:rgba(0,0,0,0.3);border:1px solid var(--border2);border-radius:3px;padding:8px;white-space:pre-wrap;word-break:break-all;max-height:160px;overflow-y:auto;display:none;line-height:1.5;margin-top:0;"></pre>
 
+      <div id="colGrid" style="display:none;margin-top:4px;"></div>
       <div id="colMappedBadge" style="display:none;font-size:11px;color:var(--success);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;"></div>
     </div>
 
@@ -864,27 +865,6 @@
 <!-- ════════════════════════════════════════════════════════════
      SETTINGS PANEL (triple-tap brand name)
 ════════════════════════════════════════════════════════════ -->
-<div class="settings-panel" id="settingsPanel">
-  <div class="sp-title">⚙ Settings</div>
-
-  <div class="sp-section">Smartsheet Connection</div>
-  <div class="sp-field">
-    <label class="sp-label">Site URL (for quote links)</label>
-    <input class="sp-input" id="spSiteUrl" type="text" placeholder="https://your-site.netlify.app" />
-    <div class="sp-hint">Your Netlify URL — used to generate shareable quote links.</div>
-  </div>
-  <div class="sp-field">
-    <label class="sp-label">Column Mapping</label>
-    <div class="sp-hint" style="margin-bottom:6px;">Auto-fetch maps your Smartsheet columns. <a href="#" onclick="fetchColumns()" style="color:var(--sky-light)">Fetch now →</a></div>
-    <div class="sp-col-grid" id="colGrid"></div>
-  </div>
-  <button class="sp-fetch-btn" onclick="fetchColumns()">↻ Fetch Columns from Sheet</button>
-  <button class="sp-fetch-btn" onclick="testConnection()" style="margin-top:5px;color:var(--gold-light);border-color:rgba(200,146,42,0.3);">⚡ Test Connection (Diagnostic)</button>
-  <div class="sp-status" id="spStatus"></div>
-  <div class="sp-err" id="spErr"></div>
-  <pre class="sp-diag" id="spDiag"></pre>
-  <button class="sp-save" onclick="saveSettings()">Save Settings</button>
-</div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
@@ -1246,10 +1226,8 @@ function brandTap() {
   }
 }
 function openSettings() {
-  const sp = $('settingsPanel');
-  sp.classList.add('open');
-  $('spSiteUrl').value = siteUrl;
-  buildColGrid();
+  // Settings now live on the login screen — show a toast directing user there
+  showToast('Go to the login screen to configure Smartsheet', 'info');
 }
 
 // ════════════════════════════════════════════════════════════
@@ -1264,7 +1242,7 @@ function edgeBadgeTap() {
     openDiscountModal();
   }
 }
-function closeSettings() { $('settingsPanel').classList.remove('open'); }
+function closeSettings() { /* no-op — settings on login screen */ }
 
 // (settings panel click-outside handler moved to init block)
 
@@ -1293,36 +1271,39 @@ function buildColGrid() {
 }
 
 async function fetchColumns() {
-  $('spStatus').style.display = 'none';
-  $('spErr').style.display = 'none';
-  $('spDiag').className = 'sp-diag';
-  $('spStatus').textContent = '⟳ Fetching columns… (URL: ' + FUNCTION_URL + ')';
-  $('spStatus').style.display = 'block';
+  const statusEl = $('spStatus');
+  const errEl    = $('spErr');
+  const diagEl   = $('spDiag');
+
+  statusEl.textContent = '⟳ Fetching columns from Smartsheet…';
+  statusEl.style.display = 'block';
+  errEl.style.display = 'none';
+  diagEl.style.display = 'none';
+
+  const su = $('spSiteUrl');
+  if (su && su.value.trim()) {
+    siteUrl = su.value.trim().replace(/\/$/,'');
+    try { localStorage.setItem('mb_site_url', siteUrl); } catch(e){}
+  }
+
   try {
     const res = await fetch(FUNCTION_URL, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ action:'getColumns' })
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'getColumns' })
     });
     const rawText = await res.text();
-    diagEl.textContent = 'URL: ' + urlUsed + '
-HTTP: ' + res.status + ' ' + res.statusText + '
-
-Raw response:
-' + rawText;
+    diagEl.textContent = 'URL: ' + FUNCTION_URL + '\nHTTP: ' + res.status + ' ' + res.statusText + '\n\nRaw response:\n' + rawText;
     diagEl.style.display = 'block';
     let data;
     try { data = JSON.parse(rawText); } catch(e) {
-      errEl.textContent = '✗ Response is not JSON (HTTP ' + res.status + ') — see raw response below';
-      errEl.style.display = 'block';
       statusEl.style.display = 'none';
+      errEl.textContent = '\u2717 Not JSON (HTTP ' + res.status + ') \u2014 check Netlify env vars. See diagnostic below.';
+      errEl.style.display = 'block';
       return;
     }
-    if (!res.ok) throw new Error(data.error || 'Fetch failed');
-
+    if (!res.ok) throw new Error(data.hint || data.error || 'Fetch failed');
     const columns = data.columns || [];
-    const colList = columns.map(c=>`${c.title}: ${c.id}`).join('\n');
-    $('spStatus').textContent = `✓ ${columns.length} columns found. Map IDs below:`;
-
     const titleToKey = {
       'date':'DATE','series':'SERIES','model':'MODEL',
       'customer name':'CUSTOMER_NAME','name':'CUSTOMER_NAME',
@@ -1336,21 +1317,27 @@ Raw response:
       'quote link':'QUOTE_LINK','link':'QUOTE_LINK',
       'quote json':'QUOTE_JSON','json':'QUOTE_JSON',
     };
+    let mapped = 0;
     columns.forEach(col => {
       const key = titleToKey[col.title.toLowerCase()];
-      if (key) { columnMap[key] = String(col.id); const inp = $(`col_${key}`); if (inp) inp.value = col.id; }
+      if (key) { columnMap[key] = String(col.id); mapped++; }
     });
-
-    const hint = document.createElement('pre');
-    hint.style.cssText = 'font-size:9px;color:var(--gray-dark);white-space:pre-wrap;margin-top:8px;line-height:1.5;max-height:120px;overflow-y:auto;';
-    hint.textContent = colList;
-    $('colGrid').parentElement.appendChild(hint);
+    try { localStorage.setItem('mb_col_map', JSON.stringify(columnMap)); } catch(e){}
+    checkSsConfig();
+    statusEl.textContent = '\u2713 ' + columns.length + ' columns found, ' + mapped + ' auto-mapped \u2014 saved';
+    diagEl.textContent = 'Columns found:\n' + columns.map(c => '  ' + c.title + ' \u2192 ' + c.id).join('\n');
+    diagEl.style.display = 'block';
+    const badge = $('colMappedBadge');
+    if (badge) { badge.textContent = '\u2713 ' + mapped + ' columns mapped \u2014 save & retrieve enabled'; badge.style.display = 'block'; }
+    buildColGrid();
+    const grid = $('colGrid');
+    if (grid) grid.style.display = 'grid';
   } catch(err) {
-    $('spStatus').style.display = 'none';
-    $('spErr').textContent = `${err.name}: ${err.message} | URL: ${FUNCTION_URL}`;
-    $('spErr').style.display = 'block';
-    $('spDiag').textContent = 'URL: ' + FUNCTION_URL + '\nhref: ' + window.location.href + '\norigin: ' + window.location.origin + '\n\n' + err.name + ': ' + err.message;
-    $('spDiag').className = 'sp-diag show';
+    statusEl.style.display = 'none';
+    errEl.textContent = err.name + ': ' + err.message;
+    errEl.style.display = 'block';
+    diagEl.textContent = 'URL: ' + FUNCTION_URL + '\n' + err.name + ': ' + err.message;
+    diagEl.style.display = 'block';
   }
 }
 
@@ -1445,13 +1432,12 @@ function saveSettings() {
     const inp = $(`col_${k}`);
     if (inp && inp.value.trim()) columnMap[k] = inp.value.trim();
   });
-  siteUrl = $('spSiteUrl').value.trim().replace(/\/$/,'');
+  const su = $('spSiteUrl');
+  if (su) siteUrl = su.value.trim().replace(/\/$/,'');
   try {
     localStorage.setItem('mb_col_map',  JSON.stringify(columnMap));
     localStorage.setItem('mb_site_url', siteUrl);
   } catch(e){}
-  applyDiscount();
-  closeSettings();
   checkSsConfig();
   showToast('Settings saved', 'success');
 }
@@ -3297,8 +3283,7 @@ ${custParts.length ? `
 // INIT — all DOM interactions go here, after full script parse
 // ════════════════════════════════════════════════════════════
 (function init() {
-  // Brand triple-tap (opens settings)
-  document.getElementById('brandWrap').addEventListener('click', brandTap);
+  // Brand triple-tap removed — settings on login screen
 
   // Edition badge triple-tap (opens $$ adjustment modal)
   const edgeBadgeEl = document.getElementById('editionBadge');
@@ -3341,15 +3326,7 @@ ${custParts.length ? `
     });
   }
 
-  // Settings panel — close on outside click
-  document.addEventListener('click', function(e) {
-    const sp = document.getElementById('settingsPanel');
-    if (sp && sp.classList.contains('open') &&
-        !sp.contains(e.target) &&
-        !document.getElementById('brandWrap').contains(e.target)) {
-      sp.classList.remove('open');
-    }
-  });
+  // Settings panel removed — now on login screen
 })();
 </script>
 </body>
