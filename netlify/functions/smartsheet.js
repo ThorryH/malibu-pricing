@@ -36,7 +36,6 @@ exports.handler = async (event) => {
     return { statusCode: 200, headers, body: '' };
   }
 
-  // Trim to remove any accidental whitespace in Netlify env var values
   const API_KEY  = (process.env.SMARTSHEET_API_KEY  || '').trim();
   const SHEET_ID = (process.env.SMARTSHEET_SHEET_ID || '').trim();
 
@@ -58,7 +57,7 @@ exports.handler = async (event) => {
 
   const { action } = payload;
 
-  // ── GET COLUMNS / PING ───────────────────────────────────────
+  // ── GET COLUMNS / PING ─────────────────────────────────────────────────────
   if (action === 'getColumns' || action === 'ping') {
     const res = await apiRequest('GET', 'sheets/' + SHEET_ID + '?include=columns', API_KEY);
     if (res.status !== 200) {
@@ -80,7 +79,7 @@ exports.handler = async (event) => {
     };
   }
 
-  // ── SAVE QUOTE ───────────────────────────────────────────────
+  // ── SAVE QUOTE ─────────────────────────────────────────────────────────────
   if (action === 'saveQuote') {
     const { quote, items, rowId, columnMap, appUrl } = payload;
 
@@ -144,7 +143,27 @@ exports.handler = async (event) => {
     };
   }
 
-  // ── SEARCH BY MOBILE ─────────────────────────────────────────
+  // ── DELETE QUOTE ───────────────────────────────────────────────────────────
+  if (action === 'deleteQuote') {
+    const { rowId } = payload;
+    if (!rowId) {
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'rowId required' }) };
+    }
+    const res = await apiRequest('DELETE', 'sheets/' + SHEET_ID + '/rows?ids=' + Number(rowId) + '&ignoreRowsNotFound=true', API_KEY);
+    if (res.status !== 200) {
+      return {
+        statusCode: res.status, headers,
+        body: JSON.stringify({
+          error: 'Delete failed',
+          hint: res.body && res.body.message ? res.body.message : 'Unknown error',
+          detail: res.body,
+        }),
+      };
+    }
+    return { statusCode: 200, headers, body: JSON.stringify({ ok: true }) };
+  }
+
+  // ── SEARCH BY MOBILE ───────────────────────────────────────────────────────
   if (action === 'searchByMobile') {
     const { mobile, columnMap } = payload;
 
