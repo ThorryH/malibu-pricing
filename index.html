@@ -1051,7 +1051,20 @@ async function searchQuotes() {
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ action:'searchByMobile', mobile, columnMap })
     });
-    const data = await res.json();
+    const rawText = await res.text();
+    diagEl.textContent = 'URL: ' + urlUsed + '
+HTTP: ' + res.status + ' ' + res.statusText + '
+
+Raw response:
+' + rawText;
+    diagEl.className = 'sp-diag show';
+    let data;
+    try { data = JSON.parse(rawText); } catch(e) {
+      errEl.textContent = '✗ Response is not JSON (HTTP ' + res.status + ') — see raw response below';
+      errEl.className = 'sp-err show';
+      statusEl.className = 'sp-status';
+      return;
+    }
     if (!res.ok) throw new Error(data.error || 'Search failed');
 
     if (!data.quotes || data.quotes.length === 0) {
@@ -1262,7 +1275,20 @@ async function fetchColumns() {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ action:'getColumns' })
     });
-    const data = await res.json();
+    const rawText = await res.text();
+    diagEl.textContent = 'URL: ' + urlUsed + '
+HTTP: ' + res.status + ' ' + res.statusText + '
+
+Raw response:
+' + rawText;
+    diagEl.className = 'sp-diag show';
+    let data;
+    try { data = JSON.parse(rawText); } catch(e) {
+      errEl.textContent = '✗ Response is not JSON (HTTP ' + res.status + ') — see raw response below';
+      errEl.className = 'sp-err show';
+      statusEl.className = 'sp-status';
+      return;
+    }
     if (!res.ok) throw new Error(data.error || 'Fetch failed');
 
     const columns = data.columns || [];
@@ -1328,7 +1354,20 @@ async function testConnection() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'ping' }),
     });
-    const data = await res.json();
+    const rawText = await res.text();
+    diagEl.textContent = 'URL: ' + urlUsed + '
+HTTP: ' + res.status + ' ' + res.statusText + '
+
+Raw response:
+' + rawText;
+    diagEl.className = 'sp-diag show';
+    let data;
+    try { data = JSON.parse(rawText); } catch(e) {
+      errEl.textContent = '✗ Response is not JSON (HTTP ' + res.status + ') — see raw response below';
+      errEl.className = 'sp-err show';
+      statusEl.className = 'sp-status';
+      return;
+    }
 
     if (data.ok) {
       statusEl.textContent = `✓ Connected — "${data.sheetName}" · ${data.columnCount} columns`;
