@@ -1068,16 +1068,12 @@ async function searchQuotes() {
       body: JSON.stringify({ action:'searchByMobile', mobile, columnMap })
     });
     const rawText = await res.text();
-    diagEl.textContent = 'URL: ' + urlUsed + '\nHTTP: ' + res.status + ' ' + res.statusText + '\n\nRaw response:\n' + rawText;
-    diagEl.style.display = 'block';
     let data;
     try { data = JSON.parse(rawText); } catch(e) {
-      errEl.textContent = '✗ Response is not JSON (HTTP ' + res.status + ') — see raw response below';
-      errEl.style.display = 'block';
-      statusEl.style.display = 'none';
+      $('searchResults').innerHTML = '<div class="search-error">Server error (HTTP ' + res.status + ') — Smartsheet function may not be deployed.</div>';
       return;
     }
-    if (!res.ok) throw new Error(data.error || 'Search failed');
+    if (!res.ok) throw new Error(data.hint || data.error || 'Search failed');
 
     if (!data.quotes || data.quotes.length === 0) {
       $('searchResults').innerHTML = '<div class="search-no-results">No quotes found for that mobile number.</div>';
