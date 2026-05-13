@@ -532,7 +532,7 @@
      PASSWORD SCREEN
 ════════════════════════════════════════════════════════════ -->
 <div class="pw-screen" id="pwScreen">
-  <div class="pw-logo">Malibu Boats</div>
+  <div class="pw-logo" id="pwLogo" onclick="pwLogoTap()" style="cursor:default;user-select:none;">Malibu Boats</div>
   <div class="pw-sub">MY26 Pricing Tool</div>
   <div class="pw-badge">Edition 2</div>
 
@@ -546,27 +546,45 @@
       <div class="pw-error" id="pwError">Incorrect password. Please try again.</div>
     </div>
 
-    <!-- Smartsheet setup box -->
-    <div class="pw-box" style="flex:1;min-width:260px;max-width:360px;gap:10px;">
-      <div class="pw-label" style="color:var(--gold);letter-spacing:2px;">&#9889; Smartsheet Setup</div>
-      <div style="font-size:11px;color:var(--gray-dark);line-height:1.5;margin-top:-4px;">Connect once per device. Fetch columns to enable save &amp; retrieve.</div>
-
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <label style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gray-dark);text-transform:uppercase;">Site URL</label>
-        <input class="pw-input" id="spSiteUrl" type="text" placeholder="https://malibu-my26.netlify.app" style="font-size:13px;padding:9px 12px;" />
+    <!-- Smartsheet status indicator (tap "Malibu Boats" 3x to open settings) -->
+    <div id="ssStatusBadge" style="display:flex;align-items:center;gap:8px;background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.3);border-radius:6px;padding:10px 16px;cursor:pointer;" onclick="openSsPanel()">
+      <span style="font-size:14px;">&#9888;</span>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ff8080;">Smartsheet Not Connected</div>
+        <div style="font-size:10px;color:var(--gray-dark);margin-top:2px;">Save &amp; retrieve quotes unavailable &mdash; tap to configure</div>
       </div>
+    </div>
+    <div id="ssOkBadge" style="display:none;align-items:center;gap:8px;background:rgba(46,200,122,0.08);border:1px solid rgba(46,200,122,0.25);border-radius:6px;padding:10px 16px;">
+      <span style="font-size:14px;">&#10003;</span>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--success);">Smartsheet Connected</div>
+    </div>
 
-      <div style="display:flex;gap:6px;">
-        <button class="pw-btn" onclick="testConnection()" style="background:linear-gradient(90deg,var(--gold),var(--gold-light));color:#0a1628;flex:1;padding:10px;font-size:12px;">&#9889; Test Connection</button>
-        <button class="pw-btn" onclick="fetchColumns()" style="background:var(--surface2);border:1px solid var(--border);flex:1;padding:10px;font-size:12px;">&#8635; Fetch Columns</button>
+    <!-- Hidden settings panel — revealed by triple-tapping "Malibu Boats" -->
+    <div id="ssPanelWrap" style="display:none;width:100%;max-width:360px;">
+      <div class="pw-box" style="gap:10px;width:100%;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div class="pw-label" style="color:var(--gold);letter-spacing:2px;">&#9889; Smartsheet Setup</div>
+          <button onclick="closeSsPanel()" style="background:none;border:none;color:var(--gray-dark);font-size:18px;cursor:pointer;padding:0 4px;line-height:1;">&times;</button>
+        </div>
+        <div style="font-size:11px;color:var(--gray-dark);line-height:1.5;margin-top:-4px;">Connect once per device. Fetch columns to enable save &amp; retrieve.</div>
+
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gray-dark);text-transform:uppercase;">Site URL</label>
+          <input class="pw-input" id="spSiteUrl" type="text" placeholder="https://malibu-my26.netlify.app" style="font-size:13px;padding:9px 12px;" />
+        </div>
+
+        <div style="display:flex;gap:6px;">
+          <button class="pw-btn" onclick="testConnection()" style="background:linear-gradient(90deg,var(--gold),var(--gold-light));color:#0a1628;flex:1;padding:10px;font-size:12px;">&#9889; Test Connection</button>
+          <button class="pw-btn" onclick="fetchColumns()" style="background:var(--surface2);border:1px solid var(--border);flex:1;padding:10px;font-size:12px;">&#8635; Fetch Columns</button>
+        </div>
+
+        <div class="sp-status" id="spStatus" style="font-size:11px;"></div>
+        <div class="sp-err" id="spErr" style="font-size:11px;color:#ff6b6b;display:none;"></div>
+        <pre class="sp-diag" id="spDiag" style="font-size:9px;color:var(--gray);background:rgba(0,0,0,0.3);border:1px solid var(--border2);border-radius:3px;padding:8px;white-space:pre-wrap;word-break:break-all;max-height:160px;overflow-y:auto;display:none;line-height:1.5;margin-top:0;"></pre>
+
+        <div id="colGrid" style="display:none;margin-top:4px;"></div>
+        <div id="colMappedBadge" style="display:none;font-size:11px;color:var(--success);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;"></div>
       </div>
-
-      <div class="sp-status" id="spStatus" style="font-size:11px;"></div>
-      <div class="sp-err" id="spErr" style="font-size:11px;color:#ff6b6b;display:none;"></div>
-      <pre class="sp-diag" id="spDiag" style="font-size:9px;color:var(--gray);background:rgba(0,0,0,0.3);border:1px solid var(--border2);border-radius:3px;padding:8px;white-space:pre-wrap;word-break:break-all;max-height:160px;overflow-y:auto;display:none;line-height:1.5;margin-top:0;"></pre>
-
-      <div id="colGrid" style="display:none;margin-top:4px;"></div>
-      <div id="colMappedBadge" style="display:none;font-size:11px;color:var(--success);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;"></div>
     </div>
 
   </div>
@@ -1222,8 +1240,40 @@ function brandTap() {
   }
 }
 function openSettings() {
-  // Settings now live on the login screen — show a toast directing user there
+  // Show the ss panel on the login screen if visible, else toast
+  const wrap = $('ssPanelWrap');
+  if (wrap) { openSsPanel(); return; }
   showToast('Go to the login screen to configure Smartsheet', 'info');
+}
+
+let pwLogoTapCount = 0, pwLogoTapTimer = null;
+function pwLogoTap() {
+  pwLogoTapCount++;
+  clearTimeout(pwLogoTapTimer);
+  pwLogoTapTimer = setTimeout(() => { pwLogoTapCount = 0; }, 600);
+  if (pwLogoTapCount >= 3) {
+    pwLogoTapCount = 0;
+    openSsPanel();
+  }
+}
+
+function openSsPanel() {
+  const wrap = $('ssPanelWrap');
+  if (!wrap) return;
+  wrap.style.display = 'block';
+  // Pre-fill URL
+  const su = $('spSiteUrl');
+  if (su && siteUrl) su.value = siteUrl;
+  buildColGrid();
+  const grid = $('colGrid');
+  if (grid && Object.keys(columnMap).length > 0) grid.style.display = 'grid';
+  // Scroll into view on mobile
+  if (wrap.scrollIntoView) wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeSsPanel() {
+  const wrap = $('ssPanelWrap');
+  if (wrap) wrap.style.display = 'none';
 }
 
 // ════════════════════════════════════════════════════════════
@@ -1328,6 +1378,10 @@ async function fetchColumns() {
     buildColGrid();
     const grid = $('colGrid');
     if (grid) grid.style.display = 'grid';
+    // Flip status badges
+    const okB = $('ssOkBadge'); const warnB = $('ssStatusBadge');
+    if (okB) okB.style.display = 'flex';
+    if (warnB) warnB.style.display = 'none';
   } catch(err) {
     statusEl.style.display = 'none';
     errEl.textContent = err.name + ': ' + err.message;
