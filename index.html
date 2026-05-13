@@ -1060,11 +1060,7 @@ async function searchQuotes() {
       body: JSON.stringify({ action:'searchByMobile', mobile, columnMap })
     });
     const rawText = await res.text();
-    diagEl.textContent = 'URL: ' + urlUsed + '
-HTTP: ' + res.status + ' ' + res.statusText + '
-
-Raw response:
-' + rawText;
+    diagEl.textContent = 'URL: ' + urlUsed + '\nHTTP: ' + res.status + ' ' + res.statusText + '\n\nRaw response:\n' + rawText;
     diagEl.style.display = 'block';
     let data;
     try { data = JSON.parse(rawText); } catch(e) {
@@ -1370,11 +1366,7 @@ async function testConnection() {
       body: JSON.stringify({ action: 'ping' }),
     });
     const rawText = await res.text();
-    diagEl.textContent = 'URL: ' + urlUsed + '
-HTTP: ' + res.status + ' ' + res.statusText + '
-
-Raw response:
-' + rawText;
+    diagEl.textContent = 'URL: ' + urlUsed + '\nHTTP: ' + res.status + ' ' + res.statusText + '\n\nRaw response:\n' + rawText;
     diagEl.style.display = 'block';
     let data;
     try { data = JSON.parse(rawText); } catch(e) {
