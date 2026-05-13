@@ -871,7 +871,7 @@ const DELIVERY_DEFAULT = 2500;
 let   DELIVERY_CHARGE  = 2500;
 const DELIVERY_DEALER  = 2500;         // delivery cost is same; margin tracked separately
 let   deliveryState    = '';           // AU state code e.g. 'NSW'
-const FUNCTION_URL  = '/.netlify/functions/smartsheet';
+const FUNCTION_URL  = window.location.origin + '/.netlify/functions/smartsheet';
 const GST_RATE      = 0.10;           // Dealer prices are ex-GST; MSRP is inc-GST
 
 // Column keys we need mapped
@@ -1254,7 +1254,8 @@ function buildColGrid() {
 async function fetchColumns() {
   $('spStatus').className = 'sp-status';
   $('spErr').className = 'sp-err';
-  $('spStatus').textContent = '⟳ Fetching columns…';
+  $('spDiag').className = 'sp-diag';
+  $('spStatus').textContent = '⟳ Fetching columns… (URL: ' + FUNCTION_URL + ')';
   $('spStatus').classList.add('show');
   try {
     const res = await fetch(FUNCTION_URL, {
@@ -1292,8 +1293,10 @@ async function fetchColumns() {
     $('colGrid').parentElement.appendChild(hint);
   } catch(err) {
     $('spStatus').className = 'sp-status';
-    $('spErr').textContent = `Error: ${err.message}`;
+    $('spErr').textContent = `${err.name}: ${err.message} | URL: ${FUNCTION_URL}`;
     $('spErr').classList.add('show');
+    $('spDiag').textContent = 'URL: ' + FUNCTION_URL + '\nhref: ' + window.location.href + '\norigin: ' + window.location.origin + '\n\n' + err.name + ': ' + err.message;
+    $('spDiag').className = 'sp-diag show';
   }
 }
 
@@ -1305,10 +1308,22 @@ async function testConnection() {
   statusEl.textContent = '⟳ Testing connection…';
   statusEl.className = 'sp-status show';
   errEl.className = 'sp-err';
-  diagEl.className = 'sp-diag';
+
+  // Always show the URL being used so we can diagnose
+  const urlUsed = FUNCTION_URL;
+  diagEl.textContent = 'URL: ' + urlUsed + '\norigin: ' + window.location.origin + '\nhref: ' + window.location.href;
+  diagEl.className = 'sp-diag show';
+
+  // Validate URL before fetch — Safari throws on bad URLs
+  try { new URL(urlUsed); } catch(e) {
+    errEl.textContent = '✗ Invalid URL: ' + urlUsed + ' — ' + e.message;
+    errEl.className = 'sp-err show';
+    statusEl.className = 'sp-status';
+    return;
+  }
 
   try {
-    const res = await fetch(FUNCTION_URL, {
+    const res = await fetch(urlUsed, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'ping' }),
@@ -1347,8 +1362,10 @@ async function testConnection() {
     }
   } catch (err) {
     statusEl.className = 'sp-status';
-    errEl.textContent = `✗ Network error: ${err.message}`;
+    errEl.textContent = `✗ ${err.name}: ${err.message}`;
     errEl.className = 'sp-err show';
+    diagEl.textContent = 'URL attempted: ' + urlUsed + '\nError name: ' + err.name + '\nError message: ' + err.message + '\norigin: ' + window.location.origin;
+    diagEl.className = 'sp-diag show';
   }
 }
 
