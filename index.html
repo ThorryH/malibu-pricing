@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- BUILD: v29-speaker-fix -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -2184,14 +2185,14 @@ const rawData = {
         { name: 'Sound: Tower Speakers - ICON 8 - Per Pair', msrp:[2559,2559,2559,2559,2559], multi:true, maxQty:2, towerSpeakerGroup:'ws' },
         { name: 'Sound: Tower Speakers - REV 8 - Per Pair', msrp:[2959,2959,2959,2959,2959], multi:true, maxQty:2, towerSpeakerGroup:'ws' },
         { name: 'Sound: Tower Speakers - REV 12 - 1st Pair', msrp:[4229,4229,4229,4229,4229], towerSpeakerGroup:'ws', providesKey:'rev12_1st' },
-        { name: 'Sound: Tower Speakers - REV 12 - 2nd Pair (Incl. 2nd Amp)', msrp:[6216,6216,6216,6216,6216], requiresKey:'rev12_1st', towerSpeakerGroup:'ws' },
+        { name: 'Sound: Tower Speakers - REV 12 - 2nd Pair (Incl. 2nd Amp)', msrp:[6216,6216,6216,6216,6216], requiresKey:'rev12_1st' },
         { name: 'Sound: Transom Stereo Remote', msrp:[836,836,836,836,836] },
       ]},
       { name: 'Tower', items: [
         { name: 'Tower: Bimini Top - G5 Tower', msrp:[0,null,null,null,null], std:[true,false,false,false,false], biminiGroup:'ws' },
         { name: 'Tower: Bimini Top - Gen II Surf with Pistol Hinges', msrp:[1999,0,0,0,0], std:[false,true,true,true,true], biminiGroup:'ws' },
-        { name: 'Tower: Bimini Top - Extended Gen II Surf', msrp:[null,1141,1141,1141,1141], biminiGroup:'ws', biminiUpgradeGroup:'ws' },
-        { name: 'Tower: Bimini Top - PTM Dual Coverage (Easy Deploy)', msrp:[null,3256,3256,3256,3256], biminiGroup:'ws', biminiUpgradeGroup:'ws' },
+        { name: 'Tower: Bimini Top - Extended Gen II Surf', msrp:[null,1141,1141,1141,1141], biminiUpgradeGroup:'ws' },
+        { name: 'Tower: Bimini Top - PTM Dual Coverage (Easy Deploy)', msrp:[null,3256,3256,3256,3256], biminiUpgradeGroup:'ws' },
         { name: 'Tower: Colour Upgrade - Tower Only', msrp:[726,726,726,726,726] },
         { name: 'Tower: Hoop Colour Upgrade - Same as Tower', msrp:[365,365,365,365,365] },
         { name: 'Tower: Hoop Colour Upgrade - Different to Tower', msrp:[512,512,512,512,512] },
@@ -2518,14 +2519,31 @@ function renderOptions() {
         ['steer_',item.steerGroup],['helm_',item.helmGroup],
         ['bimini_',item.biminiGroup],['biminiUpgrade_',item.biminiUpgradeGroup],
         ['swc_',item.swcGroup],['axisgel_',item.axisGelGroup],['axisbatt_',item.axisBattGroup],
-        ['boardRack_',item.boardRackGroup],['stdRackUpgrade_',item.stdRackUpgradeGroup],
-        ['towerSpeaker_',item.towerSpeakerGroup],['decking_',item.deckingGroup],
+        ['decking_',item.deckingGroup],
       ];
       for (const [prefix,grpName] of checks) {
         if (!grpName) continue;
         const gk = prefix+grpName;
         const members = groupSelected[gk]||[];
         if (members.some(k=>k!==key) && qty===0) return true;
+      }
+      // boardRackGroup: block others only when total qty across group reaches 2
+      if (item.boardRackGroup) {
+        const members = groupSelected['boardRack_'+item.boardRackGroup]||[];
+        const totalQty = members.reduce((s,k)=>s+(sel.get(k)||0),0);
+        if (totalQty>=2 && qty===0) return true;
+      }
+      // stdRackUpgradeGroup: block others only when total qty across group reaches 2
+      if (item.stdRackUpgradeGroup) {
+        const members = groupSelected['stdRackUpgrade_'+item.stdRackUpgradeGroup]||[];
+        const totalQty = members.reduce((s,k)=>s+(sel.get(k)||0),0);
+        if (totalQty>=2 && qty===0) return true;
+      }
+      // towerSpeakerGroup: selecting any one speaker type blocks all other speaker types
+      if (item.towerSpeakerGroup) {
+        let otherSel=false;
+        data[series].categories.forEach((c,ci)=>{ c.items.forEach((it,ii)=>{ const k=`${ci}-${ii}`; if(k!==key && it.towerSpeakerGroup===item.towerSpeakerGroup && (sel.get(k)||0)>0) otherSel=true; }); });
+        if (otherSel && qty===0) return true;
       }
       return false;
     };
