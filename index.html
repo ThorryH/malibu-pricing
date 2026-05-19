@@ -2950,10 +2950,8 @@ function exportQuotePDF() {
     if (catItems.length) catItems.forEach(it => optLines.push({ cat: cat.name, ...it }));
   });
 
-  const discountAmt = discountType === 'percent'
-    ? Math.round((base + optsTotal) * (discountValue / 100))
-    : (discountValue || 0);
-  const grand     = (base + optsTotal + DELIVERY_CHARGE) - discountAmt;
+  // discountAmt is the app-level variable (fixed dollar amount)
+  const grand = (base + optsTotal + DELIVERY_CHARGE) - discountAmt;
   const dateStr   = new Date().toLocaleDateString('en-AU', { day:'2-digit', month:'long', year:'numeric' });
   const filename  = [customer.name, model, customer.mobile]
     .filter(Boolean).map(s => s.replace(/[^a-zA-Z0-9]/g,'_')).join('_') + '.pdf';
@@ -3004,7 +3002,7 @@ function exportQuotePDF() {
     doc.setFont('helvetica','bold');
     doc.setFontSize(9);
     doc.setTextColor(ar, ag, ab);
-    const qLabel = dealerBlock && dealerBlock.active ? 'DEALER COPY — CONFIDENTIAL' : 'CUSTOMER QUOTE';
+    const qLabel = dealerMode ? 'DEALER COPY — CONFIDENTIAL' : 'CUSTOMER QUOTE';
     doc.text(qLabel, PW - MR, 12, { align:'right' });
     doc.setFont('helvetica','normal');
     doc.setTextColor(180,190,210);
@@ -3142,7 +3140,7 @@ function exportQuotePDF() {
 
     // ── PRICING FOOTER ────────────────────────────────────────
     // Make sure footer fits; add page if needed
-    const footerH = 44 + (discountAmt > 0 ? 7 : 0) + (dealerBlock && dealerBlock.active ? 18 : 0);
+    const footerH = 44 + (discountAmt > 0 ? 7 : 0) + (dealerMode ? 18 : 0);
     if (y + footerH > PH - 10) { doc.addPage(); y = 14; }
 
     y += 4;
@@ -3181,29 +3179,39 @@ function exportQuotePDF() {
     y += 16;
 
     // Dealer pricing section
-    if (dealerBlock && dealerBlock.active) {
+    if (dealerMode) {
+      // Recalculate dealer figures inline
+      let dealerOptsEx = 0;
+      s.categories.forEach((cat,ci)=>{ cat.items.forEach((item,ii)=>{ const key=`${ci}-${ii}`; const qty=sel.get(key)||0; if(qty>0&&item.dealer&&item.dealer[modelIdx]!=null) dealerOptsEx+=item.dealer[modelIdx]*qty; }); });
+      const dealerBaseEx   = s.base.dealer ? s.base.dealer[modelIdx] : 0;
+      const dealerCostEx   = (dealerBaseEx||0) + dealerOptsEx - factoryIncentive;
+      const dealerPriceInc = dealerCostEx * (1 + GST_RATE);
+      const msrpEx         = (base + optsTotal - discountAmt) / (1 + GST_RATE);
+      const msrpExFull     = (base + optsTotal) / (1 + GST_RATE);
+      const gp             = msrpEx - dealerCostEx;
+      const gm             = msrpExFull > 0 ? gp / msrpExFull : 0;
+
       doc.setFillColor(255, 248, 240);
       doc.setDrawColor(200, 100, 50);
       doc.setLineWidth(0.3);
-      doc.roundedRect(ML, y, CW, 18, 1.5, 1.5, 'FD');
+      doc.roundedRect(ML, y, CW, factoryIncentive > 0 ? 24 : 18, 1.5, 1.5, 'FD');
       doc.setFont('helvetica','bold');
       doc.setFontSize(7);
       doc.setTextColor(180, 80, 30);
       doc.text('DEALER — CONFIDENTIAL', ML + 4, y + 5);
       doc.setFontSize(8.5);
       doc.setTextColor(10,22,40);
-      doc.text('Dealer Price (ex-GST)', ML + 4, y + 11);
-      doc.text(money(dealerBlock.dealerPriceEx || 0), PW/2 - 2, y + 11, { align:'right' });
+      doc.text('Dealer Cost (ex-GST)', ML + 4, y + 11);
+      doc.text(money(dealerCostEx), PW/2 - 2, y + 11, { align:'right' });
       doc.text('Gross Margin', PW/2 + 2, y + 11);
-      const gp = dealerBlock.grossProfit || 0;
-      const gm = dealerBlock.grossMargin || 0;
       doc.text(`${money(gp)}  (${(gm*100).toFixed(1)}%)`, PW - MR - 1, y + 11, { align:'right' });
       if (factoryIncentive > 0) {
         doc.setFont('helvetica','normal');
         doc.setFontSize(7.5);
-        doc.text(`Factory Incentive: −${money(factoryIncentive)}`, ML + 4, y + 16);
+        doc.setTextColor(180, 80, 30);
+        doc.text(`Factory Incentive applied: −${money(factoryIncentive)} ex-GST`, ML + 4, y + 18);
       }
-      y += 22;
+      y += factoryIncentive > 0 ? 28 : 22;
     }
 
     // ── FOOTER BAR ────────────────────────────────────────────
@@ -3247,15 +3255,20 @@ function exportQuotePDF() {
       if (saved) spSiteUrlEl.value = saved;
     } catch(e) {}
   }
-  // Show colMappedBadge if already configured
-  const badge = document.getElementById('colMappedBadge');
-  if (badge) {
-    try {
-      const cm = JSON.parse(localStorage.getItem('mb_col_map') || '{}');
-      const n = Object.keys(cm).length;
-      if (n >= 5) { badge.textContent = '✓ ' + n + ' columns already mapped — ready to go'; badge.style.display = 'block'; }
-    } catch(e) {}
-  }
+  // Sync Smartsheet status badges from localStorage on every page load
+  try {
+    const _cm = JSON.parse(localStorage.getItem('mb_col_map') || '{}');
+    const _configured = Object.keys(_cm).length >= 5;
+    const _okB   = document.getElementById('ssOkBadge');
+    const _warnB = document.getElementById('ssStatusBadge');
+    if (_okB)   _okB.style.display   = _configured ? 'flex' : 'none';
+    if (_warnB) _warnB.style.display = _configured ? 'none' : 'flex';
+    const _badge = document.getElementById('colMappedBadge');
+    if (_badge && _configured) {
+      _badge.textContent = '✓ ' + Object.keys(_cm).length + ' columns mapped — ready to go';
+      _badge.style.display = 'block';
+    }
+  } catch(e) {}
 
   // Discount modal — close on overlay click
   const discOverlay = document.getElementById('discModalOverlay');
