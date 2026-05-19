@@ -1,0 +1,3492 @@
+<!DOCTYPE html>
+<!-- BUILD: v29-speaker-fix -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Malibu Boats MY26 Pricing</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1f3c; --navy2: #142847;
+    --blue: #1a4fa3; --sky: #2e8bc0; --sky-light: #48b4e0;
+    --gold: #c8922a; --gold-light: #e8b44a;
+    --white: #f0f6ff; --off-white: #d8e8f8;
+    --gray: #8aabcc; --gray-dark: #5a7a99;
+    --surface: #234272; --surface2: #2a4e82;
+    --card: #305890; --card2: #3664a0;
+    --border: rgba(72,180,224,0.25); --border2: rgba(72,180,224,0.1);
+    --success: #2ec87a; --axis-orange: #e85d20; --axis-orange-light: #ff7a3d;
+    --t-bg: #1e3a5c; --t-surface: var(--surface); --t-surface2: var(--surface2);
+    --t-card: var(--card); --t-card2: var(--card2);
+    --t-border: var(--border); --t-border2: var(--border2);
+    --t-accent: var(--sky); --t-accent-light: var(--sky-light);
+  }
+  body.theme-axis {
+    --t-bg: #e8e8e8; --t-surface: #d4d4d4; --t-surface2: #c8c8c8;
+    --t-card: #bcbcbc; --t-card2: #adadad;
+    --t-border: rgba(180,0,0,0.3); --t-border2: rgba(180,0,0,0.12);
+    --t-accent: #c00000; --t-accent-light: #e00000;
+    --white: #1a1a1a; --off-white: #2a2a2a;
+    --gray: #444444; --gray-dark: #666666;
+  }
+  body.theme-response {
+    --t-bg: #362310; --t-surface: #402b12; --t-surface2: #4c3316;
+    --t-card: #5a3d1a; --t-card2: #68471e;
+    --t-border: rgba(200,146,42,0.3); --t-border2: rgba(200,146,42,0.1);
+    --t-accent: var(--gold); --t-accent-light: var(--gold-light);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  body { font-family:'Barlow',sans-serif; background:var(--t-bg); color:var(--white); min-height:100vh; overflow-x:hidden; transition:background 0.3s; }
+
+  /* ═══════════════════════════════════════════════════════════
+     PASSWORD SCREEN
+  ═══════════════════════════════════════════════════════════ */
+  .pw-screen { position:fixed; inset:0; background:linear-gradient(160deg,#1e3a5c,#2a5490); z-index:999; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; }
+  .pw-logo { font-family:Barlow Condensed,sans-serif; font-weight:900; font-size:38px; letter-spacing:4px; text-transform:uppercase; color:var(--white); text-align:center; }
+  .pw-sub { font-size:13px; color:var(--sky); letter-spacing:3px; text-transform:uppercase; margin-top:-14px; }
+  .pw-badge { background:linear-gradient(90deg,var(--gold),var(--gold-light)); color:#0a1628; font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:12px; letter-spacing:2px; padding:4px 14px; border-radius:2px; text-transform:uppercase; margin-bottom:10px; }
+  .pw-box { background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:8px; padding:28px 32px; width:320px; display:flex; flex-direction:column; gap:14px; }
+  .pw-label { font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:700; letter-spacing:2px; color:var(--gray); text-transform:uppercase; }
+  .pw-input { background:rgba(255,255,255,0.08); border:1px solid var(--border); color:var(--white); font-family:'Barlow',sans-serif; font-size:16px; padding:12px 14px; border-radius:4px; outline:none; width:100%; transition:border 0.2s; }
+  .pw-input:focus { border-color:var(--sky); }
+  .pw-input::placeholder { color:var(--gray-dark); }
+  .pw-btn { background:linear-gradient(90deg,var(--sky),var(--blue)); color:white; border:none; border-radius:4px; font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:15px; letter-spacing:2px; text-transform:uppercase; padding:13px; cursor:pointer; transition:all 0.2s; }
+  .pw-btn:hover { filter:brightness(1.1); }
+  .pw-error { color:#ff6b6b; font-size:12px; text-align:center; display:none; }
+  .pw-error.show { display:block; }
+
+  /* ═══════════════════════════════════════════════════════════
+     HEADER
+  ═══════════════════════════════════════════════════════════ */
+  .header { background:linear-gradient(135deg,var(--t-bg),var(--t-surface)); border-bottom:1px solid var(--t-border); padding:12px 20px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+  .brand-wrap { display:flex; flex-direction:column; cursor:default; user-select:none; }
+  .brand-name { font-family:Barlow Condensed,sans-serif; font-weight:900; font-size:20px; letter-spacing:2px; text-transform:uppercase; color:var(--white); }
+  .brand-sub { font-size:10px; color:var(--sky); letter-spacing:3px; text-transform:uppercase; font-weight:500; }
+  .header-right { display:flex; align-items:center; gap:8px; }
+  .edition-badge { background:linear-gradient(90deg,var(--gold),var(--gold-light)); color:#0a1628; font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:11px; letter-spacing:1.5px; padding:3px 10px; border-radius:2px; text-transform:uppercase; }
+  .nav-btn { background:var(--t-card); border:1px solid var(--t-border); color:var(--gray); font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; padding:6px 12px; border-radius:2px; cursor:pointer; transition:all 0.2s; text-transform:uppercase; }
+  .nav-btn.active { background:var(--sky); border-color:var(--sky); color:white; }
+  .nav-btn-home { background:var(--t-card); border:1px solid var(--t-border); color:var(--gray); font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; padding:6px 12px; border-radius:2px; cursor:pointer; transition:all 0.2s; text-transform:uppercase; }
+  .nav-btn-home:hover { background:var(--t-card2); color:var(--white); }
+
+  /* ═══════════════════════════════════════════════════════════
+     LANDING PAGE — SPLIT SCREEN
+  ═══════════════════════════════════════════════════════════ */
+  .landing-view { display:none; min-height:calc(100vh - 57px); }
+  .landing-view.active { display:grid; grid-template-columns:1fr 1fr; }
+
+  /* Left — Retrieve */
+  .land-left {
+    background:linear-gradient(160deg, var(--navy) 0%, #0a1628 100%);
+    border-right:1px solid var(--border);
+    padding:48px 40px;
+    display:flex; flex-direction:column; gap:0;
+    position:relative; overflow:hidden;
+  }
+  .land-left::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse at 20% 80%, rgba(46,139,192,0.12) 0%, transparent 60%);
+    pointer-events:none;
+  }
+  .land-section-eyebrow {
+    font-family:Barlow Condensed,sans-serif; font-size:10px; font-weight:700;
+    letter-spacing:3px; text-transform:uppercase; color:var(--sky);
+    margin-bottom:10px;
+  }
+  .land-section-title {
+    font-family:Barlow Condensed,sans-serif; font-weight:900;
+    font-size:32px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--white); line-height:1.1; margin-bottom:8px;
+  }
+  .land-section-sub {
+    font-size:13px; color:var(--gray); line-height:1.5; margin-bottom:28px;
+  }
+
+  .retrieve-input-wrap { position:relative; margin-bottom:12px; }
+  .retrieve-input {
+    width:100%; background:rgba(255,255,255,0.06); border:1px solid var(--border);
+    color:var(--white); font-family:'Barlow',sans-serif; font-size:16px;
+    padding:14px 16px 14px 44px; border-radius:5px; outline:none;
+    transition:border 0.2s, background 0.2s;
+  }
+  .retrieve-input:focus { border-color:var(--sky); background:rgba(255,255,255,0.09); }
+  .retrieve-input::placeholder { color:var(--gray-dark); }
+  .retrieve-input-icon {
+    position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    font-size:16px; color:var(--gray-dark); pointer-events:none;
+  }
+  .retrieve-btn {
+    width:100%; padding:14px; background:linear-gradient(90deg,var(--sky),var(--blue));
+    color:white; border:none; border-radius:5px;
+    font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:14px;
+    letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all 0.2s;
+  }
+  .retrieve-btn:hover { filter:brightness(1.1); }
+  .retrieve-btn:disabled { opacity:0.5; cursor:default; }
+
+  /* Search results */
+  .search-results { margin-top:20px; display:flex; flex-direction:column; gap:10px; }
+  .search-result-card {
+    background:var(--t-surface); border:1px solid var(--t-border);
+    border-radius:5px; padding:14px 16px; cursor:pointer;
+    transition:all 0.18s; position:relative;
+  }
+  .search-result-card:hover { background:var(--t-surface2); border-color:var(--sky); }
+  .src-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; }
+  .src-model { font-family:Barlow Condensed,sans-serif; font-weight:900; font-size:16px; letter-spacing:1px; text-transform:uppercase; }
+  .src-total { font-family:Barlow Condensed,sans-serif; font-size:16px; font-weight:700; color:var(--sky-light); }
+  .src-meta { font-size:11px; color:var(--gray-dark); }
+  .src-series-badge {
+    display:inline-block; font-family:Barlow Condensed,sans-serif; font-size:10px;
+    font-weight:700; letter-spacing:1px; padding:2px 7px; border-radius:2px;
+    text-transform:uppercase; margin-right:6px;
+  }
+  .src-series-badge.wakesetter { background:rgba(46,139,192,0.2); color:var(--sky); }
+  .src-series-badge.axis { background:rgba(232,93,32,0.2); color:var(--axis-orange); }
+  .src-series-badge.response { background:rgba(200,146,42,0.2); color:var(--gold); }
+  .src-load-btn {
+    flex:1; padding:9px; background:var(--sky);
+    color:white; border:none; border-radius:3px;
+    font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:all 0.15s;
+  }
+  .src-load-btn:hover { filter:brightness(1.1); }
+  .src-del-btn {
+    padding:9px 12px; background:rgba(255,80,80,0.08); border:1px solid rgba(255,80,80,0.25);
+    color:#ff8080; border-radius:3px;
+    font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:all 0.15s;
+  }
+  .src-del-btn:hover { background:rgba(255,80,80,0.2); color:#ff5555; }
+  .src-brand { font-size:10px; color:var(--gray-dark); letter-spacing:1px; text-transform:uppercase; font-family:Barlow Condensed,sans-serif; font-weight:600; margin-bottom:3px; }
+  .src-opts { font-size:10px; color:var(--gray-dark); margin-top:3px; font-style:italic; }
+  .src-card-actions { display:flex; gap:6px; margin-top:10px; }
+  .search-no-results {
+    text-align:center; padding:30px 20px; color:var(--gray-dark);
+    font-family:Barlow Condensed,sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase;
+  }
+  .search-spinner {
+    text-align:center; padding:20px; color:var(--gray-dark);
+    font-size:12px; letter-spacing:1px; text-transform:uppercase;
+    font-family:Barlow Condensed,sans-serif;
+  }
+  .search-error {
+    padding:12px 14px; background:rgba(255,80,80,0.1); border:1px solid rgba(255,80,80,0.3);
+    border-radius:4px; color:#ff8080; font-size:12px; margin-top:12px;
+  }
+
+  /* Right — New Quote */
+  .land-right {
+    background:linear-gradient(160deg, #0e1e3a 0%, var(--surface) 100%);
+    padding:48px 40px;
+    display:flex; flex-direction:column; gap:0;
+    position:relative; overflow:hidden;
+  }
+  .land-right::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse at 80% 20%, rgba(200,146,42,0.08) 0%, transparent 60%);
+    pointer-events:none;
+  }
+  .land-right .land-section-eyebrow { color:var(--gold); }
+  .new-quote-form { display:flex; flex-direction:column; gap:12px; position:relative; z-index:1; }
+  .nq-field { display:flex; flex-direction:column; gap:5px; }
+  .nq-label {
+    font-family:Barlow Condensed,sans-serif; font-size:10px; font-weight:700;
+    letter-spacing:2px; color:var(--gray-dark); text-transform:uppercase;
+  }
+  .nq-label span { color:#ff6b6b; }
+  .nq-input {
+    background:rgba(255,255,255,0.06); border:1px solid var(--t-border);
+    color:var(--white); font-family:'Barlow',sans-serif; font-size:14px;
+    padding:11px 13px; border-radius:4px; outline:none; transition:border 0.2s, background 0.2s;
+  }
+  .nq-input:focus { border-color:var(--gold); background:rgba(255,255,255,0.09); }
+  .nq-input::placeholder { color:var(--gray-dark); }
+  .nq-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .nq-start-btn {
+    margin-top:8px; padding:15px; width:100%;
+    background:linear-gradient(90deg,var(--gold),var(--gold-light));
+    color:#0a1628; border:none; border-radius:5px;
+    font-family:Barlow Condensed,sans-serif; font-weight:800; font-size:15px;
+    letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all 0.2s;
+  }
+  .nq-start-btn:hover { filter:brightness(1.08); transform:translateY(-1px); box-shadow:0 4px 16px rgba(200,146,42,0.3); }
+  .nq-error { color:#ff6b6b; font-size:11px; margin-top:-6px; display:none; }
+  .nq-error.show { display:block; }
+
+  /* SS config notice on landing */
+  .ss-config-notice {
+    margin-top:16px; padding:10px 13px;
+    background:rgba(200,146,42,0.08); border:1px solid rgba(200,146,42,0.2);
+    border-radius:4px; font-size:11px; color:var(--gold); line-height:1.5;
+    position:relative; z-index:1;
+  }
+  .ss-config-notice a { color:var(--gold-light); cursor:pointer; text-decoration:underline; }
+
+  /* ═══════════════════════════════════════════════════════════
+     SERIES TABS
+  ═══════════════════════════════════════════════════════════ */
+  .series-tabs { display:flex; background:var(--t-surface); border-bottom:1px solid var(--t-border2); }
+  .series-tab { flex:1; padding:13px 16px; text-align:center; cursor:pointer; border-bottom:3px solid transparent; transition:all 0.25s; font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:14px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gray); white-space:nowrap; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:7px; }
+  .series-tab svg { height:16px; width:auto; fill:currentColor; flex-shrink:0; transition:fill 0.25s; }
+  .series-tab.wakesetter.active { border-color:var(--sky); color:var(--sky); background:rgba(72,180,224,0.08); }
+  .series-tab.axis.active { border-color:var(--axis-orange); color:var(--axis-orange); background:rgba(232,93,32,0.08); }
+  .series-tab.response.active { border-color:var(--gold); color:var(--gold); background:rgba(200,146,42,0.08); }
+
+  /* ═══════════════════════════════════════════════════════════
+     MODEL SELECTOR
+  ═══════════════════════════════════════════════════════════ */
+  .model-selector { background:var(--t-surface2); padding:11px 18px; border-bottom:1px solid var(--t-border2); display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; align-items:center; }
+  .model-selector::-webkit-scrollbar { display:none; }
+  .model-label { font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:600; letter-spacing:2px; color:var(--gray-dark); text-transform:uppercase; white-space:nowrap; }
+  .model-chip { padding:7px 16px; border-radius:3px; border:1px solid var(--t-border); background:var(--t-card); color:var(--gray); font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:14px; letter-spacing:1px; cursor:pointer; transition:all 0.2s; white-space:nowrap; flex-shrink:0; }
+  .model-chip:hover { background:var(--t-card2); color:var(--white); }
+  .model-chip.wakesetter.active { background:var(--sky); border-color:var(--sky); color:white; }
+  .model-chip.axis.active { background:var(--axis-orange); border-color:var(--axis-orange); color:white; }
+  .model-chip.response.active { background:var(--gold); border-color:var(--gold); color:#0a1628; }
+
+  /* ═══════════════════════════════════════════════════════════
+     MAIN BUILDER
+  ═══════════════════════════════════════════════════════════ */
+  .main { display:grid; grid-template-columns:1fr 360px; min-height:calc(100vh - 116px); background:var(--t-bg); }
+  .options-panel { overflow-y:auto; max-height:calc(100vh - 116px); }
+  .category-block { border-bottom:1px solid var(--t-border2); }
+  .category-header { display:flex; align-items:center; padding:11px 18px; cursor:pointer; background:var(--t-surface); gap:10px; user-select:none; transition:background 0.15s; }
+  .category-header:hover { background:var(--t-surface2); }
+  .category-title { font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--t-accent-light); flex:1; }
+  .category-count { font-size:11px; color:var(--gray-dark); background:var(--t-card); padding:2px 8px; border-radius:10px; font-weight:500; }
+  .category-count.has-sel { background:var(--t-accent); color:white; }
+  .category-chevron { color:var(--gray-dark); transition:transform 0.2s; font-size:12px; }
+  .category-block.collapsed .category-chevron { transform:rotate(-90deg); }
+  .category-items { display:flex; flex-direction:column; }
+  .category-block.collapsed .category-items { display:none; }
+  .option-row { display:flex; align-items:center; padding:9px 18px 9px 26px; gap:9px; border-top:1px solid var(--t-border2); cursor:pointer; transition:background 0.15s; }
+  .option-row:hover { background:rgba(255,255,255,0.04); }
+  .option-row.selected { background:rgba(72,180,224,0.1); }
+  .option-row.selected.axis-brand { background:rgba(232,93,32,0.1); }
+  .option-row.selected.response-brand { background:rgba(200,146,42,0.1); }
+  .option-row.na { opacity:0.28; pointer-events:none; }
+  .option-row.locked { cursor:default; }
+  .option-row.locked:hover { background:rgba(72,180,224,0.1); }
+  .opt-cb { width:20px; height:20px; border:2px solid var(--t-border); border-radius:3px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.15s; background:var(--t-card); }
+  .option-row.selected .opt-cb { background:var(--sky); border-color:var(--sky); }
+  .option-row.selected.axis-brand .opt-cb { background:var(--axis-orange); border-color:var(--axis-orange); }
+  .option-row.selected.response-brand .opt-cb { background:var(--gold); border-color:var(--gold); }
+  .option-row.locked .opt-cb { opacity:0.6; }
+  .chk { display:none; font-size:11px; color:white; font-weight:900; }
+  .option-row.selected .chk { display:block; }
+  .opt-name { flex:1; font-size:13px; color:var(--off-white); line-height:1.3; }
+  .opt-price { font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:15px; color:var(--t-accent-light); white-space:nowrap; min-width:64px; text-align:right; }
+  .opt-price.neg { color:var(--success); }
+  .std-badge { font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; color:var(--gray-dark); background:var(--t-card); padding:2px 7px; border-radius:2px; border:1px solid var(--t-border2); }
+  .incl-badge { font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; color:var(--success); background:rgba(46,200,122,0.1); padding:2px 7px; border-radius:2px; border:1px solid rgba(46,200,122,0.25); }
+  .qty-wrap { display:flex; align-items:center; gap:5px; flex-shrink:0; }
+  .qty-btn { width:24px; height:24px; border-radius:3px; border:1px solid var(--t-border); background:var(--t-card); color:var(--white); font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; flex-shrink:0; line-height:1; padding:0; }
+  .qty-btn:hover { background:var(--t-card2); }
+  .qty-num { font-family:Barlow Condensed,sans-serif; font-size:15px; font-weight:700; min-width:14px; text-align:center; }
+
+  /* ═══════════════════════════════════════════════════════════
+     QUOTE PANEL
+  ═══════════════════════════════════════════════════════════ */
+  .quote-panel { background:var(--t-surface); border-left:1px solid var(--t-border); display:flex; flex-direction:column; max-height:calc(100vh - 116px); position:sticky; top:116px; }
+  .quote-header { padding:13px 18px 11px; border-bottom:1px solid var(--t-border); }
+  .quote-title { font-family:Barlow Condensed,sans-serif; font-weight:900; font-size:17px; letter-spacing:2px; text-transform:uppercase; }
+  .quote-model-name { font-family:Barlow Condensed,sans-serif; font-size:12px; font-weight:600; letter-spacing:1px; color:var(--t-accent); text-transform:uppercase; margin-top:2px; }
+  .quote-customer-bar {
+    padding:7px 18px; background:var(--t-bg); border-bottom:1px solid var(--t-border2);
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+  }
+  .qcb-name { font-family:Barlow Condensed,sans-serif; font-size:13px; font-weight:700; color:var(--t-accent-light); letter-spacing:0.5px; }
+  .qcb-meta { font-size:11px; color:var(--gray-dark); }
+  .qcb-edit { font-family:Barlow Condensed,sans-serif; font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--gray-dark); background:var(--t-card); border:1px solid var(--t-border2); padding:3px 9px; border-radius:2px; cursor:pointer; transition:all 0.15s; }
+  .qcb-edit:hover { color:var(--white); background:var(--t-card2); }
+  .quote-items { flex:1; overflow-y:auto; padding:8px 0; }
+  .q-sec-label { font-family:Barlow Condensed,sans-serif; font-size:10px; font-weight:700; letter-spacing:2px; color:var(--gray-dark); text-transform:uppercase; padding:5px 18px 2px; margin-top:4px; }
+  .q-item { display:flex; justify-content:space-between; align-items:flex-start; padding:5px 18px; gap:8px; border-bottom:1px solid var(--t-border2); }
+  .q-item-name { font-size:12px; color:var(--gray); flex:1; line-height:1.3; }
+  .q-item-price { font-family:Barlow Condensed,sans-serif; font-size:13px; font-weight:700; color:var(--off-white); white-space:nowrap; }
+  .q-item-price.neg { color:var(--success); }
+  .q-item.base .q-item-name { color:var(--off-white); font-weight:600; font-size:13px; }
+  .q-item.base .q-item-price { font-size:15px; color:var(--t-accent-light); }
+  .q-item.fixed .q-item-name { color:var(--off-white); font-weight:500; }
+  .q-item-prices { display:flex; flex-direction:column; align-items:flex-end; gap:1px; white-space:nowrap; }
+  .q-item-dealer-cost { font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:700; color:#e85d20; }
+  .q-item-msrp { font-family:Barlow Condensed,sans-serif; font-size:12px; font-weight:700; color:var(--off-white); opacity:0.55; }
+  .discount-row, .disc { display:flex; align-items:center; padding:6px 18px; gap:8px; border-bottom:1px solid var(--t-border2); }
+  .discount-row.hidden, .disc.hidden { display:none !important; }
+  .disc-label { font-size:11px; color:var(--gray-dark); flex:1; font-style:italic; }
+  .disc-input { background:transparent; border:none; border-bottom:1px solid var(--t-border2); color:var(--success); font-family:Barlow Condensed,sans-serif; font-size:14px; font-weight:700; width:90px; text-align:right; outline:none; padding:2px 4px; }
+  .disc-input::placeholder { color:var(--t-border); }
+  .disc-input:focus { border-bottom-color:var(--success); }
+  .quote-totals { border-top:1px solid var(--t-border); padding:11px 18px; background:var(--t-bg); }
+  .tot-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; }
+  .tot-label { font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--gray-dark); }
+  .tot-val { font-family:Barlow Condensed,sans-serif; font-size:15px; font-weight:700; color:var(--off-white); }
+  .tot-row.grand { border-top:1px solid var(--t-border); padding-top:8px; margin-top:2px; }
+  .tot-row.grand .tot-label { color:var(--off-white); font-size:12px; }
+  .tot-row.grand .tot-val { font-size:22px; color:var(--sky-light); }
+  .tot-row.grand.axis .tot-val { color:var(--axis-orange-light); }
+  .tot-row.grand.response .tot-val { color:var(--gold-light); }
+  .tot-row.disc .tot-val { color:var(--success); }
+  .quote-actions { padding:10px 14px; display:flex; gap:6px; border-top:1px solid var(--t-border); }
+  .action-btn { flex:1; padding:10px 4px; border:none; border-radius:3px; font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:12px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+  .btn-clear { background:var(--t-card); color:var(--gray); border:1px solid var(--t-border); }
+  .btn-clear:hover { background:var(--t-card2); color:white; }
+  .btn-disc { background:var(--t-card); color:var(--success); border:1px solid rgba(46,200,122,0.3); }
+  .btn-disc:hover { background:rgba(46,200,122,0.15); }
+  .btn-disc.active { background:rgba(46,200,122,0.2); border-color:var(--success); }
+  .btn-save { background:var(--success); color:#0a1628; font-weight:800; }
+  .btn-save:disabled { opacity:0.5; cursor:default; }
+  .btn-print { background:linear-gradient(90deg,var(--sky),var(--blue)); color:white; }
+  .btn-print.axis-brand { background:linear-gradient(90deg,var(--axis-orange),#c23a00); }
+  .btn-print.response-brand { background:linear-gradient(90deg,var(--gold),#a06a10); }
+  .btn-export { background:linear-gradient(90deg,#2ec87a,#1a9a5a); color:#0a1628; font-weight:800; }
+  .btn-export.axis-brand { background:linear-gradient(90deg,#2ec87a,#1a9a5a); }
+  .btn-export.response-brand { background:linear-gradient(90deg,#2ec87a,#1a9a5a); }
+  .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:160px; color:var(--gray-dark); text-align:center; padding:20px; gap:8px; }
+  .empty-icon { font-size:30px; opacity:0.3; }
+  .empty-text { font-family:Barlow Condensed,sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; font-weight:600; }
+
+  /* Save status in button */
+  .save-status { font-size:10px; display:block; font-weight:400; margin-top:1px; opacity:0.8; }
+
+  /* ═══════════════════════════════════════════════════════════
+     PRINT
+  ═══════════════════════════════════════════════════════════ */
+  @media print {
+    body { background:white !important; color:black !important; }
+    .pw-screen,.header,.series-tabs,.model-selector,.options-panel,.quote-actions,
+    .landing-view,.modal-overlay,.settings-panel,.ss-config-notice,
+    .dealer-toggle-row,.dealer-pin-overlay,
+    .qcb-edit,.toast { display:none !important; }
+    #deliveryRow { cursor:default !important; }
+    #deliveryRow .delivery-edit-hint { display:none !important; }
+    .main { grid-template-columns:1fr; }
+    .quote-panel { position:static; max-height:none; border:none; background:white !important; box-shadow:none; }
+    .quote-customer-bar { background:#eef3f8 !important; }
+    .qcb-name { color:#1a4fa3 !important; }
+    .qcb-meta,.qcb-edit { color:#555 !important; }
+    .quote-totals { background:#eef3f8 !important; }
+    .tot-label { color:#555 !important; }
+    .tot-val { color:#111 !important; }
+    .tot-row.grand .tot-val { color:#1a4fa3 !important; font-size:20px !important; }
+    .tot-row.disc .tot-val { color:#1a8a50 !important; }
+    .q-item-name { color:#333 !important; }
+    .q-item-price { color:#111 !important; }
+    .q-item.base .q-item-name { color:#111 !important; font-weight:700 !important; }
+    .q-item.base .q-item-price { color:#1a4fa3 !important; }
+    .q-item.fixed .q-item-name { color:#111 !important; }
+    .q-sec-label { color:#777 !important; }
+    .q-item-dealer-cost { color:#c23a00 !important; }
+    .q-item-msrp { color:#555 !important; opacity:1 !important; }
+    .quote-items { overflow:visible !important; }
+    .discount-row, .disc { display:none !important; }
+    .print-hdr,.print-cust { display:block !important; }
+    #dealerPriceRow .tot-label { color:#c23a00 !important; font-size:10px !important; }
+    #dealerPriceRow .tot-val   { color:#c23a00 !important; font-size:14px !important; }
+    #marginSummaryRow .tot-label { color:#555 !important; font-size:10px !important; }
+    #marginSummaryRow .tot-val   { color:#1a7a4a !important; }
+    #marginSummaryRow .margin-sub { color:#555 !important; }
+    .discount-row, .disc.hidden { display:none !important; }
+  }
+  .print-hdr { display:none; padding:16px 18px 4px; }
+  .print-hdr h1 { font-size:22px; color:#0a1628; font-family:Barlow Condensed,sans-serif; font-weight:900; letter-spacing:2px; }
+  .print-hdr p { font-size:11px; color:#555; margin-top:2px; }
+  .print-cust { display:none; padding:8px 18px; background:#e8f0f8; margin:6px 16px; font-size:12px; color:#333; border-radius:3px; }
+
+  /* ═══════════════════════════════════════════════════════════
+     MODALS
+  ═══════════════════════════════════════════════════════════ */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.78); z-index:200; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--t-surface); border:1px solid var(--t-border); border-radius:6px; padding:24px; max-width:360px; width:92%; }
+  .modal-title { font-family:Barlow Condensed,sans-serif; font-weight:900; font-size:19px; letter-spacing:2px; text-transform:uppercase; margin-bottom:3px; }
+  .modal-sub { font-size:12px; color:var(--gray-dark); margin-bottom:16px; line-height:1.5; }
+  .modal-field { margin-bottom:10px; }
+  .modal-label { font-family:Barlow Condensed,sans-serif; font-size:10px; font-weight:700; letter-spacing:2px; color:var(--gray-dark); text-transform:uppercase; margin-bottom:4px; display:block; }
+  .modal-input { width:100%; background:var(--t-card); border:1px solid var(--t-border); color:var(--white); font-family:'Barlow',sans-serif; font-size:14px; padding:9px 11px; border-radius:3px; outline:none; transition:border 0.15s; }
+  .modal-input:focus { border-color:var(--t-accent); }
+  .modal-input::placeholder { color:var(--gray-dark); }
+  .modal-actions { display:flex; gap:8px; margin-top:18px; }
+  .modal-btn { flex:1; padding:11px; border:none; border-radius:3px; font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:13px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; }
+  .modal-cancel { background:var(--t-card); color:var(--gray); border:1px solid var(--t-border); }
+  .modal-save { background:var(--success); color:#0a1628; }
+  .modal-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* ═══════════════════════════════════════════════════════════
+     SETTINGS PANEL
+  ═══════════════════════════════════════════════════════════ */
+  .settings-panel { display:none; position:fixed; bottom:60px; right:14px; background:var(--t-surface); border:1px solid var(--t-border); border-radius:6px; padding:20px; width:300px; z-index:150; box-shadow:0 8px 32px rgba(0,0,0,0.5); }
+  .settings-panel.open { display:block; }
+  .sp-title { font-family:Barlow Condensed,sans-serif; font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--gray-dark); margin-bottom:14px; }
+  .sp-section { font-family:Barlow Condensed,sans-serif; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--t-accent); margin:12px 0 8px; border-top:1px solid var(--t-border2); padding-top:10px; }
+  .sp-field { margin-bottom:10px; }
+  .sp-label { font-family:Barlow Condensed,sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; color:var(--gray-dark); text-transform:uppercase; margin-bottom:4px; display:block; }
+  .sp-input { width:100%; background:var(--t-card); border:1px solid var(--t-border2); color:var(--white); font-family:'Barlow',sans-serif; font-size:13px; padding:7px 9px; border-radius:3px; outline:none; }
+  .sp-input:focus { border-color:var(--t-accent); }
+  .sp-hint { font-size:10px; color:var(--gray-dark); line-height:1.4; margin-top:3px; }
+  .sp-save { width:100%; margin-top:8px; padding:9px; background:var(--t-accent); color:white; border:none; border-radius:3px; font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:12px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; }
+  .sp-col-grid { display:grid; grid-template-columns:auto 1fr; gap:4px 8px; align-items:center; margin-top:6px; }
+  .sp-col-key { font-family:Barlow Condensed,sans-serif; font-size:10px; color:var(--gray-dark); letter-spacing:0.5px; white-space:nowrap; }
+  .sp-col-val { background:var(--t-card); border:1px solid var(--t-border2); color:var(--white); font-family:'Barlow',sans-serif; font-size:11px; padding:4px 7px; border-radius:3px; outline:none; width:100%; }
+  .sp-col-val:focus { border-color:var(--t-accent); }
+  .sp-fetch-btn { width:100%; margin-top:6px; padding:7px; background:var(--t-card); color:var(--t-accent-light); border:1px solid var(--t-border); border-radius:3px; font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:11px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; }
+  .sp-status { font-size:10px; color:var(--success); margin-top:4px; display:none; }
+  .sp-status.show { display:block; }
+  .sp-err { font-size:10px; color:#ff6b6b; margin-top:4px; display:none; }
+  .sp-err.show { display:block; }
+  .sp-diag { font-size:9px; color:var(--gray); background:var(--t-card); border:1px solid var(--t-border2); border-radius:3px; padding:8px; margin-top:6px; white-space:pre-wrap; word-break:break-all; max-height:180px; overflow-y:auto; display:none; line-height:1.5; }
+  .sp-diag.show { display:block; }
+
+  ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-thumb { background:var(--t-border); border-radius:2px; }
+
+  /* ═══════════════════════════════════════════════════════════
+     DEALER MODE
+  ═══════════════════════════════════════════════════════════ */
+  .tot-row.margin-row { margin-top:0; margin-bottom:6px; }
+  .tot-row.margin-row .tot-label { font-size:10px; color:var(--gray-dark); }
+  .tot-row.margin-row .tot-val { font-size:14px; color:#2ec87a; }
+  .tot-row.margin-row .tot-val.low { color:#e8b44a; }
+  .tot-row.margin-row .tot-val.neg { color:#ff6b6b; }
+  .margin-sub { font-family:Barlow Condensed,sans-serif; font-size:11px; color:var(--gray-dark); margin-left:6px; }
+  /* Dealer toggle switch */
+  .dealer-toggle-row { display:none; align-items:center; justify-content:space-between; padding:8px 14px 2px; gap:8px; }
+  .dealer-toggle-row.visible { display:flex; }
+  .dealer-toggle-label { font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#e85d20; }
+  .toggle-switch { position:relative; width:40px; height:22px; flex-shrink:0; }
+  .toggle-switch input { opacity:0; width:0; height:0; }
+  .toggle-slider { position:absolute; inset:0; background:var(--t-card); border:1px solid var(--t-border); border-radius:22px; cursor:pointer; transition:0.2s; }
+  .toggle-slider:before { content:''; position:absolute; width:16px; height:16px; left:2px; top:2px; background:var(--gray-dark); border-radius:50%; transition:0.2s; }
+  input:checked + .toggle-slider { background:#c23a00; border-color:#e85d20; }
+  input:checked + .toggle-slider:before { transform:translateX(18px); background:white; }
+  /* Dealer PIN modal */
+  .dealer-pin-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:400; align-items:center; justify-content:center; }
+  .dealer-pin-overlay.open { display:flex; }
+  .dealer-pin-box { background:var(--t-surface); border:1px solid #e85d20; border-radius:8px; padding:28px 28px 22px; width:300px; display:flex; flex-direction:column; gap:14px; }
+  .dealer-pin-title { font-family:Barlow Condensed,sans-serif; font-weight:900; font-size:18px; letter-spacing:2px; text-transform:uppercase; color:#e85d20; }
+  .dealer-pin-sub { font-size:12px; color:var(--gray-dark); margin-top:-8px; }
+  .dealer-pin-input { background:var(--t-card); border:1px solid var(--t-border); color:var(--white); font-family:'Barlow',sans-serif; font-size:18px; padding:10px 12px; border-radius:4px; outline:none; width:100%; letter-spacing:4px; text-align:center; transition:border 0.2s; }
+  .dealer-pin-input:focus { border-color:#e85d20; }
+  .dealer-pin-err { font-size:11px; color:#ff6b6b; display:none; text-align:center; margin-top:-6px; }
+  .dealer-pin-err.show { display:block; }
+  .dealer-pin-actions { display:flex; gap:8px; margin-top:4px; }
+  .dealer-pin-btn { flex:1; padding:10px; border:none; border-radius:3px; font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:13px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; }
+  .dealer-pin-cancel { background:var(--t-card); color:var(--gray); border:1px solid var(--t-border); }
+  .dealer-pin-confirm { background:#c23a00; color:white; }
+
+     /* ═══════════════════════════════════════════════════════════
+     TOAST NOTIFICATION
+  ═══════════════════════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════
+     DISCOUNT MODAL
+  ═══════════════════════════════════════════════════════════ */
+  .disc-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.78); z-index:300; align-items:center; justify-content:center; }
+  .disc-modal-overlay.open { display:flex; }
+  .disc-modal {
+    background:#0d1f3c; border:1px solid rgba(72,180,224,0.25);
+    border-radius:8px; padding:28px 32px; width:320px;
+    display:flex; flex-direction:column; gap:16px;
+    box-shadow:0 12px 48px rgba(0,0,0,0.6);
+  }
+  .disc-modal-title { font-family:Barlow Condensed,sans-serif; font-weight:900; font-size:20px; letter-spacing:2px; text-transform:uppercase; color:#f0f6ff; }
+  .disc-modal-sub { font-size:12px; color:#8aabcc; line-height:1.5; margin-top:-8px; }
+  .disc-modal-label { font-family:Barlow Condensed,sans-serif; font-size:10px; font-weight:700; letter-spacing:2px; color:#5a7a99; text-transform:uppercase; margin-bottom:5px; display:block; }
+  .disc-modal-input {
+    width:100%; background:rgba(255,255,255,0.07); border:1px solid rgba(72,180,224,0.25);
+    color:#f0f6ff; font-family:Barlow Condensed,sans-serif; font-size:22px; font-weight:700;
+    padding:12px 14px; border-radius:5px; outline:none; transition:border 0.2s;
+    text-align:right;
+  }
+  .disc-modal-input:focus { border-color:#2e8bc0; background:rgba(255,255,255,0.1); }
+  .disc-modal-input::placeholder { color:rgba(90,122,153,0.5); }
+  .disc-modal-preview {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 14px; background:rgba(46,200,122,0.08);
+    border:1px solid rgba(46,200,122,0.2); border-radius:4px;
+  }
+  .disc-modal-preview-label { font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#5a7a99; }
+  .disc-modal-preview-val { font-family:Barlow Condensed,sans-serif; font-size:18px; font-weight:700; color:#2ec87a; }
+  .disc-modal-actions { display:flex; gap:8px; margin-top:4px; }
+  .disc-modal-cancel { flex:1; padding:11px; background:rgba(255,255,255,0.05); border:1px solid rgba(72,180,224,0.2); color:#8aabcc; border-radius:4px; font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:13px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; }
+  .disc-modal-apply { flex:2; padding:11px; background:linear-gradient(90deg,#2ec87a,#1da862); color:#0a1628; border:none; border-radius:4px; font-family:Barlow Condensed,sans-serif; font-weight:800; font-size:13px; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:filter 0.2s; }
+  .disc-modal-apply:hover { filter:brightness(1.08); }
+  .disc-modal-clear { padding:11px 14px; background:rgba(255,80,80,0.1); border:1px solid rgba(255,80,80,0.25); color:#ff8080; border-radius:4px; font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:12px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; }
+  .disc-modal-clear:hover { background:rgba(255,80,80,0.2); }
+  .disc-modal-select {
+    width:100%; background:rgba(255,255,255,0.07); border:1px solid rgba(72,180,224,0.3);
+    color:#f0f6ff; font-family:'Barlow',sans-serif; font-size:15px; padding:10px 14px;
+    border-radius:4px; outline:none; cursor:pointer; -webkit-appearance:none; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238aabcc' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; padding-right:38px;
+  }
+  .disc-modal-select:focus { border-color:#2e8bc0; background-color:rgba(255,255,255,0.1); }
+  .disc-modal-select option { background:#1e3a68; color:#f0f6ff; }
+
+.toast {
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px);
+    background:var(--t-surface); border:1px solid var(--t-border);
+    padding:10px 20px; border-radius:5px; font-family:Barlow Condensed,sans-serif;
+    font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+    z-index:999; transition:transform 0.3s ease; white-space:nowrap;
+    box-shadow:0 4px 20px rgba(0,0,0,0.4);
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+  .toast.success { border-color:var(--success); color:var(--success); }
+  .toast.error { border-color:#ff6b6b; color:#ff6b6b; }
+  .toast.info { border-color:var(--sky); color:var(--sky-light); }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     PASSWORD SCREEN
+════════════════════════════════════════════════════════════ -->
+<div class="pw-screen" id="pwScreen" style="gap:14px;">
+  <div class="pw-logo" id="pwLogo" onclick="pwLogoTap()" style="cursor:default;user-select:none;">Malibu Boats</div>
+  <div class="pw-sub">MY26 Pricing Tool</div>
+  <div class="pw-badge">Edition 2</div>
+
+  <!-- Login box — centred column layout -->
+  <div class="pw-box" style="width:300px;">
+    <div class="pw-label">Enter Password</div>
+    <input class="pw-input" id="pwInput" type="password" placeholder="••••••••••" onkeydown="if(event.key==='Enter')checkPw()" autocomplete="off" />
+    <button class="pw-btn" onclick="checkPw()">Unlock</button>
+    <div class="pw-error" id="pwError">Incorrect password. Please try again.</div>
+  </div>
+
+  <!-- Smartsheet status badge — centred below password box -->
+  <div id="ssStatusBadge" style="display:flex;align-items:center;gap:8px;background:rgba(255,80,80,0.08);border:1px solid rgba(255,80,80,0.25);border-radius:6px;padding:9px 16px;width:300px;">
+    <span style="font-size:13px;opacity:0.7;">&#9888;</span>
+    <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ff8080;">Smartsheet Not Connected</div>
+  </div>
+  <div id="ssOkBadge" style="display:none;align-items:center;gap:8px;background:rgba(46,200,122,0.08);border:1px solid rgba(46,200,122,0.25);border-radius:6px;padding:9px 16px;width:300px;">
+    <span style="font-size:13px;">&#10003;</span>
+    <div style="font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--success);">Smartsheet Connected</div>
+  </div>
+
+  <!-- Hidden settings panel — revealed by triple-tapping "Malibu Boats" -->
+  <div id="ssPanelWrap" style="display:none;width:300px;">
+    <div class="pw-box" style="gap:10px;width:100%;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div class="pw-label" style="color:var(--gold);letter-spacing:2px;">&#9889; Smartsheet Setup</div>
+        <button onclick="closeSsPanel()" style="background:none;border:none;color:var(--gray-dark);font-size:18px;cursor:pointer;padding:0 4px;line-height:1;">&times;</button>
+      </div>
+      <div style="font-size:11px;color:var(--gray-dark);line-height:1.5;margin-top:-4px;">Connect once per device. Fetch columns to enable save &amp; retrieve.</div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-family:Barlow Condensed,sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gray-dark);text-transform:uppercase;">Site URL</label>
+        <input class="pw-input" id="spSiteUrl" type="text" placeholder="https://malibu-my26.netlify.app" style="font-size:13px;padding:9px 12px;" />
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="pw-btn" onclick="testConnection()" style="background:linear-gradient(90deg,var(--gold),var(--gold-light));color:#0a1628;flex:1;padding:10px;font-size:12px;">&#9889; Test</button>
+        <button class="pw-btn" onclick="fetchColumns()" style="background:var(--surface2);border:1px solid var(--border);flex:1;padding:10px;font-size:12px;">&#8635; Fetch Columns</button>
+      </div>
+      <div class="sp-status" id="spStatus" style="font-size:11px;"></div>
+      <div class="sp-err" id="spErr" style="font-size:11px;color:#ff6b6b;display:none;"></div>
+      <pre class="sp-diag" id="spDiag" style="font-size:9px;color:var(--gray);background:rgba(0,0,0,0.3);border:1px solid var(--border2);border-radius:3px;padding:8px;white-space:pre-wrap;word-break:break-all;max-height:160px;overflow-y:auto;display:none;line-height:1.5;margin-top:0;"></pre>
+      <div id="colGrid" style="display:none;margin-top:4px;"></div>
+      <div id="colMappedBadge" style="display:none;font-size:11px;color:var(--success);font-family:Barlow Condensed,sans-serif;font-weight:700;letter-spacing:1px;"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════════════════════════ -->
+<div id="appWrap" style="display:none">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="brand-wrap" id="brandWrap">
+    <div class="brand-name" id="brandName">Malibu Boats MY26 Pricing</div>
+    <div class="brand-sub">Edition 2 · MSRP Inc. GST</div>
+  </div>
+  <div class="header-right">
+    <div class="edition-badge" id="editionBadge" style="cursor:default;user-select:none;">MY26 Ed.2</div>
+    <button class="nav-btn-home" id="navHome" onclick="showView('landing')" style="display:none">⌂ Home</button>
+    <button class="nav-btn active" id="navBuilder" onclick="showView('builder')" style="display:none">Builder</button>
+    <button class="nav-btn" id="navSaved" onclick="showView('saved')" style="display:none">Saved</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     LANDING — SPLIT SCREEN
+════════════════════════════════════════════════════════════ -->
+<div class="landing-view active" id="landingView">
+
+  <!-- LEFT: Retrieve existing quote -->
+  <div class="land-left">
+    <div class="land-section-eyebrow">Existing Customer</div>
+    <div class="land-section-title">Retrieve<br>a Quote</div>
+    <div class="land-section-sub">Enter a customer's mobile number to find all their saved quotes.</div>
+
+    <div class="retrieve-input-wrap">
+      <span class="retrieve-input-icon">📱</span>
+      <input class="retrieve-input" id="retrieveMobile" type="tel" placeholder="04xx xxx xxx"
+        oninput="clearSearchResults()" onkeydown="if(event.key==='Enter')searchQuotes()" />
+    </div>
+    <button class="retrieve-btn" id="retrieveBtn" onclick="searchQuotes()">Search Quotes</button>
+
+    <div id="searchResults"></div>
+    <div id="ssNoticeLeft" class="ss-config-notice" style="display:none">
+      ⚠ Smartsheet not connected. <a onclick="openSettings()">Open Settings</a> to fetch columns.
+    </div>
+  </div>
+
+  <!-- RIGHT: New quote -->
+  <div class="land-right">
+    <div class="land-section-eyebrow">New Customer</div>
+    <div class="land-section-title">Start a<br>New Quote</div>
+    <div class="land-section-sub">Enter the customer's details to begin building their quote.</div>
+
+    <div class="new-quote-form">
+      <div class="nq-field">
+        <label class="nq-label">Full Name <span>*</span></label>
+        <input class="nq-input" id="nqName" type="text" placeholder="e.g. John Smith" />
+        <div class="nq-error" id="nqNameErr">Name is required</div>
+      </div>
+      <div class="nq-row">
+        <div class="nq-field">
+          <label class="nq-label">Email</label>
+          <input class="nq-input" id="nqEmail" type="email" placeholder="john@example.com" />
+        </div>
+        <div class="nq-field">
+          <label class="nq-label">Postcode</label>
+          <input class="nq-input" id="nqPostcode" type="text" placeholder="2000" maxlength="4" />
+        </div>
+      </div>
+      <div class="nq-field">
+        <label class="nq-label">Mobile Number <span>*</span></label>
+        <input class="nq-input" id="nqMobile" type="tel" placeholder="04xx xxx xxx" />
+        <div class="nq-error" id="nqMobileErr">Mobile number is required</div>
+      </div>
+      <button class="nq-start-btn" onclick="startNewQuote()">Start Quote →</button>
+    </div>
+
+    <div id="ssNoticeRight" class="ss-config-notice" style="display:none; margin-top:16px;">
+      ⚠ Smartsheet not connected. Quotes will not save until <a onclick="openSettings()">columns are fetched</a>.
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     BUILDER VIEW
+════════════════════════════════════════════════════════════ -->
+<div id="builderView" style="display:none">
+  <div class="series-tabs">
+    <div class="series-tab wakesetter active" onclick="setSeries('wakesetter')">
+      <svg viewBox="0 0 850.39 666.91" xmlns="http://www.w3.org/2000/svg"><path d="M32.37,209.35c-4.45,11.12-10.46,20.41-13.7,32.09-1.19,4.3-2.14,8.69-3.16,13.07h396.74l21.87-45.16H32.37Z"/><path d="M9.24,289.57c-.82,6.82-1.46,13.7-1.86,20.65h377.86l10.01-20.65H9.24Z"/><path d="M110.35,351.24c.49,6.95,1.27,13.84,2.21,20.65h242.8l10-20.65H110.35Z"/><path d="M120.56,402.97c1.32,5.66,2.68,11.31,4.29,16.85,3.18,10.99,6.84,21.76,11.09,32.26h180.55l23.8-49.11H120.56Z"/><path d="M153.5,490.67c56.45,99.27,162.98,166.36,285.35,166.36s228.88-67.09,285.35-166.36H153.5Z"/><path d="M625.44,171.24C568.98,71.98,462.46,4.89,340.09,4.89S111.21,71.98,54.75,171.24h570.69Z"/><path d="M838.91,255.28l-.02.04v.04s-94.58,196.4-94.58,196.4h-94.19l90.83-190.13c1.76-3.88.82-6.7-.26-8.36-4.45-6.88-19.93-7.06-21.68-7.06h-21.85l-.73,1.51-97.85,204.04h-94.18l90.9-189.86c1.75-3.89.83-6.69-.26-8.36-4.43-6.87-19.95-7.06-21.7-7.06h-25.05l-.73,1.51-97.44,203.76h-94.2l116.44-242.82h157.9c.17,0,18.17-.32,23.02,9.25l1.56,3.09,2.6-2.28c.11-.09,12.22-10.2,44.88-10.2h88.75c.27,0,27.83-.53,42.31,13.37,13.43,12.9,10.35,23.99,5.54,33.1Z"/></svg>
+      Wakesetter
+    </div>
+    <div class="series-tab axis" onclick="setSeries('axis')">
+      <svg viewBox="0 0 134.15 125.4" xmlns="http://www.w3.org/2000/svg"><polygon fill="currentColor" points="121.96 96.23 121.96 96.22 121.96 96.22 121.96 96.23"/><path fill="currentColor" d="M0,0v125.4h134.15V0H0ZM78.04,3v30.78l-52.33,10.53v17.19H3V3h75.04ZM72.42,58.2v8.94s-29.35-4.15-29.36-4.19c.01-.08,29.36-4.77,29.36-4.75ZM3,63.87h22.71v19.19l52.33,9.39v29.96H3v-58.54ZM80.92,122.4v-29.44l18.18,3.26.02-26.35-12.52-1.35v-11.31l12.52-1.32-.04-26.34-18.16,3.65V3h50.23v58.5h-31.52v2.37h31.52v58.54h-50.23Z"/></svg>
+      Axis
+    </div>
+    <div class="series-tab response" onclick="setSeries('response')">
+      <svg viewBox="0 0 134.15 41.37" xmlns="http://www.w3.org/2000/svg"><path d="M130.28,28.8c-.06-.17-.16-.3-.31-.37-.24-.1-.47-.22-.72-.29-.88-.27-1.77-.52-2.65-.78-.61-.17-1.21-.35-1.82-.51-.74-.19-1.5-.29-2.26-.32-.2,0-.41,0-.59-.13.02-.49.14-.94.25-1.4.06-.04.08-.1.05-.17,0-.06,0-.12,0-.17.12-.06.11-.23.17-.33.24-.36.23-.73.08-1.13,0-.08,0-.16,0-.24.04-.27-.06-.44-.25-.59-.21-.17-.41-.35-.59-.55-.56-.6-1.2-1.09-1.83-1.59-.21-.17-.45-.27-.7-.33-.4-.09-.79-.2-1.19-.28-.37-.07-.72-.19-1.07-.36-.3-.15-.62-.2-.94-.25-.3-.04-.6-.08-.91-.11-.47-.06-.94-.15-1.41-.15-.52,0-1.04-.06-1.57-.11-.08,0-.17,0-.25-.04-.45-.19-.93-.22-1.39-.27-1.65-.17-3.3-.32-4.94-.47-1.57-.15-3.13-.29-4.7-.42-1.42-.12-2.83-.21-4.25-.32-.66-.05-1.31-.13-1.97-.14-.88-.02-1.75-.11-2.63-.15-.67-.04-1.35-.08-2.02-.12-.69-.04-1.38-.08-2.08-.12-1.1-.07-2.19-.14-3.29-.21-.57-.03-1.15-.05-1.72-.08-.94-.05-1.89-.11-2.83-.15-1.7-.06-3.4-.11-5.11-.16-.39-.01-.77-.05-1.16-.06-.74-.01-1.48,0-2.22-.02-.47,0-.94-.04-1.41-.06-1.01-.04-2.02.05-3.03-.08-.45-.05-.91-.05-1.36-.05-.77,0-1.55-.09-2.32-.1-.43,0-.87-.05-1.31-.07-.88-.04-1.76.01-2.63-.08-.2-.02-.4-.06-.6-.07-.39-.02-.77-.03-1.16-.05-.08,0-.17-.01-.25-.03-.13-.04-.26-.21-.22-.34.08-.25-.05-.38-.17-.5-.33-.34-.67-.67-1-1-.24-.25-.46-.54-.84-.42-.06.02-.1-.11-.07-.18.03-.05.05-.11.08-.15,1.18-1.56,2.26-3.21,3.51-4.7.05-.06.09-.12.13-.18.06-.09.03-.18-.06-.23-.05-.03-.09-.05-.14-.07-.43-.16-.87-.31-1.31-.47-.7-.25-1.4-.45-2.13-.54-.34-.04-.68-.06-1.01.06-1.54.54-2.96,1.33-4.19,2.57-.08.08-.16.15-.24.21-.92.7-1.84,1.41-2.76,2.1-1.31.98-2.58,2.03-3.79,3.18-.33.31-.64.49-1.08.48-1.18-.03-2.36.02-3.54.03-1.5.01-3,.01-4.51.04-.84.01-1.69.01-2.53.08-.76.06-1.52.03-2.28.05-1.06.03-2.13.06-3.19.09-.86.03-1.72.06-2.58.1-.83.04-1.65.12-2.48.15-1.1.03-2.19.11-3.29.18-.36-.08-.71-.04-1.07-.02-.04,0-.08.05-.12.08-.05,0-.09.01-.14.02l-.02-.02-.02.02c-.08,0-.16,0-.24,0-.24-.04-.48-.1-.7.07-.1,0-.21,0-.31,0-.04-.03-.08-.08-.12-.08-.16.02-.33.01-.47.12-.13.09-.28.06-.42.06-.08-.11-.18-.07-.28-.06-.43.05-.87.12-1.3.13-.96.04-1.91.2-2.86.29-.5.05-1.01.11-1.51.12-.77.02-1.54.19-2.31.21-.09,0-.16.06-.18.18l-.11.04s-.07-.03-.08.04c-.1.07-.21.06-.31.06q-.16-.1-.3.07s-.08.03-.13.05c-.04-.03-.07-.03-.08.04-.2.11-.4.21-.6.32-.22.13-.24.22-.12.46.06.1.13.18.21.25.45.39.88.8,1.33,1.19.75.65,1.5,1.28,2.25,1.93.08.07.15.14.22.21.27.19.51.41.74.65.08.06.15.12.23.18.27.18.53.38.76.61.05.03.11.06.18.11.12.08.23.17.34.25.58.45,1.16.88,1.76,1.3,1.51,1.06,3.05,2.03,4.63,2.92.44.25.89.47,1.34.71,1.43.77,2.88,1.44,4.38,2.01.39.15.78.27,1.16.43.78.31,1.57.56,2.37.79h94.48c.17-.24.39-.43.66-.51.44-.13.88-.29,1.34-.29.09,0,.17-.02.24-.08.19-.15.4-.18.63-.18.15,0,.31,0,.45-.04.8-.23,1.64-.23,2.43-.51.05-.02.1,0,.15-.02.63-.12,1.26-.22,1.89-.36.58-.12,1.15-.3,1.75-.29.08,0,.17-.02.25-.04.23-.05.3-.21.2-.47Z"/></svg>
+      Response TXI
+    </div>
+  </div>
+  <div class="model-selector" id="modelSelector"></div>
+  <div class="main">
+    <div class="options-panel" id="optionsPanel"></div>
+    <div class="quote-panel">
+      <div class="print-hdr"><h1 id="printBrand">Malibu Boats MY26 Pricing</h1><p id="printDate"></p></div>
+      <div class="print-cust" id="printCust"></div>
+      <div class="quote-header">
+        <div class="quote-title">Customer Quote</div>
+        <div class="quote-model-name" id="quoteModelName">Select a model to begin</div>
+      </div>
+      <!-- Customer bar — shows who this quote is for -->
+      <div class="quote-customer-bar" id="quoteCustomerBar">
+        <div>
+          <div class="qcb-name" id="qcbName">—</div>
+          <div class="qcb-meta" id="qcbMeta"></div>
+        </div>
+        <button class="qcb-edit" onclick="openEditCustomerModal()">Edit</button>
+      </div>
+      <div class="quote-items" id="quoteItems">
+        <div class="empty-state"><div class="empty-icon">⛵</div><div class="empty-text">Select a model &amp; options<br>to build your quote</div></div>
+      </div>
+      <div class="quote-totals" id="quoteTotals" style="display:none">
+        <div class="tot-row"><div class="tot-label">Base Price</div><div class="tot-val" id="baseTotal">—</div></div>
+        <div class="tot-row"><div class="tot-label">Options</div><div class="tot-val" id="optionsTotal">—</div></div>
+        <div class="tot-row" id="deliveryRow" onclick="openDeliveryModal()" style="cursor:pointer;user-select:none" title="Tap to edit Shipping & Pre Delivery amount"><div class="tot-label">Shipping &amp; Pre Delivery <span class="delivery-edit-hint" style="font-size:9px;opacity:0.5;font-family:'Barlow',sans-serif;font-weight:400;letter-spacing:0;text-transform:none;">✎</span></div><div class="tot-val" id="deliveryTotal">+$2,500</div></div>
+        <div class="tot-row disc hidden" id="discRow"><div class="tot-label">Dealer Adjustment</div><div class="tot-val neg" id="discTotal">—</div></div>
+        <div class="tot-row disc hidden" id="factoryIncentiveRow"><div class="tot-label" id="fiRowLabel" style="color:#e85d20">Factory Incentive</div><div class="tot-val neg" id="fiTotal" style="color:#e85d20">—</div></div>
+        <div class="tot-row grand" id="grandRow">
+          <div class="tot-label">Total MSRP (inc. GST)</div>
+          <div class="tot-val" id="grandTotal">—</div>
+        </div>
+        <!-- DEALER MODE ROWS — hidden by default -->
+        <div class="tot-row" id="dealerPriceRow" style="display:none">
+          <div class="tot-label" style="font-size:10px;color:#e85d20">Dealer Price (inc. GST)</div>
+          <div class="tot-val" id="dealerPriceVal" style="font-size:14px;color:#e85d20">—</div>
+        </div>
+        <div class="tot-row margin-row" id="marginSummaryRow" style="display:none">
+          <div class="tot-label">Gross Margin</div>
+          <div style="display:flex;align-items:baseline;gap:0">
+            <div class="tot-val" id="marginPct">—</div>
+            <div class="margin-sub" id="marginDollar"></div>
+          </div>
+        </div>
+      </div>
+      <!-- DEALER TOGGLE ROW — shown only when dealer unlocked -->
+      <div class="dealer-toggle-row" id="dealerToggleRow">
+        <span class="dealer-toggle-label" id="dealerToggleLabel" style="display:none">🔒 Dealer View</span>
+        <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+          <button id="adjustmentBtn" onclick="openDiscountModal()" style="display:none;padding:4px 10px;background:rgba(46,200,122,0.1);border:1px solid rgba(46,200,122,0.3);color:#2ec87a;border-radius:3px;font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">Dealer Adjustment</button>
+          <button id="factoryIncentiveBtn" onclick="openFactoryIncentiveModal()" style="display:none;padding:4px 10px;background:rgba(232,93,32,0.12);border:1px solid rgba(232,93,32,0.35);color:#e85d20;border-radius:3px;font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">Factory Incentive</button>
+          <label class="toggle-switch">
+            <input type="checkbox" id="dealerToggleChk" onchange="onDealerToggleChange(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="quote-actions">
+        <button class="action-btn btn-clear" onclick="clearAll()">Clear</button>
+        <button class="action-btn btn-save" id="saveBtn" onclick="saveQuote()">
+          Save
+          <span class="save-status" id="saveStatus"></span>
+        </button>
+        <button class="action-btn btn-export" id="exportBtn" onclick="exportQuotePDF()">Export</button>
+        <button class="action-btn btn-print" id="printBtn" onclick="printQuote()">Print</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SAVED VIEW (kept for potential legacy use, hidden from nav) -->
+<div id="savedView" style="display:none"></div>
+
+</div><!-- /appWrap -->
+<!-- DELIVERY EDIT MODAL -->
+<div class="disc-modal-overlay" id="deliveryModalOverlay">
+  <div class="disc-modal">
+    <div class="disc-modal-title">Shipping &amp; Pre Delivery</div>
+    <div class="disc-modal-sub">Set the shipping charge and delivery state. Default is $2,500.</div>
+    <div style="margin-bottom:10px">
+      <label class="disc-modal-label">State</label>
+      <select class="disc-modal-select" id="deliveryStateSelect" onchange="deliveryModalPreview()">
+        <option value="">— Select State —</option>
+        <option value="NSW">NSW — New South Wales</option>
+        <option value="VIC">VIC — Victoria</option>
+        <option value="QLD">QLD — Queensland</option>
+        <option value="SA">SA — South Australia</option>
+        <option value="WA">WA — Western Australia</option>
+        <option value="TAS">TAS — Tasmania</option>
+        <option value="NT">NT — Northern Territory</option>
+        <option value="ACT">ACT — Australian Capital Territory</option>
+      </select>
+    </div>
+    <div>
+      <label class="disc-modal-label">Amount ($)</label>
+      <input class="disc-modal-input" id="deliveryModalInput" type="number" placeholder="2500" min="0" step="50"
+        oninput="deliveryModalPreview()" onkeydown="if(event.key==='Enter')applyDeliveryModal()" />
+    </div>
+    <div class="disc-modal-preview">
+      <span class="disc-modal-preview-label">Shipping &amp; Pre Delivery</span>
+      <span class="disc-modal-preview-val" id="deliveryModalPreviewVal">+$2,500</span>
+    </div>
+    <div class="disc-modal-actions">
+      <button class="disc-modal-cancel" onclick="closeDeliveryModal()">Cancel</button>
+      <button class="disc-modal-clear" onclick="resetDeliveryModal()">Reset</button>
+      <button class="disc-modal-apply" onclick="applyDeliveryModal()">Apply →</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEALER PIN MODAL -->
+<div class="dealer-pin-overlay" id="dealerPinOverlay">
+  <div class="dealer-pin-box">
+    <div class="dealer-pin-title">🔒 Dealer Access</div>
+    <div class="dealer-pin-sub">Enter dealer PIN to unlock pricing view</div>
+    <input class="dealer-pin-input" id="dealerPinInput" type="password" maxlength="20"
+      placeholder="••••••" autocomplete="off"
+      onkeydown="if(event.key==='Enter')confirmDealerPin()">
+    <div class="dealer-pin-err" id="dealerPinErr">Incorrect PIN</div>
+    <div class="dealer-pin-actions">
+      <button class="dealer-pin-btn dealer-pin-cancel" onclick="cancelDealerPin()">Cancel</button>
+      <button class="dealer-pin-btn dealer-pin-confirm" onclick="confirmDealerPin()">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     $$ ADJUSTMENT MODAL (hidden — triple-tap MY26 Ed.2 badge)
+════════════════════════════════════════════════════════════ -->
+<div class="disc-modal-overlay" id="discModalOverlay">
+  <div class="disc-modal">
+    <div class="disc-modal-title">$$ Adjustment</div>
+    <div class="disc-modal-sub">Enter a dollar adjustment to apply to the grand total. Set to 0 or clear to remove.</div>
+    <div>
+      <label class="disc-modal-label">Adjustment Amount ($)</label>
+      <input class="disc-modal-input" id="discModalInput" type="number" placeholder="0.00" min="0" step="50"
+        oninput="discModalPreview()" onkeydown="if(event.key==='Enter')applyDiscountModal()" />
+    </div>
+    <div class="disc-modal-preview">
+      <span class="disc-modal-preview-label">Applied to Grand Total</span>
+      <span class="disc-modal-preview-val" id="discModalPreviewVal">—</span>
+    </div>
+    <div class="disc-modal-actions">
+      <button class="disc-modal-cancel" onclick="closeDiscountModal()">Cancel</button>
+      <button class="disc-modal-clear" onclick="clearDiscount()">Clear</button>
+      <button class="disc-modal-apply" onclick="applyDiscountModal()">Apply →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     FACTORY INCENTIVE MODAL (dealer mode only — applied before GST)
+════════════════════════════════════════════════════════════ -->
+<div class="disc-modal-overlay" id="fiModalOverlay">
+  <div class="disc-modal">
+    <div class="disc-modal-title" style="color:#e85d20">Factory Incentive</div>
+    <div>
+      <label class="disc-modal-label">Incentive Amount ($ ex. GST)</label>
+      <input class="disc-modal-input" id="fiModalInput" type="number" placeholder="0.00" min="0" step="50"
+        oninput="fiModalPreview()" onkeydown="if(event.key==='Enter')applyFactoryIncentiveModal()" />
+    </div>
+    <div class="disc-modal-preview">
+      <span class="disc-modal-preview-label">Factory Incentive</span>
+      <span class="disc-modal-preview-val" id="fiModalPreviewVal" style="color:#e85d20">—</span>
+    </div>
+    <div class="disc-modal-actions">
+      <button class="disc-modal-cancel" onclick="closeFactoryIncentiveModal()">Cancel</button>
+      <button class="disc-modal-clear" onclick="clearFactoryIncentive()">Clear</button>
+      <button class="disc-modal-apply" style="background:linear-gradient(90deg,#e85d20,#c23a00)" onclick="applyFactoryIncentiveModal()">Apply →</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     EDIT CUSTOMER MODAL
+════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="editCustomerModal">
+  <div class="modal">
+    <div class="modal-title">Edit Customer</div>
+    <div class="modal-sub">Update customer details for this quote.</div>
+    <div class="modal-field"><label class="modal-label">Full Name *</label><input class="modal-input" id="ecName" type="text" placeholder="Full Name" /></div>
+    <div class="modal-row">
+      <div class="modal-field"><label class="modal-label">Email</label><input class="modal-input" id="ecEmail" type="email" placeholder="Email" /></div>
+      <div class="modal-field"><label class="modal-label">Postcode</label><input class="modal-input" id="ecPostcode" type="text" placeholder="2000" maxlength="4" /></div>
+    </div>
+    <div class="modal-field"><label class="modal-label">Mobile *</label><input class="modal-input" id="ecMobile" type="tel" placeholder="04xx xxx xxx" /></div>
+    <div class="modal-actions">
+      <button class="modal-btn modal-cancel" onclick="closeEditCustomerModal()">Cancel</button>
+      <button class="modal-btn modal-save" onclick="saveEditCustomer()">Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SETTINGS PANEL (triple-tap brand name)
+════════════════════════════════════════════════════════════ -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// CONFIG
+// ════════════════════════════════════════════════════════════
+const CORRECT_PW    = 'wakesetter';
+const DEALER_PW     = 'dealer';        // hidden dealer unlock password
+const DELIVERY_DEFAULT = 2500;
+let   DELIVERY_CHARGE  = 2500;
+const DELIVERY_DEALER  = 2500;         // delivery cost is same; margin tracked separately
+let   deliveryState    = '';           // AU state code e.g. 'NSW'
+const FUNCTION_URL  = window.location.origin + '/.netlify/functions/smartsheet';
+const GST_RATE      = 0.10;           // Dealer prices are ex-GST; MSRP is inc-GST
+
+// Column keys we need mapped
+const COL_KEYS = [
+  'DATE','SERIES','MODEL','CUSTOMER_NAME','EMAIL','MOBILE','POSTCODE',
+  'BASE_PRICE','OPTIONS_TOTAL','DELIVERY','DISCOUNT','GRAND_TOTAL',
+  'OPTIONS_LIST','QUOTE_LINK','QUOTE_JSON'
+];
+
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+let series   = 'wakesetter';
+let modelIdx = 0;
+let sel      = new Map();
+let collapsed = new Set();
+let discountAmt = 0;
+let factoryIncentive = 0;
+let dealerMode  = false;              // hidden dealer view toggle
+let brandTapCount = 0, brandTapTimer = null;
+let edgeTapCount = 0, edgeTapTimer = null;
+let currentQuoteRowId = null; // Smartsheet row ID of the currently loaded quote
+
+// Customer for current session
+let customer = { name:'', email:'', mobile:'', postcode:'' };
+
+// Settings (persisted in localStorage)
+let siteUrl   = '';
+let columnMap = {}; // { 'DATE': '1234567', 'MODEL': '2345678', ... }
+
+try { const _d = localStorage.getItem('mb_discount'); discountAmt = (_d !== null && _d !== '') ? Math.max(0, Number(_d) || 0) : 0; } catch(e){}
+try { const _fi = localStorage.getItem('mb_factory_incentive'); factoryIncentive = (_fi !== null && _fi !== '') ? Math.max(0, Number(_fi) || 0) : 0; } catch(e){}
+try { const _dc = localStorage.getItem('mb_delivery'); DELIVERY_CHARGE = (_dc !== null && _dc !== '') ? Math.max(0, Number(_dc) || DELIVERY_DEFAULT) : DELIVERY_DEFAULT; } catch(e){}
+try { deliveryState = localStorage.getItem('mb_delivery_state') || ''; } catch(e){}
+try { siteUrl  = localStorage.getItem('mb_site_url')||''; } catch(e){}
+try { columnMap = JSON.parse(localStorage.getItem('mb_col_map')||'{}'); } catch(e){}
+
+// ════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const fmt = v => '$'+Math.abs(v).toLocaleString('en-AU',{minimumFractionDigits:0});
+const fmtFull = v => (v<0?'-':'')+'$'+Math.abs(v).toLocaleString('en-AU',{minimumFractionDigits:0});
+const brand = () => series==='axis'?'axis':series==='response'?'response':'wakesetter';
+
+function showToast(msg, type='info', duration=2800) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => { t.className = 'toast'; }, duration);
+}
+
+function isSsConfigured() {
+  return Object.keys(columnMap).length >= 5;
+}
+
+// ════════════════════════════════════════════════════════════
+// PASSWORD
+// ════════════════════════════════════════════════════════════
+function checkPw() {
+  const v = $('pwInput').value.trim();
+  if (v === CORRECT_PW) {
+    $('pwScreen').style.display = 'none';
+    $('appWrap').style.display = '';
+    checkSsConfig();
+    const urlQ = new URLSearchParams(window.location.search).get('q');
+    if (urlQ) {
+      try {
+        const q = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(urlQ)))));
+        loadQuoteObject(q, null);
+        return;
+      } catch(e) { console.warn('Invalid quote link param'); }
+    }
+    showView('landing');
+  } else {
+    $('pwError').classList.add('show');
+    $('pwInput').value = '';
+    $('pwInput').focus();
+  }
+}
+
+// ── DEALER PIN MODAL ──────────────────────────────────────────────────────────
+let dealerUnlocked = false; // set to true once PIN verified this session
+
+function openDealerPinModal() {
+  $('dealerPinInput').value = '';
+  $('dealerPinErr').classList.remove('show');
+  $('dealerPinOverlay').classList.add('open');
+  setTimeout(()=>$('dealerPinInput').focus(), 80);
+}
+
+function cancelDealerPin() {
+  $('dealerPinOverlay').classList.remove('open');
+  // Revert toggle if user cancels
+  $('dealerToggleChk').checked = false;
+}
+
+function confirmDealerPin() {
+  const v = $('dealerPinInput').value;
+  if (v === DEALER_PW) {
+    dealerUnlocked = true;
+    $('dealerPinOverlay').classList.remove('open');
+    dealerMode = true;
+    $('dealerToggleChk').checked = true;
+    renderQuote();
+  } else {
+    $('dealerPinErr').classList.add('show');
+    $('dealerPinInput').value = '';
+    $('dealerPinInput').focus();
+  }
+}
+
+function onDealerToggleChange(checked) {
+  if (checked && !dealerUnlocked) {
+    openDealerPinModal();
+    return;
+  }
+  dealerMode = checked;
+  if (!checked) {
+    dealerUnlocked = false;
+    // factoryIncentive retained so it persists when toggling back to dealer mode
+  }
+  renderQuote();
+}
+
+// ════════════════════════════════════════════════════════════
+// SS CONFIG CHECK
+// ════════════════════════════════════════════════════════════
+function checkSsConfig() {
+  const configured = isSsConfigured();
+  $('ssNoticeLeft').style.display  = configured ? 'none' : 'block';
+  $('ssNoticeRight').style.display = configured ? 'none' : 'block';
+}
+
+// ════════════════════════════════════════════════════════════
+// VIEW MANAGEMENT
+// ════════════════════════════════════════════════════════════
+function showView(v) {
+  $('landingView').classList.toggle('active', v==='landing');
+  $('builderView').style.display  = v==='builder' ? '' : 'none';
+  $('savedView').style.display    = 'none';
+
+  $('navHome').style.display    = v !== 'landing' ? '' : 'none';
+  $('navBuilder').style.display = v !== 'landing' ? '' : 'none';
+  $('navSaved').style.display   = 'none'; // hidden — we now use Smartsheet
+
+  $('navBuilder').classList.toggle('active', v==='builder');
+
+  // Always reset theme when returning to landing
+  if (v === 'landing') document.body.className = '';
+
+  if (v === 'builder') renderAll();
+}
+
+// ════════════════════════════════════════════════════════════
+// LANDING — SEARCH
+// ════════════════════════════════════════════════════════════
+function clearSearchResults() {
+  $('searchResults').innerHTML = '';
+}
+
+async function searchQuotes() {
+  const mobile = $('retrieveMobile').value.trim().replace(/\s+/g,'');
+  if (!mobile) { showToast('Enter a mobile number to search','error'); return; }
+
+  if (!isSsConfigured()) {
+    $('searchResults').innerHTML = '<div class="search-error">Smartsheet not configured. Open Settings (triple-tap the logo) → Fetch Columns.</div>';
+    return;
+  }
+
+  $('retrieveBtn').disabled = true;
+  $('searchResults').innerHTML = '<div class="search-spinner">⟳ Searching…</div>';
+
+  try {
+    const res = await fetch(FUNCTION_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'searchByMobile', mobile, columnMap })
+    });
+    const rawText = await res.text();
+    let data;
+    try { data = JSON.parse(rawText); } catch(e) {
+      $('searchResults').innerHTML = '<div class="search-error">Server error (HTTP ' + res.status + ') — Smartsheet function may not be deployed.</div>';
+      return;
+    }
+    if (!res.ok) throw new Error(data.hint || data.error || 'Search failed');
+
+    if (!data.quotes || data.quotes.length === 0) {
+      $('searchResults').innerHTML = '<div class="search-no-results">No quotes found for that mobile number.</div>';
+    } else {
+      renderSearchResults(data.quotes);
+    }
+  } catch(err) {
+    $('searchResults').innerHTML = `<div class="search-error">Error: ${err.message}</div>`;
+  } finally {
+    $('retrieveBtn').disabled = false;
+  }
+}
+
+function renderSearchResults(quotes) {
+  const container = $('searchResults');
+  container.innerHTML = '';
+
+  const title = document.createElement('div');
+  title.style.cssText = 'font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray-dark);margin-bottom:10px;margin-top:16px;';
+  title.textContent = quotes.length + ' quote' + (quotes.length>1?'s':'') + ' found · ' + (quotes[0].name||'');
+  container.appendChild(title);
+
+  quotes.forEach(q => {
+    const card = document.createElement('div');
+    card.className = 'search-result-card';
+    const seriesClass = (q.series||'wakesetter').toLowerCase();
+    const seriesLabel = seriesClass === 'axis' ? 'Axis Wake Boats' : seriesClass === 'response' ? 'Response TXI' : 'Malibu Wakesetter';
+    const grandFmt = q.grandTotal ? fmtFull(parseFloat(q.grandTotal)) : '—';
+
+    // Count options from quoteJson snap
+    let optCount = 0;
+    try {
+      const qj = (typeof q.quoteJson === 'object' && q.quoteJson) ? q.quoteJson : JSON.parse(q.quoteJson||'{}');
+      const snap = JSON.parse(qj.snap||'[]');
+      optCount = snap.filter(([,qty]) => qty > 0).length;
+    } catch(e) {}
+
+    card.innerHTML =
+      '<div class="src-brand">' + seriesLabel + '</div>' +
+      '<div class="src-top">' +
+        '<div class="src-model"><span class="src-series-badge ' + seriesClass + '">' + seriesClass + '</span>' + (q.model||'—') + '</div>' +
+        '<div class="src-total">' + grandFmt + '</div>' +
+      '</div>' +
+      '<div class="src-meta">' + (q.name||'') + (q.email ? ' · ' + q.email : '') + (q.postcode ? ' · PC ' + q.postcode : '') + '</div>' +
+      '<div class="src-opts">Created ' + (q.date||'—') + (optCount > 0 ? ' · ' + optCount + ' option' + (optCount>1?'s':'') + ' selected' : '') + '</div>' +
+      '<div class="src-card-actions">' +
+        '<button class="src-load-btn">Load Quote →</button>' +
+        '<button class="src-del-btn" title="Delete this quote">✕ Delete</button>' +
+      '</div>';
+
+    card.querySelector('.src-load-btn').onclick = () => loadFromSearch(q);
+    card.querySelector('.src-del-btn').onclick = () => confirmDeleteQuote(q.rowId, card, quotes, container);
+    container.appendChild(card);
+  });
+}
+
+function confirmDeleteQuote(rowId, card, quotes, container) {
+  const orig = card.innerHTML;
+  const wrap = document.createElement('div');
+  wrap.innerHTML = '<div style="font-size:13px;font-weight:700;color:#ff8080;margin-bottom:8px;font-family:Barlow Condensed,sans-serif;letter-spacing:1px;">Delete this saved quote?</div>' +
+    '<div style="font-size:11px;color:var(--gray-dark);margin-bottom:12px;">This cannot be undone.</div>';
+  const btnRow = document.createElement('div');
+  btnRow.style.cssText = 'display:flex;gap:8px;';
+  const confirmBtn = document.createElement('button');
+  confirmBtn.className = 'src-load-btn';
+  confirmBtn.style.cssText = 'flex:1;background:#c0392b;';
+  confirmBtn.textContent = 'Yes, Delete';
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'src-del-btn';
+  cancelBtn.style.cssText = 'flex:1;';
+  cancelBtn.textContent = 'Cancel';
+  btnRow.appendChild(confirmBtn);
+  btnRow.appendChild(cancelBtn);
+  wrap.appendChild(btnRow);
+  card.innerHTML = '';
+  card.appendChild(wrap);
+  cancelBtn.onclick = () => { card.innerHTML = orig; rewireCard(card, quotes, container); };
+  confirmBtn.onclick = () => deleteQuote(rowId, card);
+}
+
+function rewireCard(card, quotes, container) {
+  const loadBtn = card.querySelector('.src-load-btn');
+  const delBtn  = card.querySelector('.src-del-btn');
+  const rowIdMatch = card.innerHTML.match(/data-rowid="([^"]+)"/);
+  if (loadBtn) loadBtn.onclick = () => { const q = quotes.find(x => x.rowId === card.dataset.rowid); if(q) loadFromSearch(q); };
+  if (delBtn)  delBtn.onclick  = () => confirmDeleteQuote(card.dataset.rowid, card, quotes, container);
+}
+
+async function deleteQuote(rowId, card) {
+  card.innerHTML = '<div style="font-family:Barlow Condensed,sans-serif;font-size:12px;letter-spacing:1px;color:var(--gray-dark);">Deleting…</div>';
+  try {
+    const res = await fetch(FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'deleteQuote', rowId })
+    });
+    const rawText = await res.text();
+    let data;
+    try { data = JSON.parse(rawText); } catch(e) { throw new Error('Server error (HTTP ' + res.status + ')'); }
+    if (!res.ok) throw new Error(data.hint || data.error || 'Delete failed');
+    // Animate out
+    card.style.cssText += 'opacity:0;transform:scaleY(0);transition:all 0.25s;max-height:0;overflow:hidden;padding:0;margin:0;';
+    setTimeout(() => card.remove(), 280);
+    showToast('Quote deleted', 'success');
+  } catch(err) {
+    card.innerHTML = '<div style="color:#ff8080;font-size:12px;padding:8px 0;">Error: ' + err.message + '</div>';
+    setTimeout(() => { card.style.cssText = ''; }, 3000);
+    showToast('Delete failed: ' + err.message, 'error');
+  }
+}
+
+async function loadFromSearch(q) {
+  if (!q.quoteJson) {
+    showToast('Quote data not available', 'error');
+    return;
+  }
+  let parsed = null;
+  try {
+    if (typeof q.quoteJson === 'object' && q.quoteJson !== null) {
+      parsed = q.quoteJson;
+    } else {
+      let raw = q.quoteJson;
+      try { parsed = JSON.parse(raw); }
+      catch(e1) {
+        try { parsed = JSON.parse(JSON.parse(raw)); }
+        catch(e2) {
+          try { parsed = JSON.parse(raw.replace(/\\"/g, '"').replace(/^"|"$/g, '')); }
+          catch(e3) { parsed = null; }
+        }
+      }
+    }
+  } catch(e) {
+    parsed = null;
+  }
+  if (!parsed || !parsed.series || !parsed.model) {
+    showToast('Could not load quote - data may be corrupted', 'error');
+    return;
+  }
+  loadQuoteObject(parsed, q.rowId);
+}
+
+function loadQuoteObject(q, rowId) {
+  // Restore customer
+  customer = { ...{ name:'', email:'', mobile:'', postcode:'' }, ...(q.customer||{}) };
+  currentQuoteRowId = rowId || null;
+  // Restore series/model/selections
+  series = q.series || 'wakesetter';
+  const models = data[series]?.models || [];
+  modelIdx = models.indexOf(q.model);
+  if (modelIdx < 0) modelIdx = 0;
+  try { sel = new Map(JSON.parse(q.snap||'[]')); } catch(e) { sel = new Map(); autoSelectStd(); }
+  document.body.className = series==='axis'?'theme-axis':series==='response'?'theme-response':'';
+  collapsed.clear();
+  showView('builder');
+  renderAll();
+  showToast(`Quote loaded — ${q.model}`, 'success');
+}
+
+// ════════════════════════════════════════════════════════════
+// LANDING — NEW QUOTE
+// ════════════════════════════════════════════════════════════
+function startNewQuote() {
+  const name   = $('nqName').value.trim();
+  const mobile = $('nqMobile').value.trim().replace(/\s+/g,'');
+  let valid = true;
+
+  $('nqNameErr').classList.remove('show');
+  $('nqMobileErr').classList.remove('show');
+
+  if (!name)   { $('nqNameErr').classList.add('show'); valid=false; }
+  if (!mobile) { $('nqMobileErr').classList.add('show'); valid=false; }
+  if (!valid) return;
+
+  customer = {
+    name,
+    email:    $('nqEmail').value.trim(),
+    mobile,
+    postcode: $('nqPostcode').value.trim(),
+  };
+  currentQuoteRowId = null;
+  series = 'wakesetter'; modelIdx = 0;
+  sel.clear(); collapsed.clear();
+  autoSelectStd();
+  document.body.className = '';
+  showView('builder');
+  renderAll();
+}
+
+// ════════════════════════════════════════════════════════════
+// EDIT CUSTOMER MODAL
+// ════════════════════════════════════════════════════════════
+function openEditCustomerModal() {
+  $('ecName').value     = customer.name;
+  $('ecEmail').value    = customer.email;
+  $('ecMobile').value   = customer.mobile;
+  $('ecPostcode').value = customer.postcode;
+  $('editCustomerModal').classList.add('open');
+  setTimeout(()=>$('ecName').focus(),100);
+}
+function closeEditCustomerModal() { $('editCustomerModal').classList.remove('open'); }
+function saveEditCustomer() {
+  const name   = $('ecName').value.trim();
+  const mobile = $('ecMobile').value.trim().replace(/\s+/g,'');
+  if (!name) { $('ecName').focus(); return; }
+  customer = { name, email:$('ecEmail').value.trim(), mobile, postcode:$('ecPostcode').value.trim() };
+  closeEditCustomerModal();
+  renderCustomerBar();
+}
+
+// ════════════════════════════════════════════════════════════
+// SECRET SETTINGS (triple-tap brand name)
+// ════════════════════════════════════════════════════════════
+function brandTap() {
+  brandTapCount++;
+  clearTimeout(brandTapTimer);
+  brandTapTimer = setTimeout(()=>{ brandTapCount=0; },600);
+  if (brandTapCount === 3) {
+    brandTapCount = 0;
+    openSettings();
+  }
+}
+function openSettings() {
+  // Show the ss panel on the login screen if visible, else toast
+  const wrap = $('ssPanelWrap');
+  if (wrap) { openSsPanel(); return; }
+  showToast('Go to the login screen to configure Smartsheet', 'info');
+}
+
+let pwLogoTapCount = 0, pwLogoTapTimer = null;
+function pwLogoTap() {
+  pwLogoTapCount++;
+  clearTimeout(pwLogoTapTimer);
+  pwLogoTapTimer = setTimeout(() => { pwLogoTapCount = 0; }, 600);
+  if (pwLogoTapCount >= 3) {
+    pwLogoTapCount = 0;
+    openSsPanel();
+  }
+}
+
+function openSsPanel() {
+  const wrap = $('ssPanelWrap');
+  if (!wrap) return;
+  wrap.style.display = 'block';
+  // Pre-fill URL
+  const su = $('spSiteUrl');
+  if (su && siteUrl) su.value = siteUrl;
+  buildColGrid();
+  const grid = $('colGrid');
+  if (grid && Object.keys(columnMap).length > 0) grid.style.display = 'grid';
+  // Scroll into view on mobile
+  if (wrap.scrollIntoView) wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeSsPanel() {
+  const wrap = $('ssPanelWrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+// ════════════════════════════════════════════════════════════
+// EDITION BADGE TRIPLE-TAP → $$ ADJUSTMENT MODAL
+// ════════════════════════════════════════════════════════════
+function edgeBadgeTap() {
+  edgeTapCount++;
+  clearTimeout(edgeTapTimer);
+  edgeTapTimer = setTimeout(() => { edgeTapCount = 0; }, 600);
+  if (edgeTapCount >= 3) {
+    edgeTapCount = 0;
+    openDiscountModal();
+  }
+}
+function closeSettings() { /* no-op — settings on login screen */ }
+
+// (settings panel click-outside handler moved to init block)
+
+function buildColGrid() {
+  const grid = $('colGrid');
+  grid.innerHTML = '';
+  const labels = {
+    DATE:'Date', SERIES:'Series', MODEL:'Model', CUSTOMER_NAME:'Customer Name',
+    EMAIL:'Email', MOBILE:'Mobile', POSTCODE:'Postcode', BASE_PRICE:'Base Price',
+    OPTIONS_TOTAL:'Options Total', DELIVERY:'Delivery', DISCOUNT:'Discount',
+    GRAND_TOTAL:'Grand Total', OPTIONS_LIST:'Options List', QUOTE_LINK:'Quote Link',
+    QUOTE_JSON:'Quote JSON'
+  };
+  COL_KEYS.forEach(k => {
+    const lbl = document.createElement('div');
+    lbl.className = 'sp-col-key';
+    lbl.textContent = labels[k] || k;
+    const inp = document.createElement('input');
+    inp.className = 'sp-col-val';
+    inp.id = `col_${k}`;
+    inp.placeholder = 'Column ID';
+    inp.value = columnMap[k] || '';
+    grid.appendChild(lbl);
+    grid.appendChild(inp);
+  });
+}
+
+async function fetchColumns() {
+  const statusEl = $('spStatus');
+  const errEl    = $('spErr');
+  const diagEl   = $('spDiag');
+
+  statusEl.textContent = '⟳ Fetching columns from Smartsheet…';
+  statusEl.style.display = 'block';
+  errEl.style.display = 'none';
+  diagEl.style.display = 'none';
+
+  const su = $('spSiteUrl');
+  if (su && su.value.trim()) {
+    siteUrl = su.value.trim().replace(/\/$/,'');
+    try { localStorage.setItem('mb_site_url', siteUrl); } catch(e){}
+  }
+
+  try {
+    const res = await fetch(FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'getColumns' })
+    });
+    const rawText = await res.text();
+    diagEl.textContent = 'URL: ' + FUNCTION_URL + '\nHTTP: ' + res.status + ' ' + res.statusText + '\n\nRaw response:\n' + rawText;
+    diagEl.style.display = 'block';
+    let data;
+    try { data = JSON.parse(rawText); } catch(e) {
+      statusEl.style.display = 'none';
+      errEl.textContent = '\u2717 Not JSON (HTTP ' + res.status + ') \u2014 check Netlify env vars. See diagnostic below.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (!res.ok) throw new Error(data.hint || data.error || 'Fetch failed');
+    const columns = data.columns || [];
+    const titleToKey = {
+      'date':'DATE','series':'SERIES','model':'MODEL',
+      'customer name':'CUSTOMER_NAME','name':'CUSTOMER_NAME',
+      'email':'EMAIL','mobile':'MOBILE','phone':'MOBILE',
+      'postcode':'POSTCODE','post code':'POSTCODE',
+      'base price':'BASE_PRICE','base':'BASE_PRICE',
+      'options total':'OPTIONS_TOTAL','options':'OPTIONS_TOTAL',
+      'delivery':'DELIVERY','discount':'DISCOUNT',
+      'grand total':'GRAND_TOTAL','total':'GRAND_TOTAL',
+      'options list':'OPTIONS_LIST','options selected':'OPTIONS_LIST',
+      'quote link':'QUOTE_LINK','link':'QUOTE_LINK',
+      'quote json':'QUOTE_JSON','json':'QUOTE_JSON',
+    };
+    let mapped = 0;
+    columns.forEach(col => {
+      const key = titleToKey[col.title.toLowerCase()];
+      if (key) { columnMap[key] = String(col.id); mapped++; }
+    });
+    try { localStorage.setItem('mb_col_map', JSON.stringify(columnMap)); } catch(e){}
+    checkSsConfig();
+    statusEl.textContent = '\u2713 ' + columns.length + ' columns found, ' + mapped + ' auto-mapped \u2014 saved';
+    diagEl.textContent = 'Columns found:\n' + columns.map(c => '  ' + c.title + ' \u2192 ' + c.id).join('\n');
+    diagEl.style.display = 'block';
+    const badge = $('colMappedBadge');
+    if (badge) { badge.textContent = '\u2713 ' + mapped + ' columns mapped \u2014 save & retrieve enabled'; badge.style.display = 'block'; }
+    buildColGrid();
+    const grid = $('colGrid');
+    if (grid) grid.style.display = 'grid';
+    // Flip status badges
+    const okB = $('ssOkBadge'); const warnB = $('ssStatusBadge');
+    if (okB) okB.style.display = 'flex';
+    if (warnB) warnB.style.display = 'none';
+  } catch(err) {
+    statusEl.style.display = 'none';
+    errEl.textContent = err.name + ': ' + err.message;
+    errEl.style.display = 'block';
+    diagEl.textContent = 'URL: ' + FUNCTION_URL + '\n' + err.name + ': ' + err.message;
+    diagEl.style.display = 'block';
+  }
+}
+
+async function testConnection() {
+  const statusEl = $('spStatus');
+  const errEl    = $('spErr');
+  const diagEl   = $('spDiag');
+
+  statusEl.textContent = '⟳ Testing connection…';
+  statusEl.style.display = 'block';
+  errEl.style.display = 'none';
+
+  // Always show the URL being used so we can diagnose
+  const urlUsed = FUNCTION_URL;
+  diagEl.textContent = 'URL: ' + urlUsed + '\norigin: ' + window.location.origin + '\nhref: ' + window.location.href;
+  diagEl.style.display = 'block';
+
+  // Validate URL before fetch — Safari throws on bad URLs
+  try { new URL(urlUsed); } catch(e) {
+    errEl.textContent = '✗ Invalid URL: ' + urlUsed + ' — ' + e.message;
+    errEl.style.display = 'block';
+    statusEl.style.display = 'none';
+    return;
+  }
+
+  try {
+    const res = await fetch(urlUsed, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'ping' }),
+    });
+    const rawText = await res.text();
+    diagEl.textContent = 'URL: ' + urlUsed + '\nHTTP: ' + res.status + ' ' + res.statusText + '\n\nRaw response:\n' + rawText;
+    diagEl.style.display = 'block';
+    let data;
+    try { data = JSON.parse(rawText); } catch(e) {
+      errEl.textContent = '✗ Response is not JSON (HTTP ' + res.status + ') — see raw response below';
+      errEl.style.display = 'block';
+      statusEl.style.display = 'none';
+      return;
+    }
+
+    if (data.ok) {
+      statusEl.textContent = `✓ Connected — "${data.sheetName}" · ${data.columnCount} columns`;
+      const titleToKey = {
+        'date':'DATE','series':'SERIES','model':'MODEL',
+        'customer name':'CUSTOMER_NAME','name':'CUSTOMER_NAME',
+        'email':'EMAIL','mobile':'MOBILE','phone':'MOBILE',
+        'postcode':'POSTCODE','post code':'POSTCODE',
+        'base price':'BASE_PRICE','base':'BASE_PRICE',
+        'options total':'OPTIONS_TOTAL','options':'OPTIONS_TOTAL',
+        'delivery':'DELIVERY','discount':'DISCOUNT',
+        'grand total':'GRAND_TOTAL','total':'GRAND_TOTAL',
+        'options list':'OPTIONS_LIST','options selected':'OPTIONS_LIST',
+        'quote link':'QUOTE_LINK','link':'QUOTE_LINK',
+        'quote json':'QUOTE_JSON','json':'QUOTE_JSON',
+      };
+      let mapped = 0;
+      (data.columns||[]).forEach(col => {
+        const key = titleToKey[col.title.toLowerCase()];
+        if (key) { columnMap[key] = String(col.id); const inp = $(`col_${key}`); if (inp) { inp.value = col.id; mapped++; } }
+      });
+      if (mapped > 0) {
+        statusEl.textContent += ` · ${mapped} columns auto-mapped ✓`;
+        const badge = $('colMappedBadge');
+        if (badge) { badge.textContent = '✓ ' + mapped + ' columns mapped — ready to save & retrieve'; badge.style.display = 'block'; }
+      }
+      diagEl.textContent = 'COLUMNS FOUND:\n' + (data.columns||[]).map(c => `  ${c.title} → ID: ${c.id}  (${c.type})`).join('\n');
+      diagEl.style.display = 'block';
+    } else {
+      statusEl.style.display = 'none';
+      errEl.textContent = `✗ ${data.hint || data.error || 'Connection failed'}`;
+      errEl.style.display = 'block';
+      diagEl.textContent = JSON.stringify(data, null, 2);
+      diagEl.style.display = 'block';
+    }
+  } catch (err) {
+    statusEl.style.display = 'none';
+    errEl.textContent = `✗ ${err.name}: ${err.message}`;
+    errEl.style.display = 'block';
+    diagEl.textContent = 'URL attempted: ' + urlUsed + '\nError name: ' + err.name + '\nError message: ' + err.message + '\norigin: ' + window.location.origin;
+    diagEl.style.display = 'block';
+  }
+}
+
+function saveSettings() {
+  COL_KEYS.forEach(k => {
+    const inp = $(`col_${k}`);
+    if (inp && inp.value.trim()) columnMap[k] = inp.value.trim();
+  });
+  const su = $('spSiteUrl');
+  if (su) siteUrl = su.value.trim().replace(/\/$/,'');
+  try {
+    localStorage.setItem('mb_col_map',  JSON.stringify(columnMap));
+    localStorage.setItem('mb_site_url', siteUrl);
+  } catch(e){}
+  checkSsConfig();
+  showToast('Settings saved', 'success');
+}
+
+// ════════════════════════════════════════════════════════════
+// DISCOUNT MODAL
+// ════════════════════════════════════════════════════════════
+function openDiscountModal() {
+  const overlay = $('discModalOverlay');
+  const inp = $('discModalInput');
+  // Always show the current value — show 0 explicitly so user can see and clear it
+  inp.value = discountAmt > 0 ? String(discountAmt) : '';
+  updateDiscPreview();
+  overlay.classList.add('open');
+  setTimeout(() => { inp.focus(); inp.select(); }, 120);
+}
+
+function closeDiscountModal() {
+  $('discModalOverlay').classList.remove('open');
+}
+
+function discModalPreview() { updateDiscPreview(); }
+
+function updateDiscPreview() {
+  const raw = $('discModalInput').value.trim();
+  const parsed = Number(raw);
+  // Show preview: if empty or 0 show no adjustment, else show the deduction
+  if (raw === '' || isNaN(parsed) || parsed === 0) {
+    $('discModalPreviewVal').textContent = 'No adjustment';
+  } else {
+    $('discModalPreviewVal').textContent = '−' + fmt(Math.abs(parsed));
+  }
+}
+
+function applyDiscountModal() {
+  const raw = $('discModalInput').value.trim();
+  // Use Number() — unambiguous: Number('') = 0, Number('0') = 0, Number('500') = 500
+  const parsed = Number(raw);
+  discountAmt = (raw === '' || isNaN(parsed) || parsed < 0) ? 0 : parsed;
+  try { localStorage.setItem('mb_discount', String(discountAmt)); } catch(e){}
+  closeDiscountModal();
+  renderQuote();
+  showToast(discountAmt > 0 ? '−' + fmt(discountAmt) + ' adjustment applied' : 'Adjustment cleared', discountAmt > 0 ? 'success' : 'info');
+}
+
+function clearDiscount() {
+  discountAmt = 0;
+  try { localStorage.setItem('mb_discount', '0'); } catch(e){}
+  closeDiscountModal();
+  renderQuote();
+  showToast('Adjustment cleared', 'info');
+}
+
+function applyDiscount() {
+  // Legacy stub — kept so nothing breaks
+  renderQuote();
+}
+
+// ════════════════════════════════════════════════════════════
+// FACTORY INCENTIVE MODAL (dealer mode — pre-GST discount)
+// ════════════════════════════════════════════════════════════
+function openFactoryIncentiveModal() {
+  const inp = $('fiModalInput');
+  inp.value = factoryIncentive > 0 ? String(factoryIncentive) : '';
+  updateFIPreview();
+  $('fiModalOverlay').classList.add('open');
+  setTimeout(() => { inp.focus(); inp.select(); }, 120);
+}
+
+function closeFactoryIncentiveModal() {
+  $('fiModalOverlay').classList.remove('open');
+}
+
+function fiModalPreview() { updateFIPreview(); }
+
+function updateFIPreview() {
+  const raw = $('fiModalInput').value.trim();
+  const parsed = Number(raw);
+  if (raw === '' || isNaN(parsed) || parsed === 0) {
+    $('fiModalPreviewVal').textContent = 'No incentive';
+  } else {
+    $('fiModalPreviewVal').textContent = '−' + fmt(Math.abs(parsed));
+  }
+}
+
+function applyFactoryIncentiveModal() {
+  const raw = $('fiModalInput').value.trim();
+  const parsed = Number(raw);
+  factoryIncentive = (raw === '' || isNaN(parsed) || parsed < 0) ? 0 : parsed;
+  try { localStorage.setItem('mb_factory_incentive', String(factoryIncentive)); } catch(e){}
+  closeFactoryIncentiveModal();
+  renderQuote();
+  showToast(factoryIncentive > 0 ? 'Factory Incentive −' + fmt(factoryIncentive) + ' ex-GST applied' : 'Factory Incentive cleared', factoryIncentive > 0 ? 'success' : 'info');
+}
+
+function clearFactoryIncentive() {
+  factoryIncentive = 0;
+  try { localStorage.setItem('mb_factory_incentive', '0'); } catch(e){}
+  closeFactoryIncentiveModal();
+  renderQuote();
+  showToast('Factory Incentive cleared', 'info');
+}
+
+// ════════════════════════════════════════════════════════════
+// DELIVERY MODAL
+// ════════════════════════════════════════════════════════════
+function openDeliveryModal() {
+  const inp = $('deliveryModalInput');
+  const sel = $('deliveryStateSelect');
+  inp.value = String(DELIVERY_CHARGE);
+  sel.value = deliveryState;
+  updateDeliveryPreview();
+  $('deliveryModalOverlay').classList.add('open');
+  setTimeout(() => { sel.focus(); }, 120);
+}
+
+function closeDeliveryModal() {
+  $('deliveryModalOverlay').classList.remove('open');
+}
+
+function deliveryModalPreview() { updateDeliveryPreview(); }
+
+function updateDeliveryPreview() {
+  const raw    = $('deliveryModalInput').value.trim();
+  const parsed = Number(raw);
+  const state  = $('deliveryStateSelect').value;
+  const amt    = (raw === '' || isNaN(parsed)) ? DELIVERY_CHARGE : Math.max(0, parsed);
+  $('deliveryModalPreviewVal').textContent = (state ? state + ' · ' : '') + '+' + fmt(amt);
+}
+
+function applyDeliveryModal() {
+  const raw    = $('deliveryModalInput').value.trim();
+  const parsed = Number(raw);
+  DELIVERY_CHARGE = (raw === '' || isNaN(parsed) || parsed < 0) ? DELIVERY_DEFAULT : parsed;
+  deliveryState   = $('deliveryStateSelect').value;
+  try { localStorage.setItem('mb_delivery',       String(DELIVERY_CHARGE)); } catch(e){}
+  try { localStorage.setItem('mb_delivery_state', deliveryState);           } catch(e){}
+  closeDeliveryModal();
+  renderQuote();
+  const stateLabel = deliveryState ? ' · ' + deliveryState : '';
+  showToast('Shipping set to ' + fmt(DELIVERY_CHARGE) + stateLabel, 'success');
+}
+
+function resetDeliveryModal() {
+  DELIVERY_CHARGE = DELIVERY_DEFAULT;
+  deliveryState   = '';
+  try { localStorage.setItem('mb_delivery',       String(DELIVERY_DEFAULT)); } catch(e){}
+  try { localStorage.setItem('mb_delivery_state', '');                       } catch(e){}
+  closeDeliveryModal();
+  renderQuote();
+  showToast('Shipping & Pre Delivery reset to ' + fmt(DELIVERY_DEFAULT), 'info');
+}
+
+// ════════════════════════════════════════════════════════════
+// TRAILER CATEGORIES
+// ════════════════════════════════════════════════════════════
+function makeTrailerCats(n) {
+  const fill = v => Array(n).fill(v);
+  return [
+    { name: 'Trailer — Paint Options', items: [
+      { name: 'Trailer: Gal Only (no paint finish)', msrp: fill(-2623), paintGroup:'trailer' },
+      { name: 'Trailer: Paint Over Gal - Black or White', msrp: fill(0), std: fill(true), paintGroup:'trailer' },
+      { name: 'Trailer: Paint Over Gal - Colour Option', msrp: fill(1089), paintGroup:'trailer' },
+      { name: 'Trailer: Paint Over Gal - Raptor Paint', msrp: fill(905), paintGroup:'trailer' },
+      { name: 'Trailer: Two Tone Paint (Deluxe trailer model only)', msrp: fill(983), paintGroup:'trailer' },
+    ]},
+    { name: 'Trailer — Guard & Step Options', items: [
+      { name: 'Trailer: Deluxe Upgrade - Steps & Premium Soft Grip Decking on Steps & Guards', msrp: fill(2566), naForSeries: ['axis'], providesKey:'trailer_deluxe' },
+      { name: 'Trailer: Diamond Matting - Guards (N/A on Deluxe)', msrp: fill(314), blockedByKey:'trailer_deluxe' },
+      { name: 'Trailer: Diamond Matting - Steps x4', msrp: fill(0), std: fill(true), deselectedByKey:'trailer_deluxe' },
+    ]},
+    { name: 'Trailer — Brake & Axle Options', items: [
+      { name: 'Trailer: Load Sharing Axles (Rocker Spring)', msrp: fill(1846), stdModels: ['21LX','22LSV','23LSV','23MXZ','T220','A225'], stdPrice: true },
+      { name: 'Trailer: Handbrake', msrp: fill(672) },
+      { name: 'Trailer: Stainless Steel Brake Calipers - 4 x Calipers (Breakaway Models)', msrp: fill(0), std: fill(true) },
+      { name: 'Trailer: Stainless Steel Brake Line Upgrade', msrp: fill(861) },
+    ]},
+    { name: 'Trailer — Decking Options', items: [
+      { name: 'Trailer: Decking - Carpeted Plywood - A-Frame & Sides', msrp: fill(5258), deckingGroup:'trailer' },
+      { name: 'Trailer: Decking - Carpeted Plywood - A-Frame Only', msrp: fill(2539), deckingGroup:'trailer' },
+      { name: 'Trailer: Provision for Decking', msrp: fill(1131), deckingGroup:'trailer' },
+      { name: 'Trailer: Provision for Decking - A-Frame', msrp: fill(637), deckingGroup:'trailer' },
+    ]},
+    { name: 'Trailer — Other Options', items: [
+      { name: 'Trailer: Heavy Duty Upgrade (23LSV & 23MXZ) — Increase ATM to 4,400kg / 70mm hitch', msrp: fill(6870), providesKey:'heavy_duty', naForModels: {'wakesetter':[0,1],'axis':[0,1,2],'response':[0]} },
+      { name: 'Trailer: Tri-Axle — Must have Heavy Duty Option on 23LSV or 23MXZ', msrp: fill(3145), naForModels: {'wakesetter':[0,1],'axis':[0,1,2],'response':[0]} },
+      { name: 'Trailer: DO45 Coupling in lieu of 70mm ball on HD and Tri-Axle trailers', msrp: fill(1461), requiresKey:'heavy_duty' },
+      { name: 'Trailer: Easy Loader Upgrade', msrp: fill(1472) },
+    ]},
+    { name: 'Trailer — Wheel Options', items: [
+      { name: 'Trailer: Wheel Upgrade - 17" Wheels (Std Guards) — All models (Deluxe option required)', msrp: fill(2189), naForSeries: ['axis'] },
+      { name: 'Trailer: Spare Wheel Carrier - Bolt-on', msrp: fill(562), swcGroup:'trailer' },
+      { name: 'Trailer: Spare Wheel Carrier - Drop-Down', msrp: fill(946), swcGroup:'trailer' },
+      { name: 'Trailer: Spare Wheel Carrier - Drop-Down with Hub Assembly', msrp: fill(1719), swcGroup:'trailer' },
+      { name: 'Trailer: Spare Wheel - Mag & Tyre - 15" Breakaway', msrp: fill(1014), swcGroup:'trailer' },
+      { name: 'Trailer: Spare Wheel - Mag & Tyre - 17" Various Designs', msrp: fill(1335), swcGroup:'trailer' },
+    ]},
+  ];
+}
+function makeAxisTrailerCats(n) {
+  const fill = v => Array(n).fill(v);
+  return [
+    { name: 'Trailer — Axis Specific Options', items: [
+      { name: 'Trailer: Deluxe Configuration — Includes Rear Steps (Required for 17" Wheel Upgrade)', msrp: fill(4789) },
+      { name: 'Trailer: Wheel Upgrade - 17" Wheels - A200 or T220 (Deluxe required)', msrp: fill(2189) },
+      { name: 'Trailer: Alloy Wheel Upgrade - 15" Alloys (if Deluxe not selected)', msrp: fill(468) },
+      { name: 'Trailer: Spare Wheel - Mag & Tyre - 14" (Axis Models)', msrp: fill(803) },
+    ]},
+  ];
+}
+
+// ════════════════════════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════
+// DEALER COST DATA (ex-GST)  — MY26 Edition 2
+// Margin = (MSRP/1.1 − DealerCost) / (MSRP/1.1)
+// ════════════════════════════════════════════════════════════
+const dealerData = {
+  wakesetter: {
+    base: [157704,170735,181734,201377,206152],
+    categories: [
+      { name:'Engine / Exhaust', items: [
+        { dealer:[0,0,0,-7598,-7598] },
+        { dealer:[7598,7598,7598,0,0] },
+        { dealer:[null,null,25809,21211,21211] },
+        { dealer:[476,null,null,null,null] },
+        { dealer:[723,0,0,0,0] },
+      ]},
+      { name:'Propeller Upgrade', items: [
+        { dealer:[344,344,344,344,344] },
+      ]},
+      { name:'Gel Coat', items: [
+        { dealer:[2021,2021,2021,2021,2021] },
+        { dealer:[1872,1872,1872,1872,1872] },
+        { dealer:[1427,1427,1427,1427,1427] },
+        { dealer:[2122,2122,2122,2122,2122] },
+        { dealer:[4245,4245,4245,4245,4245] },
+        { dealer:[577,577,577,577,577] },
+        { dealer:[265,265,265,265,265] },
+        { dealer:[382,382,382,382,382] },
+      ]},
+      { name:'Hardware', items: [
+        { dealer:[2396,2396,2396,2396,2396] },
+        { dealer:[762,762,762,762,762] },
+        { dealer:[486,486,486,486,486] },
+        { dealer:[1964,1964,1964,1964,1964] },
+        { dealer:[1037,1037,1037,1037,1037] },
+        { dealer:[1529,1529,1529,1529,1529] },
+        { dealer:[null,null,1725,1725,1725] },
+        { dealer:[739,739,739,739,739] },
+        { dealer:[923,null,923,923,923] },
+        { dealer:[399,399,399,399,399] },
+        { dealer:[1342,null,1342,1342,1342] },
+        { dealer:[862,862,862,862,862] },
+        { dealer:[3679,3679,3679,3679,3679] },
+        { dealer:[2176,null,null,null,null] },
+      ]},
+      { name:'Interior / Cockpit', items: [
+        { dealer:[917,917,917,917,917] },
+        { dealer:[null,null,1084,1084,1084] },
+        { dealer:[null,null,800,800,800] },
+        { dealer:[1081,1081,1081,1081,1081] },
+        { dealer:[434,434,434,434,434] },
+        { dealer:[1042,1042,1042,1042,1042] },
+        { dealer:[null,null,369,369,369] },
+        { dealer:[284,284,null,null,null] },
+        { dealer:[883,883,883,883,883] },
+        { dealer:[470,470,null,null,null] },
+        { dealer:[212,212,212,212,212] },
+        { dealer:[null,null,2808,2808,2808] },
+        { dealer:[479,479,479,479,479] },
+        { dealer:[null,null,2072,2072,2072] },
+        { dealer:[513,513,513,513,769.5] },
+        { dealer:[405,405,405,405,405] },
+        { dealer:[null,null,485,485,485] },
+        { dealer:[null,null,941,null,null] },
+        { dealer:[null,null,null,5247,5247] },
+        { dealer:[2585,2585,2585,2585,2585] },
+        { dealer:[null,null,null,2736,2736] },
+      ]},
+      { name:'Lighting', items: [
+        { dealer:[695,1079,1079,1079,1079] },
+        { dealer:[null,null,null,3007,3007] },
+        { dealer:[1222,1222,1222,1222,1222] },
+      ]},
+      { name:'Sound', items: [
+        { dealer:[2909,2909,2909,2909,2909] },
+        { dealer:[null,null,null,3128,3128] },
+        { dealer:[2390,2390,2390,2390,2390] },
+        { dealer:[1791,1791,1791,1791,1791] },
+        { dealer:[2071,2071,2071,2071,2071] },
+        { dealer:[2960,2960,2960,2960,2960] },
+        { dealer:[4351,4351,4351,4351,4351] },
+        { dealer:[585,585,585,585,585] },
+      ]},
+      { name:'Tower', items: [
+        { dealer:[0,null,null,null,null] },
+        { dealer:[1363,0,0,0,0] },
+        { dealer:[null,778,778,778,778] },
+        { dealer:[null,2220,2220,2220,2220] },
+        { dealer:[495,495,495,495,495] },
+        { dealer:[249,249,249,249,249] },
+        { dealer:[349,349,349,349,349] },
+        { dealer:[null,189,189,189,189] },
+        { dealer:[null,null,9432,9432,9432] },
+        { dealer:[1198,1198,1198,1198,1198] },
+        { dealer:[null,827,827,827,827] },
+        { dealer:[1751,1751,1751,1751,1751] },
+        { dealer:[799,799,799,799,799] },
+        { dealer:[2881,2881,2881,2881,2881] },
+        { dealer:[3619,3619,3619,3619,3619] },
+        { dealer:[3198,3198,3198,3198,3198] },
+        { dealer:[0,0,0,0,0] },
+        { dealer:[2667,2667,2667,2667,2667] },
+        { dealer:[2277,2277,2277,2277,2277] },
+        { dealer:[1864,1864,1864,1864,1864] },
+        { dealer:[374,374,374,374,374] },
+        { dealer:[null,null,1504,1504,1504] },
+      ]},
+      { name:'Wake & Surf Technology', items: [
+        { dealer:[1290,1290,1290,1290,1290] },
+        { dealer:[null,null,7568,7568,7568] },
+        { dealer:[null,null,null,null,null] },  // Plug & Play Bags — not in dealer sheet
+      ]},
+      { name:'Accessories', items: [
+        { dealer:[1000,1000,1000,1000,1000] },
+      ]},
+    ]
+  },
+  axis: {
+    base: [125521,137215,135654],
+    categories: [
+      { name:'Engine / Exhaust', items: [
+        { dealer:[0,0,0] },
+        { dealer:[7598,7598,7598] },
+      ]},
+      { name:'Underwater Gear', items: [
+        { dealer:[344,344,344] },
+        { dealer:[426,426,426] },
+      ]},
+      { name:'Gel Coat', items: [
+        { dealer:[2435,2435,2435] },
+        { dealer:[3951,3951,3951] },
+        { dealer:[6439,6439,6439] },
+      ]},
+      { name:'Hardware / Interior', items: [
+        { dealer:[2396,2396,2396] },
+        { dealer:[427,427,427] },
+        { dealer:[594,594,594] },
+        { dealer:[405,405,405] },
+        { dealer:[846,846,846] },
+        { dealer:[1217,1217,1217] },
+        { dealer:[1964,1964,1964] },
+        { dealer:[1529,1529,1529] },
+        { dealer:[1725,1725,1725] },
+        { dealer:[521,521,521] },
+        { dealer:[2709,2709,2709] },
+        { dealer:[513,513,513] },
+        { dealer:[716,716,716] },
+        { dealer:[null,1168,1168] },
+        { dealer:[970,970,970] },
+        { dealer:[null,595,595] },
+        { dealer:[220,220,220] },
+        { dealer:[377,377,377] },
+        { dealer:[1976,1976,1976] },
+        { dealer:[284,284,284] },
+        { dealer:[212,212,212] },
+        { dealer:[405,405,405] },
+      ]},
+      { name:'Lighting', items: [
+        { dealer:[1079,1079,1079] },
+        { dealer:[638,638,638] },
+        { dealer:[1007,1007,1007] },
+      ]},
+      { name:'Sound', items: [
+        { dealer:[3010,3010,3010] },
+        { dealer:[1681,1681,1681] },
+        { dealer:[1681,1681,1681] },
+        { dealer:[7629,7629,7629] },
+        { dealer:[2522,2522,2522] },
+        { dealer:[585,585,585] },
+      ]},
+      { name:'Tower', items: [
+        { dealer:[1251,1251,1251] },
+        { dealer:[1117,1117,1117] },
+        { dealer:[639,639,639] },
+        { dealer:[3470,3470,3470] },
+        { dealer:[2875,2875,2875] },
+        { dealer:[622,622,622] },
+      ]},
+      { name:'Wake & Surf Technology', items: [
+        { dealer:[-3240,-3240,-3240] },
+        { dealer:[0,0,0] },
+        { dealer:[0,0,0] },
+        { dealer:[1861,1861,1861] },
+      ]},
+      { name:'Accessories', items: [
+        { dealer:[1000,1000,1000] },
+      ]},
+    ]
+  },
+  response: {
+    base: [116356],
+    categories: [
+      { name:'Engine / Exhaust', items: [
+        { dealer:[0] },
+        { dealer:[7598] },
+      ]},
+      { name:'Propeller Upgrade', items: [
+        { dealer:[344] },
+      ]},
+      { name:'Gel Coat', items: [
+        { dealer:[2021] },
+        { dealer:[1872] },
+        { dealer:[2122] },
+        { dealer:[577] },
+        { dealer:[1427] },
+        { dealer:[265] },
+        { dealer:[382] },
+      ]},
+      { name:'Hardware', items: [
+        { dealer:[2396] },
+        { dealer:[455] },
+        { dealer:[1562] },
+        { dealer:[1342] },
+        { dealer:[773] },
+        { dealer:[1529] },
+      ]},
+      { name:'Interior / Cockpit', items: [
+        { dealer:[846] },
+        { dealer:[434] },
+        { dealer:[405] },
+        { dealer:[1216] },
+        { dealer:[1081] },
+        { dealer:[320] },
+        { dealer:[208] },
+        { dealer:[513] },
+        { dealer:[1739] },
+        { dealer:[1348] },
+        { dealer:[590] },
+        { dealer:[1042] },
+        { dealer:[2928] },
+        { dealer:[3698] },
+      ]},
+      { name:'Lighting', items: [
+        { dealer:[903] },
+        { dealer:[1222] },
+      ]},
+      { name:'Tower', items: [
+        { dealer:[6297] },
+        { dealer:[500] },
+        { dealer:[1806] },
+        { dealer:[726] },
+        { dealer:[726] },
+      ]},
+      { name:'Sound', items: [
+        { dealer:[2403] },
+        { dealer:[2344] },
+        { dealer:[585] },
+      ]},
+      { name:'Wake Technology', items: [
+        { dealer:[540] },
+        { dealer:[2873] },
+      ]},
+      { name:'Accessories', items: [
+        { dealer:[1000] },
+        { dealer:[1900] },
+      ]},
+    ]
+  },
+  // Trailer dealer costs (shared across all series)
+  trailer: {
+    categories: [
+      { name:'Paint Options', items: [
+        { dealer:[-1788], msrp:[-2623] },
+        { dealer:[0], msrp:[0] },       // STD
+        { dealer:[742], msrp:[1089] },
+        { dealer:[617], msrp:[905] },
+        { dealer:[670], msrp:[983] },
+      ]},
+      { name:'Guard and Step Options', items: [
+        { dealer:[1749], msrp:[2566] },
+        { dealer:[214], msrp:[314] },
+        { dealer:[0], msrp:[0] },         // STD: Diamond Matting Steps x4
+      ]},
+      { name:'Brake & Axle Options', items: [
+        { dealer:[1258], msrp:[1846] },
+        { dealer:[458], msrp:[672] },
+        { dealer:[0], msrp:[0] },       // STD
+        { dealer:[587], msrp:[861] },
+      ]},
+      { name:'Decking Options', items: [
+        { dealer:[3585], msrp:[5258] },
+        { dealer:[1731], msrp:[2539] },
+        { dealer:[771], msrp:[1131] },
+        { dealer:[434], msrp:[637] },
+      ]},
+      { name:'Other Options', items: [
+        { dealer:[5308], msrp:[6870] },
+        { dealer:[2144], msrp:[3145] },
+        { dealer:[996], msrp:[1461] },
+        { dealer:[1003], msrp:[1472] },
+      ]},
+      { name:'Wheel Options', items: [
+        { dealer:[1492], msrp:[2189] }, // 17" Wheels
+        { dealer:[383],  msrp:[562]  }, // Spare Wheel Carrier - Bolt-on
+        { dealer:[645],  msrp:[946]  }, // Spare Wheel Carrier - Drop-Down
+        { dealer:[1172], msrp:[1719] }, // Spare Wheel Carrier - Drop-Down with Hub
+        { dealer:[691],  msrp:[1014] }, // Spare Wheel - Mag & Tyre 15" Breakaway
+        { dealer:[910],  msrp:[1335] }, // Spare Wheel - Mag & Tyre 17"
+      ]},
+      { name:'Axis Specific Options', items: [
+        { dealer:[3265], msrp:[4789] }, // Deluxe Configuration
+        { dealer:[1492], msrp:[2189] }, // 17" Wheels (Axis)
+        { dealer:[319],  msrp:[468]  }, // 15" Alloys
+        { dealer:[547],  msrp:[803]  }, // Spare Wheel 14" (Axis)
+      ]},
+    ]
+  }
+};
+
+// Helper: get dealer cost for a series/category/item/modelIdx
+function getDealerCost(seriesKey, catIdx, itemIdx, mIdx) {
+  const sd = dealerData[seriesKey];
+  // If catIdx is within the series-specific dealer categories, use those
+  if (sd && sd.categories[catIdx] && sd.categories[catIdx].items[itemIdx]) {
+    const d = sd.categories[catIdx].items[itemIdx].dealer;
+    if (!d) return null;
+    const val = Array.isArray(d) ? d[mIdx] : d;
+    return (val === undefined) ? null : val;
+  }
+  // Otherwise fall back to trailer dealerData, offsetting by series cat count
+  const seriesCatCount = sd ? sd.categories.length : 0;
+  const trailerCatIdx = catIdx - seriesCatCount;
+  const td = dealerData['trailer'];
+  if (td && td.categories[trailerCatIdx] && td.categories[trailerCatIdx].items[itemIdx]) {
+    const d = td.categories[trailerCatIdx].items[itemIdx].dealer;
+    if (!d) return null;
+    const val = Array.isArray(d) ? d[0] : d; // trailer dealer costs are single-value arrays
+    return (val === undefined) ? null : val;
+  }
+  return null;
+}
+
+function getDealerBase(seriesKey, mIdx) {
+  const sd = dealerData[seriesKey];
+  return sd ? sd.base[mIdx] : null;
+}
+
+// Margin calculation: (MSRP_exGST - dealer) / MSRP_exGST
+// MSRP in rawData is inc-GST, dealer is ex-GST
+function calcMargin(msrpIncGst, dealerExGst) {
+  if (msrpIncGst == null || dealerExGst == null || dealerExGst === 0) return null;
+  const msrpEx = msrpIncGst / (1 + GST_RATE);
+  return (msrpEx - dealerExGst) / msrpEx;
+}
+
+const rawData = {
+  wakesetter: {
+    models: ['20VTX','21LX','22LSV','23LSV','23MXZ'],
+    base: { msrp: [200548,217120,231107,256086,262159] },
+    categories: [
+      { name: 'Engine / Exhaust', items: [
+        { name: 'Engine: Monsoon M5Di (360HP)', msrp:[0,0,0,-9833,-9833], std:[true,true,true,false,false], engineGroup:'ws', swapEngine:'ws' },
+        { name: 'Engine: Monsoon M6Di (430HP)', msrp:[9833,9833,9833,0,0], std:[false,false,false,true,true], engineGroup:'ws', swapEngine:'ws' },
+        { name: 'Engine: Monsoon LT4 Supercharged (607HP)', msrp:[null,null,33400,27450,27450], engineGroup:'ws' },
+        { name: 'Exhaust: Turned-Down Exhaust Tip', msrp:[698,null,null,null,null] },
+        { name: 'Exhaust: Surf Pipe', msrp:[1060,0,0,0,0], std:[false,true,true,true,true] },
+      ]},
+      { name: 'Propeller Upgrade', items: [
+        { name: 'Prop: Torque or Speed Propeller', msrp:[505,505,505,505,505] },
+      ]},
+      { name: 'Gel Coat', items: [
+        { name: 'Gel Coat: Deck Base Colour', msrp:[2887,2887,2887,2887,2887] },
+        { name: 'Gel Coat: Hull Base Colour', msrp:[2674,2674,2674,2674,2674] },
+        { name: 'Gel Coat: Different Metallic Colours on Hull or Deck', msrp:[2039,2039,2039,2039,2039] },
+        { name: 'Gel Coat: Metallic Colours (per Accent)', msrp:[3031,3031,3031,3031,3031], multi:true },
+        { name: 'Gel Coat: Metallic Hull Main', msrp:[6064,6064,6064,6064,6064] },
+        { name: 'Gel Coat: Metallic Platform or Surfgates', msrp:[824,824,824,824,824] },
+        { name: 'Gel Coat: Hull Rear Logo Colour Upgrade', msrp:[379,379,379,379,379] },
+        { name: 'Gel Coat: Hull Side Logo Colour Upgrade', msrp:[546,546,546,546,546] },
+      ]},
+      { name: 'Hardware', items: [
+        { name: 'Hardware: Salt Pack', msrp:[3514,3514,3514,3514,3514] },
+        { name: 'Hardware: AIS Decontamination System', msrp:[1118,1118,1118,1118,1118] },
+        { name: 'Hardware: Pull-up Cleats (per Pair)', msrp:[713,713,713,713,713], multi:true },
+        { name: 'Hardware: Dual Battery with VSR (OPT3)', msrp:[2881,2881,2881,2881,2881] },
+        { name: 'Hardware: Fender Locks (x4)', msrp:[1521,1521,1521,1521,1521] },
+        { name: 'Hardware: Heater - Two Outlet', msrp:[2243,2243,2243,2243,2243], heaterGroup:'wakesetter' },
+        { name: 'Hardware: Heater - Three Outlet', msrp:[null,null,2530,2530,2530], heaterGroup:'wakesetter' },
+        { name: 'Hardware: Wideview Rear Camera', msrp:[1084,1084,1084,1084,1084], wideviewGroup:'ws' },
+        { name: 'Hardware: Wideview Rear and Bow View Camera', msrp:[1354,null,1354,1354,1354], wideviewGroup:'ws' },
+        { name: 'Hardware: Rudder Position Sensor', msrp:[585,585,585,585,585] },
+        { name: 'Hardware: Hot Water Shower', msrp:[1968,null,1968,1968,1968] },
+        { name: 'Hardware: Heated Steering Wheel', msrp:[1264,1264,1264,1264,1264], steerGroup:'ws' },
+        { name: 'Hardware: Heated Electric Steering Wheel', msrp:[5396,5396,5396,5396,5396], steerGroup:'ws' },
+        { name: 'Hardware: Centre Ski Pylon - Base and Pylon', msrp:[3191,null,null,null,null] },
+      ]},
+      { name: 'Interior / Cockpit', items: [
+        { name: 'Interior: Phone Holder with Wireless Charging (Dash & Shifter)', msrp:[1345,1345,1345,1345,1345] },
+        { name: 'Interior: Cool Touch Vinyl (per selection)', msrp:[null,null,1590,1590,1590], multi:true, maxQty:3 },
+        { name: 'Interior: Upgrade Cabin Phone Holders to Wireless Charging', msrp:[null,null,1173,1173,1173] },
+        { name: 'Interior: Deck Track', msrp:[1585,1585,1585,1585,1585] },
+        { name: 'Interior: Driver Seat Heater', msrp:[637,637,637,637,637] },
+        { name: 'Interior: Panoramic Mirror - PTM Billet', msrp:[1528,1528,1528,1528,1528] },
+        { name: 'Interior: Upgrade Soft-Grip Flooring & Seat Base - Dual Layer', msrp:[null,null,541,541,541] },
+        { name: 'Interior: Upgrade Soft-Grip Flooring - Dual Layer', msrp:[417,417,null,null,null] },
+        { name: 'Interior: Upgrade Soft-Grip Storage Compartments - Dual Layer', msrp:[1295,1295,1295,1295,1295] },
+        { name: 'Interior: Soft-Grip - Seat Base', msrp:[689,689,null,null,null] },
+        { name: 'Interior: Soft-Grip - Transom Covering', msrp:[311,311,311,311,311] },
+        { name: 'Interior: Memory and Power-Lift Helm Seat', msrp:[null,null,4118,4118,4118], helmGroup:'ws' },
+        { name: 'Interior: Under Helm Seat Storage', msrp:[703,703,703,703,703], helmGroup:'ws' },
+        { name: 'Interior: Rear Flip-Down Seat Steps', msrp:[null,null,3039,3039,3039] },
+        { name: 'Interior: Bow Cushion Soft Grip', msrp:[752,752,752,752,1129] },
+        { name: 'Interior: Top Stitch Colour Upgrade', msrp:[594,594,594,594,594] },
+        { name: 'Interior: Walk-over Filler Cushion', msrp:[null,null,711,711,711] },
+        { name: 'Interior: Wakeview Seating (Port Side)', msrp:[null,null,1377,null,null] },
+        { name: 'Interior: Max-Pivot Bench Seat', msrp:[null,null,null,7215,7215] },
+        { name: 'Interior: Flip Down Swim Step', msrp:[3554,3554,3554,3554,3554] },
+        { name: 'Interior: Premium Windblock Door', msrp:[null,null,null,3762,3762] },
+      ]},
+      { name: 'Lighting', items: [
+        { name: 'Lighting: LED Docking Lights', msrp:[1019,1583,1583,1583,1583] },
+        { name: 'Interior: RGB Lighting Package', msrp:[null,null,null,4410,4410] },
+        { name: 'Lighting: Under Water Transom Lights (White or Blue)', msrp:[1792,1792,1792,1792,1792] },
+      ]},
+      { name: 'Sound', items: [
+        { name: 'Sound: Subwoofer and Upgraded Amplifier', msrp:[4156,4156,4156,4156,4156], providesKey:'sub_and_amp' },
+        { name: 'Sound: 2nd Subwoofer with Amplifier', msrp:[null,null,null,4469,4469], requiresKey:'sub_and_amp' },
+        { name: 'Sound: Tower Amplifier Only (2 Channel)', msrp:[3414,3414,3414,3414,3414], isTowerAmp:true },
+        { name: 'Sound: Tower Speakers - ICON 8 - Per Pair', msrp:[2559,2559,2559,2559,2559], multi:true, maxQty:2, towerSpeakerGroup:'ws' },
+        { name: 'Sound: Tower Speakers - REV 8 - Per Pair', msrp:[2959,2959,2959,2959,2959], multi:true, maxQty:2, towerSpeakerGroup:'ws' },
+        { name: 'Sound: Tower Speakers - REV 12 - 1st Pair', msrp:[4229,4229,4229,4229,4229], towerSpeakerGroup:'ws', providesKey:'rev12_1st' },
+        { name: 'Sound: Tower Speakers - REV 12 - 2nd Pair (Incl. 2nd Amp)', msrp:[6216,6216,6216,6216,6216], requiresKey:'rev12_1st' },
+        { name: 'Sound: Transom Stereo Remote', msrp:[836,836,836,836,836] },
+      ]},
+      { name: 'Tower', items: [
+        { name: 'Tower: Bimini Top - G5 Tower', msrp:[0,null,null,null,null], std:[true,false,false,false,false], biminiGroup:'ws' },
+        { name: 'Tower: Bimini Top - Gen II Surf with Pistol Hinges', msrp:[1999,0,0,0,0], std:[false,true,true,true,true], biminiGroup:'ws' },
+        { name: 'Tower: Bimini Top - Extended Gen II Surf', msrp:[null,1141,1141,1141,1141], biminiUpgradeGroup:'ws' },
+        { name: 'Tower: Bimini Top - PTM Dual Coverage (Easy Deploy)', msrp:[null,3256,3256,3256,3256], biminiUpgradeGroup:'ws' },
+        { name: 'Tower: Colour Upgrade - Tower Only', msrp:[726,726,726,726,726] },
+        { name: 'Tower: Hoop Colour Upgrade - Same as Tower', msrp:[365,365,365,365,365] },
+        { name: 'Tower: Hoop Colour Upgrade - Different to Tower', msrp:[512,512,512,512,512] },
+        { name: 'Tower: Wing Colour Upgrade', msrp:[null,277,277,277,277] },
+        { name: 'Tower: Ascend Pro Tower Upgrade', msrp:[null,null,12969,12969,12969], providesKey:'ascend_pro' },
+        { name: 'Tower: Lights - 360deg Tower Light', msrp:[1757,1757,1757,1757,1757] },
+        { name: 'Tower: Lights - Ascend Lighting', msrp:[null,1213,1213,1213,1213], blockedByKey:'ascend_pro' },
+        { name: 'Tower: Mirror - Tower Mounted PTM Upgrade', msrp:[2568,2568,2568,2568,2568] },
+        { name: 'Tower: Board Rack - Swivel Rack (each)', msrp:[1172,1172,1172,1172,1172], multi:true, maxQty:2, boardRackGroup:'ws' },
+        { name: 'Tower: Board Rack - Clamping w/Fender Locks (each)', msrp:[4225,4225,4225,4225,4225], multi:true, maxQty:2, boardRackGroup:'ws' },
+        { name: 'Tower: Board Rack - Clampforce 3.0 (each)', msrp:[5308,5308,5308,5308,5308], multi:true, maxQty:2, boardRackGroup:'ws' },
+        { name: 'Tower: Board Rack - Edgeforce (each)', msrp:[4690,4690,4690,4690,4690], multi:true, maxQty:2, boardRackGroup:'ws' },
+        { name: 'Tower: Upgrade Std Rack to Clamping w/Fender Locks (each)', msrp:[3912,3912,3912,3912,3912], multi:true, maxQty:2, stdRackUpgradeGroup:'ws' },
+        { name: 'Tower: Upgrade Std Rack to Clampforce 3.0 (each)', msrp:[3340,3340,3340,3340,3340], multi:true, maxQty:2, stdRackUpgradeGroup:'ws' },
+        { name: 'Tower: Upgrade Std Rack to Edgeforce (each)', msrp:[2734,2734,2734,2734,2734], multi:true, maxQty:2, stdRackUpgradeGroup:'ws' },
+        { name: 'Tower: Surf Tow Point (each)', msrp:[549,549,549,549,549], multi:true },
+        { name: 'Tower: Mister Misty (Ascend Pro only)', msrp:[null,null,2206,2206,2206], requiresKey:'ascend_pro' },
+      ]},
+      { name: 'Wake & Surf Technology', items: [
+        { name: 'Wake Tech: Plug & Play Ready Rear Ballast System w/Auto Vent', msrp:[2027,2027,2027,2027,2027] },
+        { name: 'Wake Tech: Stern Turn (inc. Upgraded 250A Alternator)', msrp:[null,null,9794,9794,9794] },
+        { name: 'Wake Tech: Plug & Play Bags', msrp:[999,999,999,999,999] },
+      ]},
+      { name: 'Accessories', items: [
+        { name: 'Boat Cover', msrp:[1750,1750,1750,1750,1750] },
+      ]},
+    ]
+  },
+  axis: {
+    models: ['A200','A225','T220'],
+    base: { msrp: [155138,170550,168609] },
+    categories: [
+      { name: 'Engine / Exhaust', items: [
+        { name: 'Engine: Monsoon M5Di (360HP)', msrp:[0,0,0], std:[true,true,true], engineGroup:'axis' },
+        { name: 'Engine: Monsoon M6Di (430HP)', msrp:[9833,9833,9833], engineGroup:'axis' },
+      ]},
+      { name: 'Underwater Gear', items: [
+        { name: 'Underwater Gear: Torque or Speed Prop Upgrade', msrp:[491,491,491] },
+        { name: 'Underwater Gear: Gorilla Tracking Fin (2nd)', msrp:[609,609,609] },
+      ]},
+      { name: 'Gel Coat', items: [
+        { name: 'Gel Coat: Coloured Base with Pastel Accents', msrp:[3479,3479,3479], axisGelGroup:'axis' },
+        { name: 'Gel Coat: White Base with Metallic Accents', msrp:[5644,5644,5644], axisGelGroup:'axis' },
+        { name: 'Gel Coat: Coloured Base with Metallic Accents', msrp:[9199,9199,9199], axisGelGroup:'axis' },
+      ]},
+      { name: 'Hardware / Interior', items: [
+        { name: 'Hardware: Salt Pack', msrp:[3423,3423,3423] },
+        { name: 'Hardware: Pull Up Cleats (Per Pair)', msrp:[610,610,610], multi:true },
+        { name: 'Hardware: Sports Dash W/Wireless Charging', msrp:[849,849,849] },
+        { name: 'Hardware: Drop-In Cooler', msrp:[579,579,579] },
+        { name: 'Hardware: Depth Finder', msrp:[1209,1209,1209] },
+        { name: 'Hardware: Dual Battery System (OPT2)', msrp:[1739,1739,1739], axisBattGroup:'axis' },
+        { name: 'Hardware: Dual Battery with VSR (OPT3)', msrp:[2806,2806,2806], axisBattGroup:'axis' },
+        { name: 'Hardware: Heater - Two Outlet', msrp:[2184,2184,2184], heaterGroup:'axis' },
+        { name: 'Hardware: Heater - Three Outlet', msrp:[2464,2464,2464], heaterGroup:'axis' },
+        { name: 'Hardware: Ski Pylon', msrp:[744,744,744] },
+        { name: 'Hardware: GPS Speed Control', msrp:[3870,3870,3870] },
+        { name: 'Interior: Bow Cushion Soft Grip', msrp:[733,733,733] },
+        { name: 'Interior: Swivel Helm Seat & Flip Up Bolster Section', msrp:[1023,1023,1023] },
+        { name: 'Interior: Chillax Flip-up Seating (Port side only)', msrp:[null,1669,1669] },
+        { name: 'Interior: Deck Track', msrp:[1386,1386,1386] },
+        { name: 'Interior: Upgrade Cabin Phone Holders to Wireless Charging', msrp:[null,850,850] },
+        { name: 'Interior: Cupholders - Upgrade to Stainless', msrp:[314,314,314] },
+        { name: 'Interior: Wideview Mirror Upgrade', msrp:[539,539,539] },
+        { name: 'Interior: Rear Bench Seat Lean-Backs', msrp:[2823,2823,2823] },
+        { name: 'Interior: Upgrade to Premium Soft Grip Flooring (Dual Layer)', msrp:[406,406,406] },
+        { name: 'Interior: Soft-Grip - Transom Covering', msrp:[303,303,303] },
+        { name: 'Interior: Top Stitch Colour Upgrade', msrp:[579,579,579] },
+      ]},
+      { name: 'Lighting', items: [
+        { name: 'Lighting: LED Docking Lights', msrp:[1541,1541,1541] },
+        { name: 'Lighting: Under Seat Lighting', msrp:[911,911,911] },
+        { name: 'Lighting: Under Water Lighting', msrp:[1439,1439,1439] },
+      ]},
+      { name: 'Sound', items: [
+        { name: 'Sound: Pack 2 - Bow Speakers, 10" Sub, 6 Channel Amp', msrp:[4357,4357,4357] },
+        { name: 'Sound: Tower Speakers - 1st Pair Icon 8 (Pack 2)', msrp:[2433,2433,2433] },
+        { name: 'Sound: Tower Speakers - 2nd Pair Icon 8 (Pack 2)', msrp:[2433,2433,2433] },
+        { name: 'Sound: Pack 3 - 12" Sub, Bow Speakers, 1 Pair Tower Rev10', msrp:[11042,11042,11042] },
+        { name: 'Sound: 2nd Pair Tower Speakers (Pack 3 Rev10)', msrp:[3650,3650,3650] },
+        { name: 'Sound: Transom Remote', msrp:[847,847,847] },
+      ]},
+      { name: 'Tower', items: [
+        { name: 'Tower: Bimini Top - Dual/Extended Coverage', msrp:[1787,1787,1787] },
+        { name: 'Tower: Mirror Bracket - Upgrade to Tower Mounted', msrp:[1596,1596,1596] },
+        { name: 'Tower: Board Rack - Axis Swing Rack (each)', msrp:[913,913,913], multi:true },
+        { name: 'Tower: Board Rack - Clamping Rack (each)', msrp:[4957,4957,4957], multi:true },
+        { name: 'Tower: Board Rack - Edgeforce Rack (each)', msrp:[4107,4107,4107], multi:true },
+        { name: 'Tower: Colour Upgrade (Graphite or White)', msrp:[684,684,684] },
+      ]},
+      { name: 'Wake & Surf Technology', items: [
+        { name: 'Wake Tech: Auto-Set Wedge (replaces Power Wedge III)', msrp:[-4455,-4455,-4455] },
+        { name: 'Wake Tech: Plug & Play Ready Rear & Bow Ballast System w/Auto Vent', msrp:[2729,2729,2729] },
+        { name: 'Wake Tech: Plug & Play Bags', msrp:[1499,1499,1499] },
+      ]},
+      { name: 'Accessories', items: [
+        { name: 'Boat Cover', msrp:[1750,1750,1750] },
+      ]},
+    ]
+  },
+  response: {
+    models: ['TXI Open Ed.'],
+    base: { msrp: [144623] },
+    categories: [
+      { name: 'Engine / Other', items: [
+        { name: 'Engine: Monsoon M5Di (360HP)', msrp:[0], std:[true], engineGroup:'resp' },
+        { name: 'Engine: Monsoon M6Di (430HP)', msrp:[9833], engineGroup:'resp' },
+      ]},
+      { name: 'Propeller', items: [
+        { name: 'Prop: Torque or Speed Propeller', msrp:[491] },
+      ]},
+      { name: 'Gel Coat', items: [
+        { name: 'Gel Coat: Deck Base Colour', msrp:[2887] },
+        { name: 'Gel Coat: Hull Base Colour', msrp:[2674] },
+        { name: 'Gel Coat: Metallic Accents - Each', msrp:[3031], multi:true },
+        { name: 'Gel Coat: Metallic Platform', msrp:[824] },
+        { name: 'Gel Coat: Different Metallic Colours', msrp:[2039] },
+        { name: 'Gel Coat: Hull Rear Logo Colour Upgrade', msrp:[379] },
+        { name: 'Gel Coat: Hull Side Logo Colour Upgrade', msrp:[546] },
+      ]},
+      { name: 'Hardware', items: [
+        { name: 'Hardware: Salt Pack', msrp:[3514] },
+        { name: 'Hardware: Pull-up Cleats (Per Pair)', msrp:[667], multi:true },
+        { name: 'Hardware: Dual Battery with Selector', msrp:[2291] },
+        { name: 'Hardware: Hot Water Shower', msrp:[1968] },
+        { name: 'Hardware: Wideview Rear Camera', msrp:[1134], wideviewGroup:'resp' },
+        { name: 'Hardware: Heater - Two Outlet', msrp:[2243], heaterGroup:'response' },
+      ]},
+      { name: 'Interior / Cockpit', items: [
+        { name: 'Interior: Depth Finder', msrp:[1241] },
+        { name: 'Interior: Driver Seat Heater', msrp:[637] },
+        { name: 'Interior: Top Stitch Colour Upgrade', msrp:[594] },
+        { name: 'Interior: Walk-Through Trick Seat', msrp:[1783] },
+        { name: 'Interior: Deck Track', msrp:[1585] },
+        { name: 'Interior: Soft Grip - Flooring - Premium Two-Tone Upgrade', msrp:[469] },
+        { name: 'Interior: Soft Grip - Transom Covering', msrp:[299] },
+        { name: 'Interior: Bow Cushion Soft Grip', msrp:[752] },
+        { name: 'Interior: Rear Seats (pair)', msrp:[2551] },
+        { name: 'Interior: Internal Swivel Ski Rack (per side)', msrp:[1977], multi:true },
+        { name: 'Interior: Side Wall Soft Grip', msrp:[865] },
+        { name: 'Interior: PTM Mirror - Windscreen Mount', msrp:[1528] },
+        { name: 'Interior: GPS Speed Control', msrp:[4294] },
+        { name: 'Interior: Zero-Off GPS Speed Control (3-Event)', msrp:[5424] },
+      ]},
+      { name: 'Lighting', items: [
+        { name: 'Lighting: Docking Lights', msrp:[1324] },
+        { name: 'Lighting: Underwater (White)', msrp:[1792] },
+      ]},
+      { name: 'Tower', items: [
+        { name: 'Tower: TXI Tower (Black) - Tower Only', msrp:[9236] },
+        { name: 'Tower: TXI Tower Colour Upgrade', msrp:[733] },
+        { name: 'Tower: Bimini (Tower)', msrp:[2649] },
+        { name: 'Tower: Racks - Board (each)', msrp:[1065], multi:true },
+        { name: 'Tower: Racks - Ski (each)', msrp:[1065], multi:true },
+      ]},
+      { name: 'Sound', items: [
+        { name: 'Sound: Tower Amplifier (Amp Only)', msrp:[3304] },
+        { name: 'Sound: Tower Speakers - ICON 8 - 1st Pair (BLACK)', msrp:[3223] },
+        { name: 'Sound: Transom Stereo Remote', msrp:[804] },
+      ]},
+      { name: 'Wake Technology', items: [
+        { name: 'Wake Tech: Wedge Plate Only', msrp:[699] },
+        { name: 'Wake Tech: Auto-Set Manual Wedge', msrp:[3718] },
+      ]},
+      { name: 'Accessories', items: [
+        { name: 'Boat Cover', msrp:[1750] },
+        { name: 'Accessories: 3-Event Tournament Bimini', msrp:[2649] },
+      ]},
+    ]
+  }
+};
+
+const data = {};
+for (const s in rawData) {
+  const n = rawData[s].models.length;
+  data[s] = { ...rawData[s], categories: [...rawData[s].categories, ...makeTrailerCats(n), ...(s==='axis'?makeAxisTrailerCats(n):[])] };
+}
+
+// ════════════════════════════════════════════════════════════
+// AUTO-SELECT STD
+// ════════════════════════════════════════════════════════════
+function autoSelectStd() {
+  const s = data[series];
+  const modelName = s.models[modelIdx];
+  s.categories.forEach((cat,ci) => {
+    cat.items.forEach((item,ii) => {
+      const key = `${ci}-${ii}`;
+      const isStd = (item.std && item.std[modelIdx]) || (item.stdModels && item.stdModels.includes(modelName));
+      if (isStd && !sel.has(key)) sel.set(key,1);
+    });
+  });
+}
+
+// Re-evaluate deselectedByKey items: if their blocking key is no longer provided,
+// re-add them to sel if they are std. Called after every selection change.
+function syncDeselectedStd() {
+  const { providedKeys } = computeGroupStates();
+  const s = data[series];
+  const modelName = s.models[modelIdx];
+  s.categories.forEach((cat,ci) => {
+    cat.items.forEach((item,ii) => {
+      if (!item.deselectedByKey) return;
+      const key = `${ci}-${ii}`;
+      const isStd = (item.std && item.std[modelIdx]) || (item.stdModels && item.stdModels.includes(modelName));
+      if (!providedKeys.has(item.deselectedByKey) && isStd && !sel.has(key)) {
+        sel.set(key, 1); // blocking key gone — restore std selection
+      }
+    });
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+// GROUP STATES
+// ════════════════════════════════════════════════════════════
+function computeGroupStates() {
+  const providedKeys  = new Set();
+  const groupSelected = {};
+  const trackGroup = (groupKey, key) => {
+    if (!groupSelected[groupKey]) groupSelected[groupKey] = [];
+    if (!groupSelected[groupKey].includes(key)) groupSelected[groupKey].push(key);
+  };
+  const s = data[series];
+  const modelName = s.models[modelIdx];
+  s.categories.forEach((cat,ci) => {
+    cat.items.forEach((item,ii) => {
+      const key = `${ci}-${ii}`;
+      const isStd = (item.std && item.std[modelIdx]) || (item.stdModels && item.stdModels.includes(modelName));
+      const qty = sel.get(key)||0;
+      // Always track qty-capped groups so total-qty checks work
+      if (item.boardRackGroup)      trackGroup('boardRack_'+item.boardRackGroup, key);
+      if (item.stdRackUpgradeGroup) trackGroup('stdRackUpgrade_'+item.stdRackUpgradeGroup, key);
+      if (item.towerSpeakerGroup)   trackGroup('towerSpeaker_'+item.towerSpeakerGroup, key);
+      if (!(qty>0 || isStd)) return;
+      if (item.providesKey)         providedKeys.add(item.providesKey);
+      if (item.heaterGroup)         trackGroup('heater_'+item.heaterGroup, key);
+      if (item.engineGroup)         trackGroup('engine_'+item.engineGroup, key);
+      if (item.wideviewGroup)       trackGroup('wideview_'+item.wideviewGroup, key);
+      if (item.steerGroup)          trackGroup('steer_'+item.steerGroup, key);
+      if (item.helmGroup)           trackGroup('helm_'+item.helmGroup, key);
+      if (item.biminiGroup)         trackGroup('bimini_'+item.biminiGroup, key);
+      if (item.biminiUpgradeGroup)  trackGroup('biminiUpgrade_'+item.biminiUpgradeGroup, key);
+      if (item.swcGroup)            trackGroup('swc_'+item.swcGroup, key);
+      if (item.axisGelGroup)        trackGroup('axisgel_'+item.axisGelGroup, key);
+      if (item.axisBattGroup)       trackGroup('axisbatt_'+item.axisBattGroup, key);
+      if (item.paintGroup)          trackGroup('paint_'+item.paintGroup, key);
+      if (item.deckingGroup)        trackGroup('decking_'+item.deckingGroup, key);
+    });
+  });
+  return { providedKeys, groupSelected };
+}
+
+// ════════════════════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════════════════════
+function renderCustomerBar() {
+  $('qcbName').textContent = customer.name || '—';
+  const parts = [customer.mobile, customer.email, customer.postcode ? 'PC '+customer.postcode : ''].filter(Boolean);
+  $('qcbMeta').textContent = parts.join(' · ');
+}
+
+function renderModelSelector() {
+  const ms = $('modelSelector');
+  ms.innerHTML = '<div class="model-label">Model</div>';
+  data[series].models.forEach((m,i) => {
+    const c = document.createElement('div');
+    c.className = `model-chip ${brand()}${i===modelIdx?' active':''}`;
+    if (series === 'response' && m === 'TXI Open Ed.') {
+      c.innerHTML = `TXI Open Ed.<span style="display:block;font-size:9px;font-weight:600;letter-spacing:0.5px;opacity:0.85;text-transform:none;margin-top:2px;">Official IWWF World Champs Tow Boat</span>`;
+    } else {
+      c.textContent = m;
+    }
+    c.onclick = () => { modelIdx=i; sel.clear(); discountAmt=0; factoryIncentive=0; try{localStorage.setItem('mb_discount','0');localStorage.setItem('mb_factory_incentive','0');}catch(e){} autoSelectStd(); renderAll(); };
+    ms.appendChild(c);
+  });
+}
+
+function renderOptions() {
+  const panel = $('optionsPanel');
+  panel.innerHTML = '';
+  data[series].categories.forEach((cat,ci) => {
+    const selInCat = cat.items.filter((_,ii) => sel.has(`${ci}-${ii}`)).length;
+    const block = document.createElement('div');
+    block.className = `category-block${collapsed.has(ci)?' collapsed':''}`;
+    const hdr = document.createElement('div');
+    hdr.className = 'category-header';
+    hdr.innerHTML = `<span class="category-title">${cat.name}</span><span class="category-count${selInCat?' has-sel':''}">${selInCat?selInCat+' selected':cat.items.length+' options'}</span><span class="category-chevron">▼</span>`;
+    hdr.onclick = () => { collapsed.has(ci)?collapsed.delete(ci):collapsed.add(ci); renderOptions(); };
+    block.appendChild(hdr);
+    const itemsDiv = document.createElement('div');
+    itemsDiv.className = 'category-items';
+    const { providedKeys, groupSelected } = computeGroupStates();
+    const modelName = data[series].models[modelIdx];
+
+    const isGroupBlocked = (item, key) => {
+      const qty = sel.get(key)||0;
+      if (item.paintGroup) {
+        const isThisStd = item.std && item.std[modelIdx];
+        if (isThisStd) return false;
+        const gk = 'paint_'+item.paintGroup;
+        const members = groupSelected[gk]||[];
+        const otherNonStd = members.some(k => {
+          if (k===key) return false;
+          let found=false;
+          data[series].categories.forEach((cat,ci)=>{ cat.items.forEach((itm,ii)=>{ if(`${ci}-${ii}`===k&&!(itm.std&&itm.std[modelIdx]))found=true; }); });
+          return found;
+        });
+        return otherNonStd && qty===0;
+      }
+      if (item.engineGroup) {
+        const isThisStd = item.std && item.std[modelIdx];
+        if (isThisStd) return false;
+        const gk = 'engine_'+item.engineGroup;
+        const members = groupSelected[gk]||[];
+        const otherNonStd = members.some(k => {
+          if (k===key) return false;
+          let found=false;
+          data[series].categories.forEach((cat,ci)=>{ cat.items.forEach((itm,ii)=>{ if(`${ci}-${ii}`===k&&!(itm.std&&itm.std[modelIdx]))found=true; }); });
+          return found;
+        });
+        return otherNonStd && qty===0;
+      }
+      const checks = [
+        ['heater_',item.heaterGroup],['wideview_',item.wideviewGroup],
+        ['steer_',item.steerGroup],['helm_',item.helmGroup],
+        ['bimini_',item.biminiGroup],['biminiUpgrade_',item.biminiUpgradeGroup],
+        ['swc_',item.swcGroup],['axisgel_',item.axisGelGroup],['axisbatt_',item.axisBattGroup],
+        ['decking_',item.deckingGroup],
+      ];
+      for (const [prefix,grpName] of checks) {
+        if (!grpName) continue;
+        const gk = prefix+grpName;
+        const members = groupSelected[gk]||[];
+        if (members.some(k=>k!==key) && qty===0) return true;
+      }
+      // boardRackGroup: block others only when total qty across group reaches 2
+      if (item.boardRackGroup) {
+        const members = groupSelected['boardRack_'+item.boardRackGroup]||[];
+        const totalQty = members.reduce((s,k)=>s+(sel.get(k)||0),0);
+        if (totalQty>=2 && qty===0) return true;
+      }
+      // stdRackUpgradeGroup: block others only when total qty across group reaches 2
+      if (item.stdRackUpgradeGroup) {
+        const members = groupSelected['stdRackUpgrade_'+item.stdRackUpgradeGroup]||[];
+        const totalQty = members.reduce((s,k)=>s+(sel.get(k)||0),0);
+        if (totalQty>=2 && qty===0) return true;
+      }
+      // towerSpeakerGroup: selecting any one speaker type blocks all other speaker types
+      if (item.towerSpeakerGroup) {
+        let otherSel=false;
+        data[series].categories.forEach((c,ci)=>{ c.items.forEach((it,ii)=>{ const k=`${ci}-${ii}`; if(k!==key && it.towerSpeakerGroup===item.towerSpeakerGroup && (sel.get(k)||0)>0) otherSel=true; }); });
+        if (otherSel && qty===0) return true;
+      }
+      return false;
+    };
+
+    cat.items.forEach((item,ii) => {
+      const key = `${ci}-${ii}`;
+      const rawPrice = item.msrp[modelIdx];
+      const isStd = (item.std && item.std[modelIdx]) || (item.stdModels && item.stdModels.includes(modelName));
+      const isLocked = isStd || item.locked===true;
+      const isMulti  = item.multi===true;
+      const qty = sel.get(key)||0;
+      const isSel = qty>0;
+      const bc = brand();
+      const isStdModel = item.stdModels && item.stdModels.includes(modelName);
+      const displayPrice = (item.stdPrice && isStdModel) ? 0 : rawPrice;
+
+      let isNA = rawPrice===null||rawPrice===undefined;
+      let naReason = 'na';
+      if (!isNA && item.naForSeries && item.naForSeries.includes(series)) { isNA=true; }
+      if (!isNA && item.naForModels && item.naForModels[series] && item.naForModels[series].includes(modelIdx)) { isNA=true; }
+      if (!isNA && item.requiresKey && !providedKeys.has(item.requiresKey)) { isNA=true; naReason='dep'; }
+      if (!isNA && item.blockedByKey && providedKeys.has(item.blockedByKey)) { isNA=true; naReason='excl'; }
+      if (!isNA && item.deselectedByKey && providedKeys.has(item.deselectedByKey)) {
+        // Silently deselect (including std) and hide from quote — show as N/A
+        if (sel.has(key)) sel.delete(key);
+        isNA=true; naReason='excl';
+      }
+      if (!isNA && isGroupBlocked(item,key)) { isNA=true; naReason='excl'; }
+      if (isNA && sel.has(key) && !isStd) sel.delete(key);
+
+      const row = document.createElement('div');
+      row.className = `option-row${isNA?' na':''}${(isSel||isLocked)?` selected ${bc}-brand`:''}${isLocked?' locked':''}`;
+      let pricePart = '';
+      if (isNA && naReason==='dep')    pricePart = '<span class="std-badge" style="color:var(--t-accent);border-color:var(--t-border)">REQUIRES OPTION</span>';
+      else if (isNA && naReason==='excl') pricePart = '<span class="std-badge">EXCL</span>';
+      else if (isNA)                   pricePart = '<span class="std-badge">N/A</span>';
+      else if (displayPrice===0)       pricePart = '<span class="incl-badge">INCL</span>';
+      else pricePart = `<span class="opt-price${displayPrice<0?' neg':''}">${displayPrice<0?'−':'+'}${fmt(Math.abs(displayPrice))}</span>`;
+
+      if (!isLocked && isMulti && !isNA && displayPrice!==0) {
+        row.innerHTML = `<div class="opt-cb"><span class="chk">✓</span></div><div class="opt-name">${item.name}</div><div class="qty-wrap"><button class="qty-btn" onclick="chgQty(event,'${key}',-1)">−</button><span class="qty-num">${qty}</span><button class="qty-btn" onclick="chgQty(event,'${key}',1)">+</button></div>${pricePart}`;
+        row.onclick = e => { if(e.target.classList.contains('qty-btn'))return; qty===0?sel.set(key,1):sel.delete(key); renderAll(); };
+      } else if (isLocked) {
+        row.innerHTML = `<div class="opt-cb"><span class="chk">✓</span></div><div class="opt-name">${item.name}</div>${pricePart}`;
+      } else {
+        row.innerHTML = `<div class="opt-cb"><span class="chk">✓</span></div><div class="opt-name">${item.name}</div>${pricePart}`;
+        row.onclick = () => {
+          if (!isNA && !isLocked) {
+            if (sel.has(key)) {
+              // Deselecting: only allow if it's not the sole std engine
+              sel.delete(key);
+            } else {
+              sel.set(key,1);
+              // Auto-select tower amplifier when any tower speaker is selected
+              if (item.towerSpeakerGroup) {
+                data[series].categories.forEach((cat2,ci2)=>{ cat2.items.forEach((item2,ii2)=>{ if(item2.isTowerAmp) { const k2=`${ci2}-${ii2}`; if(!sel.has(k2)) sel.set(k2,1); } }); });
+              }
+              // Deselect all other engines in the same engineGroup (radio behaviour)
+              if (item.engineGroup) {
+                const gk = 'engine_' + item.engineGroup;
+                data[series].categories.forEach((cat2,ci2) => {
+                  cat2.items.forEach((itm2,ii2) => {
+                    const k2 = `${ci2}-${ii2}`;
+                    if (k2 !== key && itm2.engineGroup === item.engineGroup && sel.has(k2)) {
+                      sel.delete(k2);
+                    }
+                  });
+                });
+              }
+            }
+            renderAll();
+          }
+        };
+      }
+      itemsDiv.appendChild(row);
+    });
+    block.appendChild(itemsDiv);
+    panel.appendChild(block);
+  });
+}
+
+function chgQty(e,key,d) {
+  e.stopPropagation();
+  const cur=sel.get(key)||0;
+  // Find the item to check maxQty
+  let maxQty=99;
+  data[series].categories.forEach((cat,ci)=>{ cat.items.forEach((item,ii)=>{ if(`${ci}-${ii}`===key && item.maxQty) maxQty=item.maxQty; }); });
+  // For group-capped items, also check group total
+  let groupCap=99;
+  data[series].categories.forEach((cat,ci)=>{ cat.items.forEach((item,ii)=>{ if(`${ci}-${ii}`!==key) return;
+    if (item.boardRackGroup) {
+      const members=[]; data[series].categories.forEach((c,i)=>{ c.items.forEach((it,j)=>{ if(it.boardRackGroup===item.boardRackGroup) members.push(`${i}-${j}`); }); });
+      const otherTotal=members.filter(k=>k!==key).reduce((s,k)=>s+(sel.get(k)||0),0);
+      groupCap=Math.max(0,2-otherTotal);
+    }
+    if (item.stdRackUpgradeGroup) {
+      const members=[]; data[series].categories.forEach((c,i)=>{ c.items.forEach((it,j)=>{ if(it.stdRackUpgradeGroup===item.stdRackUpgradeGroup) members.push(`${i}-${j}`); }); });
+      const otherTotal=members.filter(k=>k!==key).reduce((s,k)=>s+(sel.get(k)||0),0);
+      groupCap=Math.max(0,2-otherTotal);
+    }
+  }); });
+  const nxt=Math.max(0,Math.min(maxQty,Math.min(groupCap,cur+d)));
+  nxt===0?sel.delete(key):sel.set(key,nxt);
+  renderAll();
+}
+
+function marginClass(m) {
+  if (m === null) return '';
+  if (m < 0) return 'neg';
+  if (m < 0.15) return 'low';
+  return '';
+}
+
+function renderQuote() {
+  const s = data[series];
+  const model = s.models[modelIdx];
+  const modelName = s.models[modelIdx];
+  const base = s.base.msrp[modelIdx];
+  const brandLabel = series==='axis'?'Axis Wake Boats':'Malibu Boats';
+  $('quoteModelName').textContent = `${brandLabel} — ${model}`;
+  $('brandName').textContent = series==='axis'?'Axis Wake Boats MY26 Pricing':'Malibu Boats MY26 Pricing';
+
+  const dealerBase = getDealerBase(series, modelIdx);
+  let optsTotal=0, dealerOptsTotal=0;
+  const items=[];
+  s.categories.forEach((cat,ci)=>{
+    cat.items.forEach((item,ii)=>{
+      const key=`${ci}-${ii}`;
+      const qty=sel.get(key)||0;
+      if(qty>0){
+        const isStdMdl=item.stdModels&&item.stdModels.includes(modelName);
+        const p=(item.stdPrice&&isStdMdl)?0:item.msrp[modelIdx];
+        const dc=getDealerCost(series,ci,ii,modelIdx);
+        if(p!==null&&p!==0){ optsTotal+=p*qty; if(dc!=null)dealerOptsTotal+=dc*qty; items.push({name:item.name,price:p*qty,qty,dealerUnit:dc,msrpUnit:p}); }
+        else if(p===0||p===null){ items.push({name:item.name,price:0,qty:1,incl:true}); }
+      }
+    });
+  });
+
+  const qi=$('quoteItems'), qt=$('quoteTotals');
+  if(!base && items.length===0){
+    qi.innerHTML='<div class="empty-state"><div class="empty-icon">⛵</div><div class="empty-text">Select a model &amp; options<br>to build your quote</div></div>';
+    qt.style.display='none'; return;
+  }
+
+  const baseDealerCost = dealerMode && dealerBase != null ? dealerBase : null;
+
+  let html;
+  if (dealerMode && baseDealerCost != null) {
+    html = `<div class="q-sec-label">Base</div><div class="q-item base"><div class="q-item-name">${model} — Base Boat &amp; Trailer</div><div class="q-item-prices"><span class="q-item-dealer-cost">${fmtFull(baseDealerCost)} ex</span><span class="q-item-msrp">MSRP ${fmtFull(base)}</span></div></div>`;
+  } else {
+    html = `<div class="q-sec-label">Base</div><div class="q-item base"><div class="q-item-name">${model} — Base Boat &amp; Trailer</div><div class="q-item-price">${fmtFull(base)}</div></div>`;
+  }
+
+  if(items.length){
+    html+='<div class="q-sec-label">Options</div>';
+    items.forEach(it=>{
+      const neg=it.price<0; const ql=it.qty>1?` ×${it.qty}`:'';
+      if (dealerMode && it.dealerUnit != null && !it.incl) {
+        const dcExGst = it.dealerUnit * it.qty;
+        html+=`<div class="q-item"><div class="q-item-name">${it.name}${ql}</div><div class="q-item-prices"><span class="q-item-dealer-cost">${(neg?'−':'+')}${fmt(Math.abs(dcExGst))} ex</span><span class="q-item-msrp">MSRP ${(neg?'−':'+')}${fmt(Math.abs(it.price))}</span></div></div>`;
+      } else {
+        html+=`<div class="q-item"><div class="q-item-name">${it.name}${ql}</div><div class="q-item-price${neg?' neg':''}">${it.incl?'Incl':(neg?'−':'+')+fmt(Math.abs(it.price))}</div></div>`;
+      }
+    });
+  }
+  qi.innerHTML=html; qt.style.display='block';
+  $('baseTotal').textContent=fmtFull(base);
+  $('optionsTotal').textContent=optsTotal===0?'—':(optsTotal>0?'+':'−')+fmt(Math.abs(optsTotal));
+  $('deliveryTotal').textContent=`+${fmt(DELIVERY_CHARGE)}`;
+  // Update the totals row label to show state if set
+  const deliveryRowLabel = $('deliveryRow').querySelector('.tot-label');
+  if (deliveryRowLabel) {
+    const stateTag = deliveryState ? ` <span style="font-weight:400;font-size:10px;opacity:0.7">${deliveryState}</span>` : '';
+    deliveryRowLabel.innerHTML = `Shipping &amp; Pre Delivery${stateTag} <span class="delivery-edit-hint" style="font-size:9px;opacity:0.5;font-family:'Barlow',sans-serif;font-weight:400;letter-spacing:0;text-transform:none;">✎</span>`;
+  }
+  if(discountAmt>0){ $('discRow').classList.remove('hidden'); $('discTotal').textContent=`−${fmt(discountAmt)}`; }
+  else { $('discRow').classList.add('hidden'); }
+  // Factory Incentive row — dealer mode only, shown ex-GST
+  const fiRow=$('factoryIncentiveRow');
+  if(fiRow){
+    const fiLabel = $('fiRowLabel');
+    if(dealerMode && factoryIncentive>0){
+      fiRow.classList.remove('hidden');
+      $('fiTotal').textContent=`−${fmt(factoryIncentive)} ex-GST`;
+      if(fiLabel) fiLabel.textContent='Factory Incentive';
+    } else {
+      fiRow.classList.add('hidden');
+    }
+  }
+  // Grand total: FI never affects customer-facing price (dealer cost reduction only)
+  const grand = (base + optsTotal + DELIVERY_CHARGE) - discountAmt;
+  $('grandTotal').textContent=fmtFull(grand);
+  $('grandRow').className=`tot-row grand ${brand()}`;
+  $('printBtn').className=`action-btn btn-print${series==='axis'?' axis-brand':series==='response'?' response-brand':''}`;
+  $('exportBtn').className=`action-btn btn-export`;
+
+  // Show dealer toggle row whenever builder view is active
+  $('dealerToggleRow').className = 'dealer-toggle-row visible';
+  // Show/hide dealer label based on dealer mode
+  const dealerLabel = $('dealerToggleLabel');
+  if (dealerLabel) dealerLabel.style.display = dealerMode ? '' : 'none';
+  // Factory Incentive + Adjustment buttons — always sync to dealerMode state here
+  const fiBtn = $('factoryIncentiveBtn');
+  if (fiBtn) fiBtn.style.display = dealerMode ? 'inline-block' : 'none';
+  const adjBtn = $('adjustmentBtn');
+  if (adjBtn) adjBtn.style.display = dealerMode ? 'inline-block' : 'none';
+
+  // Dealer totals
+  const dpRow=$('dealerPriceRow'), msRow=$('marginSummaryRow');
+  if(dealerMode && dealerBase!=null){
+    // Delivery excluded — margin on boat+options ex-GST, adjustment applied ex-GST
+    const dealerCostExGst = dealerBase + dealerOptsTotal - factoryIncentive;
+    const dealerPriceIncGst = dealerCostExGst * (1 + GST_RATE);
+    const msrpExGst = (base + optsTotal - discountAmt) / (1 + GST_RATE);
+    const msrpExGstFull = (base + optsTotal) / (1 + GST_RATE);
+    const grossDollar = msrpExGst - dealerCostExGst;
+    const grossPct = grossDollar / msrpExGstFull;
+    const mc = marginClass(grossPct);
+    dpRow.style.display='block';
+    $('dealerPriceVal').textContent=fmtFull(Math.round(dealerPriceIncGst));
+    msRow.style.display='block';
+    $('marginPct').textContent=(grossPct*100).toFixed(1)+'%';
+    $('marginPct').className=`tot-val ${mc}`;
+    $('marginDollar').textContent=(grossDollar>=0?'+':'−')+('$')+Math.abs(Math.round(grossDollar)).toLocaleString('en-AU');
+    $('marginDollar').className=`margin-sub ${mc}`;
+  } else {
+    dpRow.style.display='none';
+    msRow.style.display='none';
+  }
+}
+function updateDiscBtn() {
+  // Stub — no-op (adjustment access via dealer toggle row)
+}
+
+function renderAll() {
+  document.querySelectorAll('.series-tab').forEach(t=>t.classList.remove('active'));
+  const tabs=document.querySelectorAll('.series-tab');
+  const mi={wakesetter:0,axis:1,response:2};
+  if(mi[series]!==undefined) tabs[mi[series]].classList.add('active');
+  syncDeselectedStd();
+  renderCustomerBar();
+  renderModelSelector();
+  renderOptions();
+  renderQuote();
+  updateDiscBtn();
+}
+
+// ════════════════════════════════════════════════════════════
+// SAVE QUOTE → SMARTSHEET
+// ════════════════════════════════════════════════════════════
+async function saveQuote() {
+  if (!customer.name || !customer.mobile) {
+    showToast('Please add customer details first', 'error');
+    openEditCustomerModal();
+    return;
+  }
+
+  const s = data[series];
+  const model = s.models[modelIdx];
+  const modelName = model;
+  const base = s.base.msrp[modelIdx];
+  let optsTotal=0; const items=[];
+  s.categories.forEach((cat,ci)=>{ cat.items.forEach((item,ii)=>{ const key=`${ci}-${ii}`; const qty=sel.get(key)||0; if(qty>0){ const isStdMdl=item.stdModels&&item.stdModels.includes(modelName); const p=(item.stdPrice&&isStdMdl)?0:item.msrp[modelIdx]; if(p!==null){ optsTotal+=p*qty; items.push({name:item.name,price:p*qty,qty}); } } }); });
+  const grand=(base+optsTotal+DELIVERY_CHARGE)-discountAmt;
+
+  const quote = {
+    id: currentQuoteRowId || Date.now(),
+    date: new Date().toLocaleDateString('en-AU',{day:'2-digit',month:'short',year:'numeric'}),
+    series, model, base, optsTotal,
+    delivery: DELIVERY_CHARGE, discount: discountAmt||0, grand,
+    customer: { ...customer },
+    snap: JSON.stringify([...sel]),
+  };
+
+  if (!isSsConfigured()) {
+    showToast('Smartsheet not configured — quote not saved', 'error');
+    return;
+  }
+
+  const btn = $('saveBtn');
+  btn.disabled = true;
+  $('saveStatus').textContent = 'saving…';
+
+  try {
+    const res = await fetch(FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'saveQuote',
+        columnMap,
+        quote,
+        items,
+        rowId: currentQuoteRowId || null,
+        appUrl: siteUrl || window.location.origin,
+      })
+    });
+    const data2 = await res.json();
+    if (!res.ok) throw new Error(data2.error || 'Save failed');
+
+    currentQuoteRowId = data2.rowId || currentQuoteRowId;
+    $('saveStatus').textContent = '✓ saved';
+    showToast('Quote saved to Smartsheet', 'success');
+    setTimeout(()=>{ $('saveStatus').textContent=''; },3000);
+  } catch(err) {
+    $('saveStatus').textContent = '✗ error';
+    showToast(`Save error: ${err.message}`, 'error', 5000);
+    setTimeout(()=>{ $('saveStatus').textContent=''; },4000);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// ACTIONS
+// ════════════════════════════════════════════════════════════
+function setSeries(s) {
+  series=s; modelIdx=0; sel.clear(); collapsed.clear();
+  // Clear discounts when switching series/model
+  discountAmt = 0; factoryIncentive = 0;
+  try { localStorage.setItem('mb_discount','0'); localStorage.setItem('mb_factory_incentive','0'); } catch(e){}
+  autoSelectStd();
+  document.body.className = s==='axis'?'theme-axis':s==='response'?'theme-response':'';
+  renderAll();
+}
+
+function clearAll() {
+  sel.clear(); autoSelectStd();
+  renderAll();
+}
+
+function printQuote() {
+  const brandLabel = series==='axis'?'Axis Wake Boats':'Malibu Boats';
+  $('printBrand').textContent=`${brandLabel} — MY26 Quote${dealerMode?' [DEALER — CONFIDENTIAL]':''}`;
+  $('printDate').textContent=`Prepared: ${new Date().toLocaleDateString('en-AU',{day:'2-digit',month:'long',year:'numeric'})}`;
+  const parts=[customer.name,customer.mobile,customer.email,customer.postcode?'PC: '+customer.postcode:''].filter(Boolean);
+  $('printCust').textContent=parts.length?'Customer: '+parts.join(' · '):'';
+
+  const dpRow=$('dealerPriceRow'), msRow=$('marginSummaryRow'), discRow=$('discRow'), fiRow=$('factoryIncentiveRow');
+  const dpWas=dpRow?dpRow.style.display:'';
+  const msWas=msRow?msRow.style.display:'';
+  const discWas=discRow?discRow.className:'';
+  const fiWas=fiRow?fiRow.className:'';
+
+  if (dealerMode) {
+    if(dpRow && dpRow.style.display==='none') dpRow.style.display='block';
+    if(msRow && msRow.style.display==='none') msRow.style.display='block';
+    if(discRow) discRow.classList.remove('hidden');
+    if(fiRow && factoryIncentive>0) fiRow.classList.remove('hidden');
+  } else {
+    if(dpRow) dpRow.style.display='none';
+    if(msRow) msRow.style.display='none';
+    if(fiRow) fiRow.classList.add('hidden');
+  }
+
+  window.print();
+
+  // Restore to pre-print state
+  if(dpRow) dpRow.style.display=dpWas;
+  if(msRow) msRow.style.display=msWas;
+  if(discRow) discRow.className=discWas;
+  if(fiRow) fiRow.className=fiWas;
+}
+
+// ════════════════════════════════════════════════════════════
+// EXPORT QUOTE → PDF
+// Opens a styled print window — customer presentation quality
+// ════════════════════════════════════════════════════════════
+function exportQuotePDF() {
+  const s        = data[series];
+  const model    = s.models[modelIdx];
+  const modelName = model;
+  const base     = s.base.msrp[modelIdx];
+  if (!base) { showToast('Select a model first', 'error'); return; }
+
+  // Brand palette
+  const isAxis     = series === 'axis';
+  const isResponse = series === 'response';
+  const accentHex  = isAxis ? '#d94e18' : isResponse ? '#b07820' : '#1a6fa3';
+  const accent2Hex = isAxis ? '#c23a00' : isResponse ? '#8a5c10' : '#0d4f8a';
+  const lightBg    = isAxis ? '#fff5f2' : isResponse ? '#fdf8ee' : '#f0f6ff';
+  const brandName  = isAxis ? 'Axis Wake Boats' : 'Malibu Boats';
+  const seriesName = isAxis ? 'Axis' : isResponse ? 'Response' : 'Wakesetter';
+
+  // Build item rows
+  let optionsRows = '';
+  let optsTotal = 0;
+  s.categories.forEach((cat, ci) => {
+    const catItems = [];
+    cat.items.forEach((item, ii) => {
+      const key = `${ci}-${ii}`;
+      const qty = sel.get(key) || 0;
+      if (qty > 0) {
+        const isStdMdl = item.stdModels && item.stdModels.includes(modelName);
+        const p = (item.stdPrice && isStdMdl) ? 0 : item.msrp[modelIdx];
+        if (p !== null && p !== 0) {
+          optsTotal += p * qty;
+          const ql = qty > 1 ? ` ×${qty}` : '';
+          const neg = p < 0;
+          catItems.push({ name: item.name + ql, price: p * qty, neg });
+        } else if (p === 0 || p === null) {
+          catItems.push({ name: item.name, price: 0, incl: true });
+        }
+      }
+    });
+    if (catItems.length) {
+      optionsRows += `<tr class="cat-row"><td colspan="2">${cat.name}</td></tr>`;
+      catItems.forEach(it => {
+        const priceStr = it.incl ? 'Included' : (it.neg ? '−' : '+') + fmt(Math.abs(it.price));
+        optionsRows += `<tr class="item-row">
+          <td>${it.name}</td>
+          <td class="price-col${it.neg ? ' neg' : ''}">${priceStr}</td>
+        </tr>`;
+      });
+    }
+  });
+
+  const grand = (base + optsTotal + DELIVERY_CHARGE) - discountAmt;
+
+  // Dealer margin (only computed when dealerMode is active)
+  let dealerBlock = { active: false };
+  if (dealerMode) {
+    const dealerBase = getDealerBase(series, modelIdx);
+    if (dealerBase != null) {
+      let dealerOptsTotal = 0;
+      s.categories.forEach((cat, ci) => {
+        cat.items.forEach((item, ii) => {
+          const key = `${ci}-${ii}`;
+          const qty = sel.get(key) || 0;
+          if (qty > 0) {
+            const dc = getDealerCost(series, ci, ii, modelIdx);
+            if (dc != null) dealerOptsTotal += dc * qty;
+          }
+        });
+      });
+      // Delivery excluded — margin on boat+options ex-GST, adjustment applied ex-GST
+      const dealerCostExGst = dealerBase + dealerOptsTotal - factoryIncentive;
+      const dealerPriceIncGst = dealerCostExGst * (1 + GST_RATE);
+      const msrpExGst = (base + optsTotal - discountAmt) / (1 + GST_RATE);
+      const msrpExGstFull = (base + optsTotal) / (1 + GST_RATE);
+      const grossDollar = msrpExGst - dealerCostExGst;
+      const grossPct = grossDollar / msrpExGstFull;
+      const mc = grossPct >= 0.15 ? '#1a7a4a' : grossPct >= 0 ? '#b07820' : '#c0392b';
+      dealerBlock = {
+        active: true,
+        dealerPriceIncGst,
+        grossDollar,
+        grossPct,
+        mc,
+        sign: grossDollar >= 0 ? '+' : '\u2212'
+      };
+    }
+  }
+
+  const dateStr = new Date().toLocaleDateString('en-AU', { day:'2-digit', month:'long', year:'numeric' });
+  const delivLabel = 'Shipping &amp; Pre Delivery' + (deliveryState ? ' &mdash; ' + deliveryState : '');
+  const custParts  = [customer.name, customer.mobile, customer.email, customer.postcode ? customer.postcode : ''].filter(Boolean);
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>${brandName} — ${model} Quote</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  @page { size: A4 portrait; margin: 0; }
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: white;
+    color: #1a1a2e;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── HEADER BAND ── */
+  .page-header {
+    background: linear-gradient(135deg, ${accentHex} 0%, ${accent2Hex} 100%);
+    padding: 32px 40px 28px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .brand-block {}
+  .brand-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    line-height: 1;
+    opacity: 0.95;
+  }
+  .brand-series {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+  .quote-label-block { text-align: right; }
+  .quote-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .quote-date {
+    font-size: 13px;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+
+  /* ── MODEL HERO BAND ── */
+  .model-hero {
+    background: ${lightBg};
+    border-bottom: 3px solid ${accentHex};
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .model-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 36px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: ${accentHex};
+    line-height: 1;
+  }
+  .model-sub {
+    font-size: 12px;
+    color: #777;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .base-price-hero {
+    text-align: right;
+  }
+  .base-price-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .base-price-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 32px;
+    color: ${accentHex};
+    letter-spacing: 1px;
+  }
+
+  /* ── IWWF BADGE (TXI only) ── */
+  .iwwf-badge {
+    text-align: right;
+  }
+  .iwwf-logo-line {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: ${accentHex};
+  }
+  .iwwf-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #555;
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+  .iwwf-sub {
+    font-size: 10px;
+    color: #888;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+  .customer-band {
+    background: #f7f9fc;
+    border-bottom: 1px solid #e0e8f0;
+    padding: 14px 40px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  .cust-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 2px;
+  }
+  .cust-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a2e;
+  }
+  .cust-sub {
+    font-size: 12px;
+    color: #666;
+    margin-top: 1px;
+  }
+
+  /* ── BODY ── */
+  .body-wrap {
+    padding: 28px 40px 24px;
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+  }
+
+  /* ── OPTIONS TABLE ── */
+  .options-col { flex: 1; min-width: 0; }
+  .section-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: ${accentHex};
+    border-bottom: 2px solid ${accentHex};
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+  }
+  table.options-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  tr.cat-row td {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #aaa;
+    padding: 10px 0 3px;
+  }
+  tr.item-row td {
+    padding: 4px 0;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: top;
+    color: #333;
+    line-height: 1.35;
+  }
+  td.price-col {
+    text-align: right;
+    white-space: nowrap;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #222;
+    padding-left: 12px;
+    width: 90px;
+  }
+  td.price-col.neg { color: #1a7a4a; }
+
+  /* ── TOTALS PANEL ── */
+  .totals-col {
+    width: 220px;
+    flex-shrink: 0;
+  }
+  .totals-box {
+    background: #f7f9fc;
+    border: 1px solid #e0e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .totals-section-hdr {
+    background: ${accentHex};
+    color: white;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 7px 14px;
+  }
+  .tot-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 14px;
+    border-bottom: 1px solid #eaeff5;
+    font-size: 13px;
+  }
+  .tot-line .lbl { color: #666; font-size: 12px; }
+  .tot-line .val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #222;
+  }
+  .tot-line .val.accent { color: ${accentHex}; }
+  .tot-line.disc .lbl { color: #1a7a4a; }
+  .tot-line.disc .val { color: #1a7a4a; }
+  .tot-line.dealer-price-line { background: #fff8f0; border-top: 2px solid #e0e8f0; }
+  .tot-line.dealer-price-line .lbl { color: #c23a00; font-weight: 700; }
+  .tot-line.dealer-price-line .val { color: #c23a00; }
+  .tot-line.dealer-margin-line { background: #fff8f0; border-bottom: none; }
+  .tot-line.dealer-margin-line .lbl { color: #888; font-size: 11px; }
+  .grand-line {
+    background: linear-gradient(135deg, ${accentHex}, ${accent2Hex});
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .grand-line .lbl {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.8);
+  }
+  .grand-line .val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    color: white;
+    letter-spacing: 1px;
+  }
+  .gst-note {
+    font-size: 10px;
+    color: #aaa;
+    text-align: right;
+    padding: 6px 14px 0;
+  }
+
+  /* ── FOOTER ── */
+  .page-footer {
+    border-top: 1px solid #e0e8f0;
+    padding: 14px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+  .footer-disclaimer {
+    font-size: 10px;
+    color: #bbb;
+    max-width: 480px;
+    line-height: 1.5;
+  }
+  .footer-brand {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: ${accentHex};
+    opacity: 0.6;
+  }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body onload="window.print()">
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="brand-block">
+    <div class="brand-name">${brandName}</div>
+    <div class="brand-series">MY26 ${seriesName} Series</div>
+  </div>
+  <div class="quote-label-block">
+    <div class="quote-label">${dealerBlock.active ? 'Dealer Copy — Confidential' : 'Customer Quote'}</div>
+    <div class="quote-date">${dateStr}</div>
+  </div>
+</div>
+
+<!-- MODEL HERO -->
+<div class="model-hero">
+  <div>
+    <div class="model-name">${model}</div>
+    <div class="model-sub">${seriesName} Series &nbsp;·&nbsp; MY26</div>
+  </div>
+  ${model === 'TXI Open Ed.' ? `
+  <div class="iwwf-badge">
+    <div class="iwwf-title">Official Tow Boat<br>IWWF World Water Ski Championships</div>
+    <div class="iwwf-sub">International Waterski &amp; Wakeboard Federation</div>
+  </div>` : ''}
+</div>
+
+${custParts.length ? `
+<!-- CUSTOMER BAND -->
+<div class="customer-band">
+  <div>
+    <div class="cust-label">Prepared for</div>
+    <div class="cust-value">${customer.name||''}</div>
+    <div class="cust-sub">${[customer.mobile, customer.email].filter(Boolean).join(' &nbsp;·&nbsp; ')}</div>
+  </div>
+  ${customer.postcode ? `<div><div class="cust-label">Postcode</div><div class="cust-value">${customer.postcode}</div></div>` : ''}
+</div>` : ''}
+
+<!-- BODY -->
+<div class="body-wrap">
+
+  <!-- OPTIONS LIST -->
+  <div class="options-col">
+    <div class="section-heading">Selected Options &amp; Equipment</div>
+    ${optionsRows ? `<table class="options-table">${optionsRows}</table>` : '<p style="color:#aaa;font-size:13px;padding:8px 0">No options selected — base specification only.</p>'}
+  </div>
+
+  <!-- TOTALS PANEL -->
+  <div class="totals-col">
+    <div class="totals-box">
+      <div class="totals-section-hdr">Price Summary</div>
+      <div class="tot-line">
+        <span class="lbl">Base Price</span>
+        <span class="val">${fmtFull(base)}</span>
+      </div>
+      <div class="tot-line">
+        <span class="lbl">Options</span>
+        <span class="val">${optsTotal === 0 ? '—' : (optsTotal > 0 ? '+' : '−') + fmt(Math.abs(optsTotal))}</span>
+      </div>
+      <div class="tot-line">
+        <span class="lbl">${delivLabel}</span>
+        <span class="val">+${fmt(DELIVERY_CHARGE)}</span>
+      </div>
+      ${(factoryIncentive > 0 && dealerBlock.active) ? `
+      <div class="tot-line" style="border-bottom:2px solid #eaeff5;">
+        <span class="lbl" style="color:#666">MSRP Subtotal</span>
+        <span class="val" style="color:#444">${fmtFull(base + optsTotal + DELIVERY_CHARGE)}</span>
+      </div>
+      <div class="tot-line" style="background:#fff8f0">
+        <span class="lbl" style="color:#e85d20">Factory Incentive</span>
+        <span class="val" style="color:#e85d20">\u2212${fmt(factoryIncentive)} <span style="font-size:10px;font-weight:500;opacity:0.7">ex-GST</span></span>
+      </div>` : (discountAmt > 0 ? `
+      <div class="tot-line" style="border-bottom:2px solid #eaeff5;">
+        <span class="lbl" style="color:#666">MSRP Subtotal</span>
+        <span class="val" style="color:#444">${fmtFull(base + optsTotal + DELIVERY_CHARGE)}</span>
+      </div>` : '')}
+      ${discountAmt > 0 ? `
+      <div class="tot-line disc">
+        <span class="lbl">Dealer Adjustment</span>
+        <span class="val">\u2212${fmt(discountAmt)}</span>
+      </div>` : ''}
+      <div class="grand-line">
+        <span class="lbl">Total (inc. GST)</span>
+        <span class="val">${fmtFull(grand)}</span>
+      </div>
+      ${dealerBlock.active ? `
+      <div class="tot-line dealer-price-line">
+        <span class="lbl">Dealer Price (inc. GST)</span>
+        <span class="val">${fmtFull(Math.round(dealerBlock.dealerPriceIncGst))}</span>
+      </div>
+      <div class="tot-line dealer-margin-line">
+        <span class="lbl">Gross Margin (ex. GST)</span>
+        <span class="val" style="color:${dealerBlock.mc}">${dealerBlock.sign}${fmt(Math.abs(Math.round(dealerBlock.grossDollar)))} &nbsp;<span style="font-size:11px;font-weight:600">${(dealerBlock.grossPct*100).toFixed(1)}%</span></span>
+      </div>` : ''}
+    </div>
+    <div class="gst-note">All prices include GST</div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <div class="footer-disclaimer">
+    All pricing is in Australian Dollars and includes GST. Prices are subject to change without notice.
+    This quote is valid for 30 days from the date of issue. Images are for illustration purposes only.
+    Specifications and availability may vary.
+  </div>
+  <div class="footer-brand">${brandName}</div>
+</div>
+
+</body>
+</html>`;
+
+  const win = window.open('', '_blank');
+  if (!win) { showToast('Allow pop-ups to export PDF', 'error', 4000); return; }
+  win.document.write(html);
+  win.document.close();
+}
+
+// ════════════════════════════════════════════════════════════
+// INIT — all DOM interactions go here, after full script parse
+// ════════════════════════════════════════════════════════════
+(function init() {
+  // Brand triple-tap removed — settings on login screen
+
+  // Edition badge triple-tap (opens $$ adjustment modal)
+  const edgeBadgeEl = document.getElementById('editionBadge');
+  if (edgeBadgeEl) edgeBadgeEl.addEventListener('click', edgeBadgeTap);
+
+  // Password field focus
+  document.getElementById('pwInput').focus();
+
+  // Pre-populate Site URL on login screen from localStorage
+  const spSiteUrlEl = document.getElementById('spSiteUrl');
+  if (spSiteUrlEl) {
+    try {
+      const saved = localStorage.getItem('mb_site_url') || '';
+      if (saved) spSiteUrlEl.value = saved;
+    } catch(e) {}
+  }
+  // Show colMappedBadge if already configured
+  const badge = document.getElementById('colMappedBadge');
+  if (badge) {
+    try {
+      const cm = JSON.parse(localStorage.getItem('mb_col_map') || '{}');
+      const n = Object.keys(cm).length;
+      if (n >= 5) { badge.textContent = '✓ ' + n + ' columns already mapped — ready to go'; badge.style.display = 'block'; }
+    } catch(e) {}
+  }
+
+  // Discount modal — close on overlay click
+  const discOverlay = document.getElementById('discModalOverlay');
+  if (discOverlay) {
+    discOverlay.addEventListener('click', function(e) {
+      if (e.target === this) closeDiscountModal();
+    });
+  }
+
+  // Factory Incentive modal — close on overlay click
+  const fiOverlay = document.getElementById('fiModalOverlay');
+  if (fiOverlay) {
+    fiOverlay.addEventListener('click', function(e) {
+      if (e.target === this) closeFactoryIncentiveModal();
+    });
+  }
+
+  // Settings panel removed — now on login screen
+})();
+</script>
+</body>
+</html>
