@@ -2913,23 +2913,24 @@ function printQuote() {
 // Opens a styled print window — customer presentation quality
 // ════════════════════════════════════════════════════════════
 function exportQuotePDF() {
-  const s         = data[series];
-  const model     = s.models[modelIdx];
+  const s        = data[series];
+  const model    = s.models[modelIdx];
   const modelName = model;
-  const base      = s.base.msrp[modelIdx];
+  const base     = s.base.msrp[modelIdx];
   if (!base) { showToast('Select a model first', 'error'); return; }
 
-  // ── Colours ────────────────────────────────────────────────
+  // Brand palette
   const isAxis     = series === 'axis';
   const isResponse = series === 'response';
-  const accent     = isAxis ? [217,78,24] : isResponse ? [176,120,32] : [26,111,163];
-  const accent2    = isAxis ? [194,58,0]  : isResponse ? [138,92,16]  : [13,79,138];
+  const accentHex  = isAxis ? '#d94e18' : isResponse ? '#b07820' : '#1a6fa3';
+  const accent2Hex = isAxis ? '#c23a00' : isResponse ? '#8a5c10' : '#0d4f8a';
+  const lightBg    = isAxis ? '#fff5f2' : isResponse ? '#fdf8ee' : '#f0f6ff';
   const brandName  = isAxis ? 'Axis Wake Boats' : 'Malibu Boats';
   const seriesName = isAxis ? 'Axis' : isResponse ? 'Response' : 'Wakesetter';
 
-  // ── Build selected options ──────────────────────────────────
+  // Build item rows
+  let optionsRows = '';
   let optsTotal = 0;
-  const optLines = [];   // { cat, name, price, incl, neg }
   s.categories.forEach((cat, ci) => {
     const catItems = [];
     cat.items.forEach((item, ii) => {
@@ -2941,296 +2942,472 @@ function exportQuotePDF() {
         if (p !== null && p !== 0) {
           optsTotal += p * qty;
           const ql = qty > 1 ? ` ×${qty}` : '';
-          catItems.push({ name: item.name.replace(/^[^:]+:\s*/, '') + ql, price: p * qty, neg: p < 0 });
-        } else {
-          catItems.push({ name: item.name.replace(/^[^:]+:\s*/, ''), price: 0, incl: true });
+          const neg = p < 0;
+          catItems.push({ name: item.name + ql, price: p * qty, neg });
+        } else if (p === 0 || p === null) {
+          catItems.push({ name: item.name, price: 0, incl: true });
         }
       }
     });
-    if (catItems.length) catItems.forEach(it => optLines.push({ cat: cat.name, ...it }));
-  });
-
-  // discountAmt is the app-level variable (fixed dollar amount)
-  const grand = (base + optsTotal + DELIVERY_CHARGE) - discountAmt;
-  const dateStr   = new Date().toLocaleDateString('en-AU', { day:'2-digit', month:'long', year:'numeric' });
-  const filename  = [customer.name, model, customer.mobile]
-    .filter(Boolean).map(s => s.replace(/[^a-zA-Z0-9]/g,'_')).join('_') + '.pdf';
-
-  showToast('Generating PDF…', 'info', 2000);
-
-  // ── Load jsPDF then build ───────────────────────────────────
-  const loadScript = (src) => new Promise((res, rej) => {
-    if (document.querySelector(`script[src="${src}"]`)) { res(); return; }
-    const s = document.createElement('script');
-    s.src = src; s.onload = res; s.onerror = rej;
-    document.head.appendChild(s);
-  });
-
-  loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js').then(() => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
-    const PW = 210, PH = 297;
-    const ML = 14, MR = 14, MT = 0;
-    const CW = PW - ML - MR;
-    const [ar, ag, ab] = accent;
-    const [a2r, a2g, a2b] = accent2;
-
-    // ── Helper functions ──────────────────────────────────────
-    const hex2rgb = h => { const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16); return [r,g,b]; };
-    const money = v => '$' + Math.abs(Math.round(v)).toLocaleString('en-AU');
-    let y = 0;
-
-    // ── HEADER BAND ───────────────────────────────────────────
-    doc.setFillColor(10, 22, 40);
-    doc.rect(0, 0, PW, 28, 'F');
-    doc.setFillColor(ar, ag, ab);
-    doc.rect(0, 28, PW, 1.5, 'F');
-
-    // Brand name
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(18);
-    doc.setTextColor(ar, ag, ab);
-    doc.text(brandName.toUpperCase(), ML, 12);
-
-    // Series + MY
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(9);
-    doc.setTextColor(180, 190, 210);
-    doc.text(`MY26 ${seriesName} Series`, ML, 19);
-
-    // Right: quote type + date
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(9);
-    doc.setTextColor(ar, ag, ab);
-    const qLabel = dealerMode ? 'DEALER COPY — CONFIDENTIAL' : 'CUSTOMER QUOTE';
-    doc.text(qLabel, PW - MR, 12, { align:'right' });
-    doc.setFont('helvetica','normal');
-    doc.setTextColor(180,190,210);
-    doc.text(dateStr, PW - MR, 19, { align:'right' });
-
-    y = 35;
-
-    // ── MODEL HERO ────────────────────────────────────────────
-    doc.setFillColor(240, 245, 255);
-    doc.rect(ML, y, CW, 18, 'F');
-    doc.setDrawColor(ar, ag, ab);
-    doc.setLineWidth(0.8);
-    doc.rect(ML, y, 4, 18, 'F');
-    doc.setFillColor(ar, ag, ab);
-    doc.rect(ML, y, 4, 18, 'F');
-
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(22);
-    doc.setTextColor(10, 22, 40);
-    doc.text(model, ML + 8, y + 11);
-
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(9);
-    doc.setTextColor(100, 110, 130);
-    doc.text(`${seriesName} Series  ·  MY26  ·  Base Price: ${money(base)}`, ML + 8, y + 16);
-
-    // Base price right
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(14);
-    doc.setTextColor(ar, ag, ab);
-    doc.text(money(base), PW - MR, y + 12, { align:'right' });
-
-    y += 23;
-
-    // ── CUSTOMER BLOCK ────────────────────────────────────────
-    if (customer.name || customer.mobile || customer.email) {
-      doc.setFillColor(250, 251, 253);
-      doc.setDrawColor(220, 225, 235);
-      doc.setLineWidth(0.3);
-      doc.roundedRect(ML, y, CW, 14, 1.5, 1.5, 'FD');
-
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(7);
-      doc.setTextColor(130, 140, 160);
-      doc.text('CUSTOMER', ML + 4, y + 5);
-
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(10);
-      doc.setTextColor(10, 22, 40);
-      doc.text(customer.name || '', ML + 4, y + 10);
-
-      const custMeta = [customer.mobile, customer.email, customer.postcode ? 'PC ' + customer.postcode : ''].filter(Boolean).join('  ·  ');
-      doc.setFont('helvetica','normal');
-      doc.setFontSize(8);
-      doc.setTextColor(80, 90, 110);
-      doc.text(custMeta, PW - MR, y + 10, { align:'right' });
-
-      y += 19;
-    }
-
-    // ── OPTIONS TABLE ─────────────────────────────────────────
-    if (optLines.length) {
-      // Table header
-      doc.setFillColor(ar, ag, ab);
-      doc.rect(ML, y, CW, 6.5, 'F');
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(7.5);
-      doc.setTextColor(255,255,255);
-      doc.text('SELECTED OPTIONS', ML + 3, y + 4.2);
-      doc.text('PRICE', PW - MR - 1, y + 4.2, { align:'right' });
-      y += 6.5;
-
-      let lastCat = '';
-      const ROW_H = 5.5;
-      const PAGE_BOTTOM = PH - 35; // leave room for pricing footer
-
-      optLines.forEach(line => {
-        // Page break check
-        if (y + ROW_H > PAGE_BOTTOM) {
-          doc.addPage();
-          y = 14;
-          // Repeat header
-          doc.setFillColor(ar, ag, ab);
-          doc.rect(ML, y, CW, 6.5, 'F');
-          doc.setFont('helvetica','bold');
-          doc.setFontSize(7.5);
-          doc.setTextColor(255,255,255);
-          doc.text('SELECTED OPTIONS (continued)', ML + 3, y + 4.2);
-          doc.text('PRICE', PW - MR - 1, y + 4.2, { align:'right' });
-          y += 6.5;
-          lastCat = '';
-        }
-
-        // Category sub-header
-        if (line.cat !== lastCat) {
-          doc.setFillColor(240, 243, 248);
-          doc.rect(ML, y, CW, 5, 'F');
-          doc.setFont('helvetica','bold');
-          doc.setFontSize(7);
-          doc.setTextColor(ar, ag, ab);
-          doc.text(line.cat.toUpperCase(), ML + 3, y + 3.4);
-          y += 5;
-          lastCat = line.cat;
-        }
-
-        // Alternating row bg
-        const rowIdx = optLines.indexOf(line);
-        if (rowIdx % 2 === 0) {
-          doc.setFillColor(252, 253, 255);
-          doc.rect(ML, y, CW, ROW_H, 'F');
-        }
-
-        // Item name — truncate if too long
-        doc.setFont('helvetica','normal');
-        doc.setFontSize(7.5);
-        doc.setTextColor(30, 38, 55);
-        const maxW = CW - 28;
-        const nameLines = doc.splitTextToSize(line.name, maxW);
-        doc.text(nameLines[0], ML + 3, y + ROW_H - 1.8);
-
-        // Price
-        const priceStr = line.incl ? 'Incl.' : (line.neg ? '−' : '+') + money(Math.abs(line.price));
-        doc.setFont('helvetica', line.incl ? 'normal' : 'bold');
-        doc.setFontSize(7.5);
-        doc.setTextColor(line.neg ? 180 : 30, line.neg ? 60 : 38, line.neg ? 60 : 55);
-        doc.text(priceStr, PW - MR - 1, y + ROW_H - 1.8, { align:'right' });
-
-        // Bottom rule
-        doc.setDrawColor(230, 233, 240);
-        doc.setLineWidth(0.15);
-        doc.line(ML, y + ROW_H, ML + CW, y + ROW_H);
-        y += ROW_H;
+    if (catItems.length) {
+      optionsRows += `<tr class="cat-row"><td colspan="2">${cat.name}</td></tr>`;
+      catItems.forEach(it => {
+        const priceStr = it.incl ? 'Included' : (it.neg ? '−' : '+') + fmt(Math.abs(it.price));
+        optionsRows += `<tr class="item-row">
+          <td>${it.name}</td>
+          <td class="price-col${it.neg ? ' neg' : ''}">${priceStr}</td>
+        </tr>`;
       });
     }
-
-    // ── PRICING FOOTER ────────────────────────────────────────
-    // Make sure footer fits; add page if needed
-    const footerH = 44 + (discountAmt > 0 ? 7 : 0) + (dealerMode ? 18 : 0);
-    if (y + footerH > PH - 10) { doc.addPage(); y = 14; }
-
-    y += 4;
-    doc.setDrawColor(220, 225, 235);
-    doc.setLineWidth(0.4);
-    doc.line(ML, y, ML + CW, y);
-    y += 5;
-
-    const priceRow = (label, val, bold, big, colour) => {
-      doc.setFont('helvetica', bold ? 'bold' : 'normal');
-      doc.setFontSize(big ? 10 : 8);
-      doc.setTextColor(...(colour || [50, 60, 80]));
-      doc.text(label, ML + 3, y);
-      doc.text(val, PW - MR - 1, y, { align:'right' });
-      y += big ? 7 : 5.5;
-    };
-
-    priceRow('Base Price', money(base));
-    if (optsTotal) priceRow('Options Total', '+' + money(optsTotal));
-    priceRow('Delivery', '+' + money(DELIVERY_CHARGE));
-    if (discountAmt > 0) priceRow('Discount', '−' + money(discountAmt), false, false, [180,60,60]);
-
-    // Grand total band
-    y += 1;
-    doc.setFillColor(10, 22, 40);
-    doc.rect(ML, y, CW, 12, 'F');
-    doc.setFillColor(ar, ag, ab);
-    doc.rect(ML, y, 3, 12, 'F');
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(9);
-    doc.setTextColor(180, 190, 210);
-    doc.text('TOTAL DRIVE AWAY (INC. GST)', ML + 6, y + 7.5);
-    doc.setFontSize(14);
-    doc.setTextColor(ar, ag, ab);
-    doc.text(money(grand), PW - MR - 1, y + 8, { align:'right' });
-    y += 16;
-
-    // Dealer pricing section
-    if (dealerMode) {
-      // Recalculate dealer figures inline
-      let dealerOptsEx = 0;
-      s.categories.forEach((cat,ci)=>{ cat.items.forEach((item,ii)=>{ const key=`${ci}-${ii}`; const qty=sel.get(key)||0; if(qty>0&&item.dealer&&item.dealer[modelIdx]!=null) dealerOptsEx+=item.dealer[modelIdx]*qty; }); });
-      const dealerBaseEx   = s.base.dealer ? s.base.dealer[modelIdx] : 0;
-      const dealerCostEx   = (dealerBaseEx||0) + dealerOptsEx - factoryIncentive;
-      const dealerPriceInc = dealerCostEx * (1 + GST_RATE);
-      const msrpEx         = (base + optsTotal - discountAmt) / (1 + GST_RATE);
-      const msrpExFull     = (base + optsTotal) / (1 + GST_RATE);
-      const gp             = msrpEx - dealerCostEx;
-      const gm             = msrpExFull > 0 ? gp / msrpExFull : 0;
-
-      doc.setFillColor(255, 248, 240);
-      doc.setDrawColor(200, 100, 50);
-      doc.setLineWidth(0.3);
-      doc.roundedRect(ML, y, CW, factoryIncentive > 0 ? 24 : 18, 1.5, 1.5, 'FD');
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(7);
-      doc.setTextColor(180, 80, 30);
-      doc.text('DEALER — CONFIDENTIAL', ML + 4, y + 5);
-      doc.setFontSize(8.5);
-      doc.setTextColor(10,22,40);
-      doc.text('Dealer Cost (ex-GST)', ML + 4, y + 11);
-      doc.text(money(dealerCostEx), PW/2 - 2, y + 11, { align:'right' });
-      doc.text('Gross Margin', PW/2 + 2, y + 11);
-      doc.text(`${money(gp)}  (${(gm*100).toFixed(1)}%)`, PW - MR - 1, y + 11, { align:'right' });
-      if (factoryIncentive > 0) {
-        doc.setFont('helvetica','normal');
-        doc.setFontSize(7.5);
-        doc.setTextColor(180, 80, 30);
-        doc.text(`Factory Incentive applied: −${money(factoryIncentive)} ex-GST`, ML + 4, y + 18);
-      }
-      y += factoryIncentive > 0 ? 28 : 22;
-    }
-
-    // ── FOOTER BAR ────────────────────────────────────────────
-    doc.setFillColor(10, 22, 40);
-    doc.rect(0, PH - 10, PW, 10, 'F');
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(7);
-    doc.setTextColor(120, 130, 150);
-    doc.text('This quote is valid for 30 days. Prices include GST. Subject to availability.', ML, PH - 4);
-    doc.text(`${brandName}  ·  MY26`, PW - MR, PH - 4, { align:'right' });
-
-    // ── SAVE ──────────────────────────────────────────────────
-    doc.save(filename);
-    showToast('PDF downloaded ✓', 'success');
-
-  }).catch(err => {
-    console.error('jsPDF load error:', err);
-    showToast('PDF generation failed — check internet connection', 'error', 4000);
   });
+
+  const grand = (base + optsTotal + DELIVERY_CHARGE) - discountAmt;
+  const dateStr = new Date().toLocaleDateString('en-AU', { day:'2-digit', month:'long', year:'numeric' });
+  const delivLabel = 'Delivery' + (deliveryState ? ' — ' + deliveryState : '');
+  const custParts  = [customer.name, customer.mobile, customer.email, customer.postcode ? customer.postcode : ''].filter(Boolean);
+  const filename   = [customer.name, model, customer.mobile]
+    .filter(Boolean).map(s => s.replace(/[^a-zA-Z0-9]/g,'_')).join('_') + '.pdf';
+
+  // Dealer block
+  let dealerBlock = { active: false };
+  if (dealerMode) {
+    let dealerOptsTotal = 0;
+    let dealerBase = s.base.dealer ? s.base.dealer[modelIdx] : null;
+    s.categories.forEach((cat,ci) => { cat.items.forEach((item,ii) => {
+      const key = `${ci}-${ii}`; const qty = sel.get(key)||0;
+      if (qty > 0 && item.dealer && item.dealer[modelIdx] != null)
+        dealerOptsTotal += item.dealer[modelIdx] * qty;
+    }); });
+    if (dealerBase != null) {
+      const dealerCostExGst = dealerBase + dealerOptsTotal - factoryIncentive;
+      const dealerPriceIncGst = dealerCostExGst * (1 + GST_RATE);
+      const msrpExGst = (base + optsTotal - discountAmt) / (1 + GST_RATE);
+      const msrpExGstFull = (base + optsTotal) / (1 + GST_RATE);
+      const grossDollar = msrpExGst - dealerCostExGst;
+      const grossPct = grossDollar / msrpExGstFull;
+      const mc = marginClass(grossPct);
+      const sign = grossDollar >= 0 ? '+' : '−';
+      dealerBlock = { active:true, dealerPriceIncGst, grossDollar, grossPct, mc, sign };
+    }
+  }
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>${[customer.name, model, customer.mobile].filter(Boolean).map(s=>s.replace(/[^a-zA-Z0-9]/g,'_')).join('_')}</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  @page { size: A4 portrait; margin: 0; }
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: white;
+    color: #1a1a2e;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── HEADER BAND ── */
+  .page-header {
+    background: linear-gradient(135deg, ${accentHex} 0%, ${accent2Hex} 100%);
+    padding: 32px 40px 28px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .brand-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    line-height: 1;
+    opacity: 0.95;
+  }
+  .brand-series {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+  .quote-label-block { text-align: right; }
+  .quote-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .quote-date { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+
+  /* ── MODEL HERO ── */
+  .model-hero {
+    background: ${lightBg};
+    border-bottom: 3px solid ${accentHex};
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .model-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 36px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: ${accentHex};
+    line-height: 1;
+  }
+  .model-sub {
+    font-size: 12px;
+    color: #777;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .base-price-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-family: 'Barlow Condensed', sans-serif;
+    text-align: right;
+  }
+  .base-price-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 32px;
+    color: ${accentHex};
+    letter-spacing: 1px;
+    text-align: right;
+  }
+  .iwwf-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #555;
+    line-height: 1.4;
+    text-align: right;
+  }
+  .iwwf-sub { font-size: 10px; color: #888; letter-spacing: 0.5px; margin-top: 2px; text-align: right; }
+
+  /* ── CUSTOMER BAND ── */
+  .customer-band {
+    background: #f7f9fc;
+    border-bottom: 1px solid #e0e8f0;
+    padding: 14px 40px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  .cust-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 2px;
+  }
+  .cust-value { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+  .cust-sub { font-size: 12px; color: #666; margin-top: 1px; }
+
+  /* ── BODY ── */
+  .body-wrap { padding: 28px 40px 24px; display: flex; gap: 28px; align-items: flex-start; }
+  .options-col { flex: 1; min-width: 0; }
+  .section-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: ${accentHex};
+    border-bottom: 2px solid ${accentHex};
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+  }
+  table.options-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  tr.cat-row td {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #aaa;
+    padding: 10px 0 3px;
+  }
+  tr.item-row td {
+    padding: 4px 0;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: top;
+    color: #333;
+    line-height: 1.35;
+  }
+  td.price-col {
+    text-align: right;
+    white-space: nowrap;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #222;
+    padding-left: 12px;
+    width: 90px;
+  }
+  td.price-col.neg { color: #1a7a4a; }
+
+  /* ── TOTALS PANEL ── */
+  .totals-col { width: 220px; flex-shrink: 0; }
+  .totals-box { background: #f7f9fc; border: 1px solid #e0e8f0; border-radius: 6px; overflow: hidden; }
+  .totals-section-hdr {
+    background: ${accentHex};
+    color: white;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 7px 14px;
+  }
+  .tot-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 14px;
+    border-bottom: 1px solid #eaeff5;
+    font-size: 13px;
+  }
+  .tot-line .lbl { color: #666; font-size: 12px; }
+  .tot-line .val { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px; color: #222; }
+  .tot-line.disc .lbl { color: #1a7a4a; }
+  .tot-line.disc .val { color: #1a7a4a; }
+  .tot-line.dealer-price-line { background: #fff8f0; border-top: 2px solid #e0e8f0; }
+  .tot-line.dealer-price-line .lbl { color: #c23a00; font-weight: 700; }
+  .tot-line.dealer-price-line .val { color: #c23a00; }
+  .tot-line.dealer-margin-line { background: #fff8f0; border-bottom: none; }
+  .tot-line.dealer-margin-line .lbl { color: #888; font-size: 11px; }
+  .grand-line {
+    background: linear-gradient(135deg, ${accentHex}, ${accent2Hex});
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .grand-line .lbl {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.8);
+  }
+  .grand-line .val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    color: white;
+    letter-spacing: 1px;
+  }
+  .gst-note { font-size: 10px; color: #aaa; text-align: right; padding: 6px 14px 0; }
+
+  /* ── FOOTER ── */
+  .page-footer {
+    border-top: 1px solid #e0e8f0;
+    padding: 14px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+  .footer-disclaimer { font-size: 10px; color: #bbb; max-width: 480px; line-height: 1.5; }
+  .footer-brand {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: ${accentHex};
+    opacity: 0.6;
+  }
+
+  /* ── PDF BAR — hidden at print ── */
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .pdf-bar { display: none !important; }
+    body { padding-top: 0 !important; }
+  }
+  .pdf-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 9999;
+    background: #0a1628;
+    border-bottom: 2px solid ${accentHex};
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .pdf-bar-info { display: flex; flex-direction: column; gap: 2px; }
+  .pdf-bar-title { font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: ${accentHex}; }
+  .pdf-bar-hint { font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 0.5px; }
+  .pdf-save-btn {
+    background: linear-gradient(90deg, ${accentHex}, ${accent2Hex});
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 24px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body.has-bar { padding-top: 56px; }
+</style>
+</head>
+<body class="has-bar">
+
+<!-- PDF SAVE BAR -->
+<div class="pdf-bar">
+  <div class="pdf-bar-info">
+    <div class="pdf-bar-title">&#128196; Quote Ready</div>
+    <div class="pdf-bar-hint">iOS: tap Share → Print → Save as PDF</div>
+  </div>
+  <button class="pdf-save-btn" onclick="window.print()">&#8595; Save as PDF</button>
+</div>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="brand-block">
+    <div class="brand-name">${brandName}</div>
+    <div class="brand-series">MY26 ${seriesName} Series</div>
+  </div>
+  <div class="quote-label-block">
+    <div class="quote-label">${dealerBlock.active ? 'Dealer Copy — Confidential' : 'Customer Quote'}</div>
+    <div class="quote-date">${dateStr}</div>
+  </div>
+</div>
+
+<!-- MODEL HERO -->
+<div class="model-hero">
+  <div>
+    <div class="model-name">${model}</div>
+    <div class="model-sub">${seriesName} Series &nbsp;·&nbsp; MY26</div>
+  </div>
+  ${model === 'TXI Open Ed.' ? `
+  <div class="iwwf-badge">
+    <div class="iwwf-title">Official Tow Boat<br>IWWF World Water Ski Championships</div>
+    <div class="iwwf-sub">International Waterski &amp; Wakeboard Federation</div>
+  </div>` : `
+  <div>
+    <div class="base-price-label">Base Price</div>
+    <div class="base-price-val">${fmtFull(base)}</div>
+  </div>`}
+</div>
+
+${custParts.length ? `
+<!-- CUSTOMER BAND -->
+<div class="customer-band">
+  <div>
+    <div class="cust-label">Prepared for</div>
+    <div class="cust-value">${customer.name||''}</div>
+    <div class="cust-sub">${[customer.mobile, customer.email].filter(Boolean).join(' &nbsp;·&nbsp; ')}</div>
+  </div>
+  ${customer.postcode ? `<div><div class="cust-label">Postcode</div><div class="cust-value">${customer.postcode}</div></div>` : ''}
+</div>` : ''}
+
+<!-- BODY -->
+<div class="body-wrap">
+
+  <!-- OPTIONS LIST -->
+  <div class="options-col">
+    <div class="section-heading">Selected Options &amp; Equipment</div>
+    ${optionsRows ? `<table class="options-table">${optionsRows}</table>` : '<p style="color:#aaa;font-size:13px;padding:8px 0">No options selected — base specification only.</p>'}
+  </div>
+
+  <!-- TOTALS PANEL -->
+  <div class="totals-col">
+    <div class="totals-box">
+      <div class="totals-section-hdr">Price Summary</div>
+      <div class="tot-line">
+        <span class="lbl">Base Price</span>
+        <span class="val">${fmtFull(base)}</span>
+      </div>
+      <div class="tot-line">
+        <span class="lbl">Options</span>
+        <span class="val">${optsTotal === 0 ? '—' : (optsTotal > 0 ? '+' : '−') + fmt(Math.abs(optsTotal))}</span>
+      </div>
+      <div class="tot-line">
+        <span class="lbl">${delivLabel}</span>
+        <span class="val">+${fmt(DELIVERY_CHARGE)}</span>
+      </div>
+      ${(factoryIncentive > 0 && dealerBlock.active) ? `
+      <div class="tot-line" style="border-bottom:2px solid #eaeff5;">
+        <span class="lbl" style="color:#666">MSRP Subtotal</span>
+        <span class="val" style="color:#444">${fmtFull(base + optsTotal + DELIVERY_CHARGE)}</span>
+      </div>
+      <div class="tot-line" style="background:#fff8f0">
+        <span class="lbl" style="color:#e85d20">Factory Incentive</span>
+        <span class="val" style="color:#e85d20">\u2212${fmt(factoryIncentive)} <span style="font-size:10px;font-weight:500;opacity:0.7">ex-GST</span></span>
+      </div>` : (discountAmt > 0 ? `
+      <div class="tot-line" style="border-bottom:2px solid #eaeff5;">
+        <span class="lbl" style="color:#666">MSRP Subtotal</span>
+        <span class="val" style="color:#444">${fmtFull(base + optsTotal + DELIVERY_CHARGE)}</span>
+      </div>` : '')}
+      ${discountAmt > 0 ? `
+      <div class="tot-line disc">
+        <span class="lbl">Dealer Adjustment</span>
+        <span class="val">\u2212${fmt(discountAmt)}</span>
+      </div>` : ''}
+      <div class="grand-line">
+        <span class="lbl">Total (inc. GST)</span>
+        <span class="val">${fmtFull(grand)}</span>
+      </div>
+      ${dealerBlock.active ? `
+      <div class="tot-line dealer-price-line">
+        <span class="lbl">Dealer Price (inc. GST)</span>
+        <span class="val">${fmtFull(Math.round(dealerBlock.dealerPriceIncGst))}</span>
+      </div>
+      <div class="tot-line dealer-margin-line">
+        <span class="lbl">Gross Margin (ex. GST)</span>
+        <span class="val" style="color:${dealerBlock.mc}">${dealerBlock.sign}${fmt(Math.abs(Math.round(dealerBlock.grossDollar)))} &nbsp;<span style="font-size:11px;font-weight:600">${(dealerBlock.grossPct*100).toFixed(1)}%</span></span>
+      </div>` : ''}
+    </div>
+    <div class="gst-note">All prices include GST</div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <div class="footer-disclaimer">
+    All pricing is in Australian Dollars and includes GST. Prices are subject to change without notice.
+    This quote is valid for 30 days from the date of issue. Images are for illustration purposes only.
+    Specifications and availability may vary.
+  </div>
+  <div class="footer-brand">${brandName}</div>
+</div>
+
+</body>
+</html>`;
+
+  const win = window.open('', '_blank');
+  if (!win) { showToast('Allow pop-ups to export PDF', 'error', 4000); return; }
+  win.document.write(html);
+  win.document.close();
 }
 
 
