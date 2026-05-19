@@ -2965,9 +2965,6 @@ function exportQuotePDF() {
   const dateStr = new Date().toLocaleDateString('en-AU', { day:'2-digit', month:'long', year:'numeric' });
   const delivLabel = 'Delivery' + (deliveryState ? ' — ' + deliveryState : '');
   const custParts  = [customer.name, customer.mobile, customer.email, customer.postcode ? customer.postcode : ''].filter(Boolean);
-  const filename   = [customer.name, model, customer.mobile]
-    .filter(Boolean).map(s => s.replace(/[^a-zA-Z0-9]/g,'_')).join('_') + '.pdf';
-
   // Dealer block
   let dealerBlock = { active: false };
   if (dealerMode) {
@@ -3404,10 +3401,111 @@ ${custParts.length ? `
 </body>
 </html>`;
 
-  const win = window.open('', '_blank');
-  if (!win) { showToast('Allow pop-ups to export PDF', 'error', 4000); return; }
-  win.document.write(html);
-  win.document.close();
+  // ── Render HTML → PDF using jsPDF + html2canvas ──────────────
+  const filename = [customer.name, model, customer.mobile]
+    .filter(Boolean).map(s => s.replace(/[^a-zA-Z0-9]/g,'_')).join('_') + '.pdf';
+
+  showToast('Generating PDF…', 'info', 8000);
+
+  const loadScript = (src) => new Promise((res, rej) => {
+    if (document.querySelector(`script[src="${src}"]`)) { res(); return; }
+    const el = document.createElement('script');
+    el.src = src; el.onload = res; el.onerror = rej;
+    document.head.appendChild(el);
+  });
+
+  Promise.all([
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
+  ]).then(() => {
+    const { jsPDF } = window.jspdf;
+
+    // Render into a hidden off-screen iframe so fonts load correctly
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;height:1123px;border:none;visibility:hidden;';
+    document.body.appendChild(iframe);
+
+    iframe.onload = () => {
+      // Wait for fonts to load inside the iframe
+      const iDoc = iframe.contentDocument;
+      const iWin = iframe.contentWindow;
+
+      const doRender = () => {
+        // Remove the pdf-bar before capture
+        const bar = iDoc.querySelector('.pdf-bar');
+        if (bar) bar.remove();
+        const body = iDoc.body;
+        body.style.paddingTop = '0';
+        body.classList.remove('has-bar');
+
+        html2canvas(body, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          width: 794,
+          windowWidth: 794,
+          logging: false,
+        }).then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 0.95);
+          const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+          const PW = 210, PH = 297;
+
+          // Scale canvas to A4, paginating if tall
+          const canvasW = canvas.width;
+          const canvasH = canvas.height;
+          const ratio   = PW / (canvasW / 2); // /2 because scale:2
+          const totalH  = (canvasH / 2) * ratio;
+          const pageH   = PH;
+          let yOffset   = 0;
+          let pageNum   = 0;
+
+          while (yOffset < totalH) {
+            if (pageNum > 0) doc.addPage();
+
+            // Clip height for this page
+            const remaining = totalH - yOffset;
+            const sliceH    = Math.min(pageH, remaining);
+
+            // Pixel slice from canvas
+            const srcY      = (yOffset / ratio) * 2;   // back to canvas pixels
+            const srcH      = (sliceH / ratio) * 2;
+
+            const slice     = document.createElement('canvas');
+            slice.width     = canvasW;
+            slice.height    = srcH;
+            slice.getContext('2d').drawImage(canvas, 0, srcY, canvasW, srcH, 0, 0, canvasW, srcH);
+            const sliceData = slice.toDataURL('image/jpeg', 0.95);
+
+            doc.addImage(sliceData, 'JPEG', 0, 0, PW, sliceH);
+            yOffset += pageH;
+            pageNum++;
+          }
+
+          document.body.removeChild(iframe);
+          doc.save(filename);
+          showToast('PDF downloaded ✓', 'success');
+        }).catch(err => {
+          document.body.removeChild(iframe);
+          console.error('html2canvas error:', err);
+          showToast('PDF generation failed — ' + err.message, 'error', 5000);
+        });
+      };
+
+      // Give fonts 800ms to load inside iframe
+      if (iDoc.fonts && iDoc.fonts.ready) {
+        iDoc.fonts.ready.then(doRender);
+      } else {
+        setTimeout(doRender, 800);
+      }
+    };
+
+    iframe.srcdoc = html;
+
+  }).catch(err => {
+    console.error('Script load error:', err);
+    showToast('PDF failed — check internet connection', 'error', 4000);
+  });
 }
 
 
