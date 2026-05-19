@@ -3316,10 +3316,64 @@ function exportQuotePDF() {
 
   @media print {
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .pdf-bar { display: none !important; }
   }
+  .pdf-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 9999;
+    background: #0a1628;
+    border-bottom: 2px solid #c8991a;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .pdf-bar-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #c8991a;
+  }
+  .pdf-bar-hint {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
+  }
+  .pdf-save-btn {
+    background: linear-gradient(90deg, #c8991a, #e0b84a);
+    color: #0a1628;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 22px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pdf-save-btn:active { opacity: 0.85; }
+  /* Push page content below the fixed bar */
+  body { padding-top: 60px; }
+  @media print { body { padding-top: 0; } }
 </style>
 </head>
-<body onload="window.print()">
+<body>
+
+<!-- PDF SAVE BAR — hidden at print time -->
+<div class="pdf-bar">
+  <div>
+    <div class="pdf-bar-title">&#128196; Quote Ready</div>
+    <div class="pdf-bar-hint">Tap Save as PDF to download</div>
+  </div>
+  <button class="pdf-save-btn" onclick="window.print()">&#8595; Save as PDF</button>
+</div>
 
 <!-- HEADER -->
 <div class="page-header">
