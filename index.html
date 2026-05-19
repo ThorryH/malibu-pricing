@@ -1718,7 +1718,7 @@ function makeTrailerCats(n) {
     ]},
     { name: 'Trailer — Guard & Step Options', items: [
       { name: 'Trailer: Deluxe Upgrade - Steps & Premium Soft Grip Decking on Steps & Guards', msrp: fill(2566), naForSeries: ['axis'], providesKey:'trailer_deluxe' },
-      { name: 'Trailer: Diamond Matting - Guards (N/A on Deluxe)', msrp: fill(314) },
+      { name: 'Trailer: Diamond Matting - Guards (N/A on Deluxe)', msrp: fill(314), blockedByKey:'trailer_deluxe' },
       { name: 'Trailer: Diamond Matting - Steps x4', msrp: fill(0), std: fill(true), deselectedByKey:'trailer_deluxe' },
     ]},
     { name: 'Trailer — Brake & Axle Options', items: [
@@ -1728,10 +1728,10 @@ function makeTrailerCats(n) {
       { name: 'Trailer: Stainless Steel Brake Line Upgrade', msrp: fill(861) },
     ]},
     { name: 'Trailer — Decking Options', items: [
-      { name: 'Trailer: Decking - Carpeted Plywood - A-Frame & Sides', msrp: fill(5258) },
-      { name: 'Trailer: Decking - Carpeted Plywood - A-Frame Only', msrp: fill(2539) },
-      { name: 'Trailer: Provision for Decking', msrp: fill(1131) },
-      { name: 'Trailer: Provision for Decking - A-Frame', msrp: fill(637) },
+      { name: 'Trailer: Decking - Carpeted Plywood - A-Frame & Sides', msrp: fill(5258), deckingGroup:'trailer' },
+      { name: 'Trailer: Decking - Carpeted Plywood - A-Frame Only', msrp: fill(2539), deckingGroup:'trailer' },
+      { name: 'Trailer: Provision for Decking', msrp: fill(1131), deckingGroup:'trailer' },
+      { name: 'Trailer: Provision for Decking - A-Frame', msrp: fill(637), deckingGroup:'trailer' },
     ]},
     { name: 'Trailer — Other Options', items: [
       { name: 'Trailer: Heavy Duty Upgrade (23LSV & 23MXZ) — Increase ATM to 4,400kg / 70mm hitch', msrp: fill(6870), providesKey:'heavy_duty', naForModels: {'wakesetter':[0,1],'axis':[0,1,2],'response':[0]} },
@@ -1744,8 +1744,8 @@ function makeTrailerCats(n) {
       { name: 'Trailer: Spare Wheel Carrier - Bolt-on', msrp: fill(562), swcGroup:'trailer' },
       { name: 'Trailer: Spare Wheel Carrier - Drop-Down', msrp: fill(946), swcGroup:'trailer' },
       { name: 'Trailer: Spare Wheel Carrier - Drop-Down with Hub Assembly', msrp: fill(1719), swcGroup:'trailer' },
-      { name: 'Trailer: Spare Wheel - Mag & Tyre - 15" Breakaway', msrp: fill(1014) },
-      { name: 'Trailer: Spare Wheel - Mag & Tyre - 17" Various Designs', msrp: fill(1335) },
+      { name: 'Trailer: Spare Wheel - Mag & Tyre - 15" Breakaway', msrp: fill(1014), swcGroup:'trailer' },
+      { name: 'Trailer: Spare Wheel - Mag & Tyre - 17" Various Designs', msrp: fill(1335), swcGroup:'trailer' },
     ]},
   ];
 }
@@ -2151,7 +2151,7 @@ const rawData = {
       ]},
       { name: 'Interior / Cockpit', items: [
         { name: 'Interior: Phone Holder with Wireless Charging (Dash & Shifter)', msrp:[1345,1345,1345,1345,1345] },
-        { name: 'Interior: Cool Touch Vinyl (per selection)', msrp:[null,null,1590,1590,1590] },
+        { name: 'Interior: Cool Touch Vinyl (per selection)', msrp:[null,null,1590,1590,1590], multi:true, maxQty:3 },
         { name: 'Interior: Upgrade Cabin Phone Holders to Wireless Charging', msrp:[null,null,1173,1173,1173] },
         { name: 'Interior: Deck Track', msrp:[1585,1585,1585,1585,1585] },
         { name: 'Interior: Driver Seat Heater', msrp:[637,637,637,637,637] },
@@ -2178,20 +2178,20 @@ const rawData = {
         { name: 'Lighting: Under Water Transom Lights (White or Blue)', msrp:[1792,1792,1792,1792,1792] },
       ]},
       { name: 'Sound', items: [
-        { name: 'Sound: Subwoofer and Upgraded Amplifier', msrp:[4156,4156,4156,4156,4156] },
-        { name: 'Sound: 2nd Subwoofer with Amplifier', msrp:[null,null,null,4469,4469] },
-        { name: 'Sound: Tower Amplifier Only (2 Channel)', msrp:[3414,3414,3414,3414,3414] },
-        { name: 'Sound: Tower Speakers - ICON 8 - Per Pair', msrp:[2559,2559,2559,2559,2559], multi:true },
-        { name: 'Sound: Tower Speakers - REV 8 - Per Pair', msrp:[2959,2959,2959,2959,2959], multi:true },
-        { name: 'Sound: Tower Speakers - REV 12 - 1st Pair', msrp:[4229,4229,4229,4229,4229] },
-        { name: 'Sound: Tower Speakers - REV 12 - 2nd Pair (Incl. 2nd Amp)', msrp:[6216,6216,6216,6216,6216] },
+        { name: 'Sound: Subwoofer and Upgraded Amplifier', msrp:[4156,4156,4156,4156,4156], providesKey:'sub_and_amp' },
+        { name: 'Sound: 2nd Subwoofer with Amplifier', msrp:[null,null,null,4469,4469], requiresKey:'sub_and_amp' },
+        { name: 'Sound: Tower Amplifier Only (2 Channel)', msrp:[3414,3414,3414,3414,3414], isTowerAmp:true },
+        { name: 'Sound: Tower Speakers - ICON 8 - Per Pair', msrp:[2559,2559,2559,2559,2559], multi:true, maxQty:2, towerSpeakerGroup:'ws' },
+        { name: 'Sound: Tower Speakers - REV 8 - Per Pair', msrp:[2959,2959,2959,2959,2959], multi:true, maxQty:2, towerSpeakerGroup:'ws' },
+        { name: 'Sound: Tower Speakers - REV 12 - 1st Pair', msrp:[4229,4229,4229,4229,4229], towerSpeakerGroup:'ws', providesKey:'rev12_1st' },
+        { name: 'Sound: Tower Speakers - REV 12 - 2nd Pair (Incl. 2nd Amp)', msrp:[6216,6216,6216,6216,6216], requiresKey:'rev12_1st', towerSpeakerGroup:'ws' },
         { name: 'Sound: Transom Stereo Remote', msrp:[836,836,836,836,836] },
       ]},
       { name: 'Tower', items: [
         { name: 'Tower: Bimini Top - G5 Tower', msrp:[0,null,null,null,null], std:[true,false,false,false,false], biminiGroup:'ws' },
         { name: 'Tower: Bimini Top - Gen II Surf with Pistol Hinges', msrp:[1999,0,0,0,0], std:[false,true,true,true,true], biminiGroup:'ws' },
-        { name: 'Tower: Bimini Top - Extended Gen II Surf', msrp:[null,1141,1141,1141,1141], biminiGroup:'ws' },
-        { name: 'Tower: Bimini Top - PTM Dual Coverage (Easy Deploy)', msrp:[null,3256,3256,3256,3256], biminiGroup:'ws' },
+        { name: 'Tower: Bimini Top - Extended Gen II Surf', msrp:[null,1141,1141,1141,1141], biminiGroup:'ws', biminiUpgradeGroup:'ws' },
+        { name: 'Tower: Bimini Top - PTM Dual Coverage (Easy Deploy)', msrp:[null,3256,3256,3256,3256], biminiGroup:'ws', biminiUpgradeGroup:'ws' },
         { name: 'Tower: Colour Upgrade - Tower Only', msrp:[726,726,726,726,726] },
         { name: 'Tower: Hoop Colour Upgrade - Same as Tower', msrp:[365,365,365,365,365] },
         { name: 'Tower: Hoop Colour Upgrade - Different to Tower', msrp:[512,512,512,512,512] },
@@ -2200,13 +2200,13 @@ const rawData = {
         { name: 'Tower: Lights - 360deg Tower Light', msrp:[1757,1757,1757,1757,1757] },
         { name: 'Tower: Lights - Ascend Lighting', msrp:[null,1213,1213,1213,1213], blockedByKey:'ascend_pro' },
         { name: 'Tower: Mirror - Tower Mounted PTM Upgrade', msrp:[2568,2568,2568,2568,2568] },
-        { name: 'Tower: Board Rack - Swivel Rack (each)', msrp:[1172,1172,1172,1172,1172], multi:true },
-        { name: 'Tower: Board Rack - Clamping w/Fender Locks (each)', msrp:[4225,4225,4225,4225,4225], multi:true },
-        { name: 'Tower: Board Rack - Clampforce 3.0 (each)', msrp:[5308,5308,5308,5308,5308], multi:true },
-        { name: 'Tower: Board Rack - Edgeforce (each)', msrp:[4690,4690,4690,4690,4690], multi:true },
-        { name: 'Tower: Upgrade Std Rack to Clamping w/Fender Locks (each)', msrp:[3912,3912,3912,3912,3912], multi:true },
-        { name: 'Tower: Upgrade Std Rack to Clampforce 3.0 (each)', msrp:[3340,3340,3340,3340,3340], multi:true },
-        { name: 'Tower: Upgrade Std Rack to Edgeforce (each)', msrp:[2734,2734,2734,2734,2734], multi:true },
+        { name: 'Tower: Board Rack - Swivel Rack (each)', msrp:[1172,1172,1172,1172,1172], multi:true, maxQty:2, boardRackGroup:'ws' },
+        { name: 'Tower: Board Rack - Clamping w/Fender Locks (each)', msrp:[4225,4225,4225,4225,4225], multi:true, maxQty:2, boardRackGroup:'ws' },
+        { name: 'Tower: Board Rack - Clampforce 3.0 (each)', msrp:[5308,5308,5308,5308,5308], multi:true, maxQty:2, boardRackGroup:'ws' },
+        { name: 'Tower: Board Rack - Edgeforce (each)', msrp:[4690,4690,4690,4690,4690], multi:true, maxQty:2, boardRackGroup:'ws' },
+        { name: 'Tower: Upgrade Std Rack to Clamping w/Fender Locks (each)', msrp:[3912,3912,3912,3912,3912], multi:true, maxQty:2, stdRackUpgradeGroup:'ws' },
+        { name: 'Tower: Upgrade Std Rack to Clampforce 3.0 (each)', msrp:[3340,3340,3340,3340,3340], multi:true, maxQty:2, stdRackUpgradeGroup:'ws' },
+        { name: 'Tower: Upgrade Std Rack to Edgeforce (each)', msrp:[2734,2734,2734,2734,2734], multi:true, maxQty:2, stdRackUpgradeGroup:'ws' },
         { name: 'Tower: Surf Tow Point (each)', msrp:[549,549,549,549,549], multi:true },
         { name: 'Tower: Mister Misty (Ascend Pro only)', msrp:[null,null,2206,2206,2206], requiresKey:'ascend_pro' },
       ]},
@@ -2411,7 +2411,7 @@ function computeGroupStates() {
   const groupSelected = {};
   const trackGroup = (groupKey, key) => {
     if (!groupSelected[groupKey]) groupSelected[groupKey] = [];
-    groupSelected[groupKey].push(key);
+    if (!groupSelected[groupKey].includes(key)) groupSelected[groupKey].push(key);
   };
   const s = data[series];
   const modelName = s.models[modelIdx];
@@ -2420,18 +2420,24 @@ function computeGroupStates() {
       const key = `${ci}-${ii}`;
       const isStd = (item.std && item.std[modelIdx]) || (item.stdModels && item.stdModels.includes(modelName));
       const qty = sel.get(key)||0;
+      // Always track qty-capped groups so total-qty checks work
+      if (item.boardRackGroup)      trackGroup('boardRack_'+item.boardRackGroup, key);
+      if (item.stdRackUpgradeGroup) trackGroup('stdRackUpgrade_'+item.stdRackUpgradeGroup, key);
+      if (item.towerSpeakerGroup)   trackGroup('towerSpeaker_'+item.towerSpeakerGroup, key);
       if (!(qty>0 || isStd)) return;
-      if (item.providesKey)   providedKeys.add(item.providesKey);
-      if (item.heaterGroup)   trackGroup('heater_'+item.heaterGroup, key);
-      if (item.engineGroup)   trackGroup('engine_'+item.engineGroup, key);
-      if (item.wideviewGroup) trackGroup('wideview_'+item.wideviewGroup, key);
-      if (item.steerGroup)    trackGroup('steer_'+item.steerGroup, key);
-      if (item.helmGroup)     trackGroup('helm_'+item.helmGroup, key);
-      if (item.biminiGroup)   trackGroup('bimini_'+item.biminiGroup, key);
-      if (item.swcGroup)      trackGroup('swc_'+item.swcGroup, key);
-      if (item.axisGelGroup)  trackGroup('axisgel_'+item.axisGelGroup, key);
-      if (item.axisBattGroup) trackGroup('axisbatt_'+item.axisBattGroup, key);
-      if (item.paintGroup)    trackGroup('paint_'+item.paintGroup, key);
+      if (item.providesKey)         providedKeys.add(item.providesKey);
+      if (item.heaterGroup)         trackGroup('heater_'+item.heaterGroup, key);
+      if (item.engineGroup)         trackGroup('engine_'+item.engineGroup, key);
+      if (item.wideviewGroup)       trackGroup('wideview_'+item.wideviewGroup, key);
+      if (item.steerGroup)          trackGroup('steer_'+item.steerGroup, key);
+      if (item.helmGroup)           trackGroup('helm_'+item.helmGroup, key);
+      if (item.biminiGroup)         trackGroup('bimini_'+item.biminiGroup, key);
+      if (item.biminiUpgradeGroup)  trackGroup('biminiUpgrade_'+item.biminiUpgradeGroup, key);
+      if (item.swcGroup)            trackGroup('swc_'+item.swcGroup, key);
+      if (item.axisGelGroup)        trackGroup('axisgel_'+item.axisGelGroup, key);
+      if (item.axisBattGroup)       trackGroup('axisbatt_'+item.axisBattGroup, key);
+      if (item.paintGroup)          trackGroup('paint_'+item.paintGroup, key);
+      if (item.deckingGroup)        trackGroup('decking_'+item.deckingGroup, key);
     });
   });
   return { providedKeys, groupSelected };
@@ -2510,8 +2516,10 @@ function renderOptions() {
       const checks = [
         ['heater_',item.heaterGroup],['wideview_',item.wideviewGroup],
         ['steer_',item.steerGroup],['helm_',item.helmGroup],
-        ['bimini_',item.biminiGroup],['swc_',item.swcGroup],
-        ['axisgel_',item.axisGelGroup],['axisbatt_',item.axisBattGroup],
+        ['bimini_',item.biminiGroup],['biminiUpgrade_',item.biminiUpgradeGroup],
+        ['swc_',item.swcGroup],['axisgel_',item.axisGelGroup],['axisbatt_',item.axisBattGroup],
+        ['boardRack_',item.boardRackGroup],['stdRackUpgrade_',item.stdRackUpgradeGroup],
+        ['towerSpeaker_',item.towerSpeakerGroup],['decking_',item.deckingGroup],
       ];
       for (const [prefix,grpName] of checks) {
         if (!grpName) continue;
@@ -2571,6 +2579,10 @@ function renderOptions() {
               sel.delete(key);
             } else {
               sel.set(key,1);
+              // Auto-select tower amplifier when any tower speaker is selected
+              if (item.towerSpeakerGroup) {
+                data[series].categories.forEach((cat2,ci2)=>{ cat2.items.forEach((item2,ii2)=>{ if(item2.isTowerAmp) { const k2=`${ci2}-${ii2}`; if(!sel.has(k2)) sel.set(k2,1); } }); });
+              }
               // Deselect all other engines in the same engineGroup (radio behaviour)
               if (item.engineGroup) {
                 const gk = 'engine_' + item.engineGroup;
@@ -2598,7 +2610,24 @@ function renderOptions() {
 function chgQty(e,key,d) {
   e.stopPropagation();
   const cur=sel.get(key)||0;
-  const nxt=Math.max(0,Math.min(4,cur+d));
+  // Find the item to check maxQty
+  let maxQty=99;
+  data[series].categories.forEach((cat,ci)=>{ cat.items.forEach((item,ii)=>{ if(`${ci}-${ii}`===key && item.maxQty) maxQty=item.maxQty; }); });
+  // For group-capped items, also check group total
+  let groupCap=99;
+  data[series].categories.forEach((cat,ci)=>{ cat.items.forEach((item,ii)=>{ if(`${ci}-${ii}`!==key) return;
+    if (item.boardRackGroup) {
+      const members=[]; data[series].categories.forEach((c,i)=>{ c.items.forEach((it,j)=>{ if(it.boardRackGroup===item.boardRackGroup) members.push(`${i}-${j}`); }); });
+      const otherTotal=members.filter(k=>k!==key).reduce((s,k)=>s+(sel.get(k)||0),0);
+      groupCap=Math.max(0,2-otherTotal);
+    }
+    if (item.stdRackUpgradeGroup) {
+      const members=[]; data[series].categories.forEach((c,i)=>{ c.items.forEach((it,j)=>{ if(it.stdRackUpgradeGroup===item.stdRackUpgradeGroup) members.push(`${i}-${j}`); }); });
+      const otherTotal=members.filter(k=>k!==key).reduce((s,k)=>s+(sel.get(k)||0),0);
+      groupCap=Math.max(0,2-otherTotal);
+    }
+  }); });
+  const nxt=Math.max(0,Math.min(maxQty,Math.min(groupCap,cur+d)));
   nxt===0?sel.delete(key):sel.set(key,nxt);
   renderAll();
 }
