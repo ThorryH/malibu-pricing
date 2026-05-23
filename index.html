@@ -3308,11 +3308,7 @@ function exportQuotePDF() {
   <div class="iwwf-badge">
     <div class="iwwf-title">Official Tow Boat<br>IWWF World Water Ski Championships</div>
     <div class="iwwf-sub">International Waterski &amp; Wakeboard Federation</div>
-  </div>` : `
-  <div>
-    <div class="base-price-label">Base Price</div>
-    <div class="base-price-val">${fmtFull(base)}</div>
-  </div>`}
+  </div>` : ''}
 </div>
 
 ${custParts.length ? `
@@ -3413,6 +3409,13 @@ ${custParts.length ? `
     el.src = src; el.onload = res; el.onerror = rej;
     document.head.appendChild(el);
   });
+
+  // Open preview tab immediately so browser doesn't block the popup
+  const previewWin = window.open('', '_blank');
+  if (previewWin) {
+    previewWin.document.write('<html><head><title>Generating PDF…</title><style>body{margin:0;background:#0a1628;display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#c8991a;font-size:18px;letter-spacing:2px;text-transform:uppercase;}</style></head><body>Generating PDF…</body></html>');
+    previewWin.document.close();
+  }
 
   Promise.all([
     loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
