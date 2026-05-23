@@ -2988,506 +2988,216 @@ function exportQuotePDF() {
     }
   }
 
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>${[customer.name, model, customer.mobile].filter(Boolean).map(s=>s.replace(/[^a-zA-Z0-9]/g,'_')).join('_')}</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  @page { size: A4 portrait; margin: 0; }
-  body {
-    font-family: 'Barlow', sans-serif;
-    background: white;
-    color: #1a1a2e;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+
+  // Build HTML via array join — avoids nested template literal parse errors
+  const H = [];
+  const _a = s => H.push(s);
+
+  // ── Helpers ──────────────────────────────────────────────────
+  const acCss = accentHex;
+  const ac2Css = accent2Hex;
+  const lightBgCss = lightBg;
+
+  // ── CSS ──────────────────────────────────────────────────────
+  _a('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">');
+  _a('<title>' + [customer.name,model,customer.mobile].filter(Boolean).map(function(s){return s.replace(/[^a-zA-Z0-9]/g,'_');}).join('_') + '</title>');
+  _a('<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">');
+  _a('<style>');
+  _a('* { margin:0; padding:0; box-sizing:border-box; }');
+  _a('@page { size: A4 portrait; margin: 0; }');
+  _a('body { font-family: "Barlow", sans-serif; background: white; color: #1a1a2e; -webkit-print-color-adjust: exact; print-color-adjust: exact; }');
+  _a('.page-header { background: linear-gradient(135deg, ' + acCss + ' 0%, ' + ac2Css + ' 100%); padding: 32px 40px 28px; color: white; display: flex; justify-content: space-between; align-items: flex-end; }');
+  _a('.brand-name { font-family: "Barlow Condensed", sans-serif; font-weight: 900; font-size: 28px; letter-spacing: 3px; text-transform: uppercase; line-height: 1; opacity: 0.95; }');
+  _a('.brand-series { font-family: "Barlow Condensed", sans-serif; font-weight: 400; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.7; margin-top: 4px; }');
+  _a('.quote-label-block { text-align: right; }');
+  _a('.quote-label { font-family: "Barlow Condensed", sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; opacity: 0.7; }');
+  _a('.quote-date { font-size: 13px; opacity: 0.85; margin-top: 2px; }');
+  _a('.model-hero { background: ' + lightBgCss + '; border-bottom: 3px solid ' + acCss + '; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }');
+  _a('.model-name { font-family: "Barlow Condensed", sans-serif; font-weight: 900; font-size: 36px; letter-spacing: 2px; text-transform: uppercase; color: ' + acCss + '; line-height: 1; }');
+  _a('.model-sub { font-size: 12px; color: #777; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; font-family: "Barlow Condensed", sans-serif; }');
+  _a('.iwwf-title { font-family: "Barlow Condensed", sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #555; line-height: 1.4; text-align: right; }');
+  _a('.iwwf-sub { font-size: 10px; color: #888; letter-spacing: 0.5px; margin-top: 2px; text-align: right; }');
+  _a('.customer-band { background: #f7f9fc; border-bottom: 1px solid #e0e8f0; padding: 14px 40px; display: flex; gap: 32px; align-items: center; }');
+  _a('.cust-label { font-family: "Barlow Condensed", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #aaa; margin-bottom: 2px; }');
+  _a('.cust-value { font-size: 14px; font-weight: 600; color: #1a1a2e; }');
+  _a('.cust-sub { font-size: 12px; color: #666; margin-top: 1px; }');
+  _a('.body-wrap { padding: 28px 40px 24px; display: flex; gap: 28px; align-items: flex-start; }');
+  _a('.options-col { flex: 1; min-width: 0; }');
+  _a('.section-heading { font-family: "Barlow Condensed", sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: ' + acCss + '; border-bottom: 2px solid ' + acCss + '; padding-bottom: 5px; margin-bottom: 10px; }');
+  _a('table.options-table { width: 100%; border-collapse: collapse; font-size: 12px; }');
+  _a('tr.cat-row td { font-family: "Barlow Condensed", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #aaa; padding: 10px 0 3px; }');
+  _a('tr.item-row td { padding: 4px 0; border-bottom: 1px solid #f0f0f0; vertical-align: top; color: #333; line-height: 1.35; }');
+  _a('td.price-col { text-align: right; white-space: nowrap; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 13px; color: #222; padding-left: 12px; width: 90px; }');
+  _a('td.price-col.neg { color: #1a7a4a; }');
+  _a('.totals-col { width: 220px; flex-shrink: 0; }');
+  _a('.totals-box { background: #f7f9fc; border: 1px solid #e0e8f0; border-radius: 6px; overflow: hidden; }');
+  _a('.totals-section-hdr { background: ' + acCss + '; color: white; font-family: "Barlow Condensed", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 7px 14px; }');
+  _a('.tot-line { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 14px; border-bottom: 1px solid #eaeff5; font-size: 13px; }');
+  _a('.tot-line .lbl { color: #666; font-size: 12px; } .tot-line .val { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 14px; color: #222; }');
+  _a('.tot-line.disc .lbl { color: #1a7a4a; } .tot-line.disc .val { color: #1a7a4a; }');
+  _a('.grand-line { background: linear-gradient(135deg, ' + acCss + ', ' + ac2Css + '); padding: 14px; display: flex; justify-content: space-between; align-items: baseline; }');
+  _a('.grand-line .lbl { font-family: "Barlow Condensed", sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.8); }');
+  _a('.grand-line .val { font-family: "Barlow Condensed", sans-serif; font-weight: 900; font-size: 24px; color: white; letter-spacing: 1px; }');
+  _a('.gst-note { font-size: 10px; color: #aaa; text-align: right; padding: 6px 14px 0; }');
+  _a('.dealer-band { margin: 4px 40px 16px; border: 1.5px solid #c23a00; border-radius: 6px; overflow: hidden; }');
+  _a('.dealer-band-hdr { background: #c23a00; color: white; font-family: "Barlow Condensed", sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; }');
+  _a('.dealer-band-hdr .sub { opacity: 0.7; font-size: 10px; letter-spacing: 1px; }');
+  _a('.dealer-band-body { background: #fff8f0; display: flex; }');
+  _a('.dealer-cell { flex: 1; padding: 12px 16px; border-right: 1px solid #f0d8c8; } .dealer-cell:last-child { border-right: none; }');
+  _a('.dealer-cell-label { font-family: "Barlow Condensed", sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #c23a00; margin-bottom: 3px; }');
+  _a('.dealer-cell-val { font-family: "Barlow Condensed", sans-serif; font-size: 20px; font-weight: 900; color: #3a1800; letter-spacing: 0.5px; line-height: 1; }');
+  _a('.dealer-cell-sub { font-size: 10px; color: #a05020; margin-top: 2px; }');
+  _a('.gp-positive .dealer-cell-val { color: #1a7a4a; } .gp-negative .dealer-cell-val { color: #c23a00; }');
+  _a('.dealer-extra-row { background: #fff0e8; border-top: 1px solid #f0d8c8; padding: 7px 16px; font-size: 11px; color: #805030; display: flex; gap: 24px; flex-wrap: wrap; }');
+  _a('.dealer-extra-row strong { color: #c23a00; }');
+  _a('.page-footer { border-top: 1px solid #e0e8f0; padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }');
+  _a('.footer-disclaimer { font-size: 10px; color: #bbb; max-width: 480px; line-height: 1.5; }');
+  _a('.footer-brand { font-family: "Barlow Condensed", sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: ' + acCss + '; opacity: 0.6; }');
+  _a('</style></head><body>');
+
+  // ── HEADER ───────────────────────────────────────────────────
+  _a('<div class="page-header"><div>');
+  _a('<div class="brand-name">' + brandName + '</div>');
+  _a('<div class="brand-series">MY26 ' + seriesName + ' Series</div>');
+  _a('</div><div class="quote-label-block">');
+  _a('<div class="quote-label">' + (dealerBlock.active ? 'Dealer Copy — Confidential' : 'Customer Quote') + '</div>');
+  _a('<div class="quote-date">' + dateStr + '</div>');
+  _a('</div></div>');
+
+  // ── MODEL HERO ───────────────────────────────────────────────
+  _a('<div class="model-hero"><div>');
+  _a('<div class="model-name">' + model + '</div>');
+  _a('<div class="model-sub">' + seriesName + ' Series &nbsp;&middot;&nbsp; MY26</div>');
+  _a('</div>');
+  if (model === 'TXI Open Ed.') {
+    _a('<div><div class="iwwf-title">Official Tow Boat<br>IWWF World Water Ski Championships</div>');
+    _a('<div class="iwwf-sub">International Waterski &amp; Wakeboard Federation</div></div>');
+  }
+  _a('</div>');
+
+  // ── CUSTOMER BAND ────────────────────────────────────────────
+  if (custParts.length) {
+    _a('<div class="customer-band"><div>');
+    _a('<div class="cust-label">Prepared for</div>');
+    _a('<div class="cust-value">' + (customer.name || '') + '</div>');
+    _a('<div class="cust-sub">' + [customer.mobile, customer.email].filter(Boolean).join(' &nbsp;&middot;&nbsp; ') + '</div>');
+    _a('</div>');
+    if (customer.postcode) _a('<div><div class="cust-label">Postcode</div><div class="cust-value">' + customer.postcode + '</div></div>');
+    _a('</div>');
   }
 
-  /* ── HEADER BAND ── */
-  .page-header {
-    background: linear-gradient(135deg, ${accentHex} 0%, ${accent2Hex} 100%);
-    padding: 32px 40px 28px;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+  // ── BODY: OPTIONS + TOTALS ───────────────────────────────────
+  _a('<div class="body-wrap"><div class="options-col">');
+  _a('<div class="section-heading">Selected Options &amp; Equipment</div>');
+  _a(optionsRows ? '<table class="options-table">' + optionsRows + '</table>' : '<p style="color:#aaa;font-size:13px;padding:8px 0">No options selected — base specification only.</p>');
+  _a('</div><div class="totals-col"><div class="totals-box">');
+  _a('<div class="totals-section-hdr">Price Summary</div>');
+  _a('<div class="tot-line"><span class="lbl">Base Price</span><span class="val">' + fmtFull(base) + '</span></div>');
+  _a('<div class="tot-line"><span class="lbl">Options</span><span class="val">' + (optsTotal === 0 ? '—' : (optsTotal > 0 ? '+' : '') + fmt(Math.abs(optsTotal))) + '</span></div>');
+  _a('<div class="tot-line"><span class="lbl">' + delivLabel + '</span><span class="val">+' + fmt(DELIVERY_CHARGE) + '</span></div>');
+  if (factoryIncentive > 0 && dealerBlock.active) {
+    _a('<div class="tot-line"><span class="lbl" style="color:#666">MSRP Subtotal</span><span class="val" style="color:#444">' + fmtFull(base + optsTotal + DELIVERY_CHARGE) + '</span></div>');
+    _a('<div class="tot-line" style="background:#fff8f0"><span class="lbl" style="color:#e85d20">Factory Incentive</span><span class="val" style="color:#e85d20">−' + fmt(factoryIncentive) + ' <span style="font-size:10px;font-weight:500;opacity:0.7">ex-GST</span></span></div>');
+  } else if (discountAmt > 0) {
+    _a('<div class="tot-line"><span class="lbl" style="color:#666">MSRP Subtotal</span><span class="val" style="color:#444">' + fmtFull(base + optsTotal + DELIVERY_CHARGE) + '</span></div>');
   }
-  .brand-name {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: 28px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    line-height: 1;
-    opacity: 0.95;
-  }
-  .brand-series {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 400;
-    font-size: 13px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    opacity: 0.7;
-    margin-top: 4px;
-  }
-  .quote-label-block { text-align: right; }
-  .quote-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    opacity: 0.7;
-  }
-  .quote-date { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+  if (discountAmt > 0) _a('<div class="tot-line disc"><span class="lbl">Dealer Adjustment</span><span class="val">−' + fmt(discountAmt) + '</span></div>');
+  _a('<div class="grand-line"><span class="lbl">Total (inc. GST)</span><span class="val">' + fmtFull(grand) + '</span></div>');
+  _a('</div><div class="gst-note">All prices include GST</div></div></div>');
 
-  /* ── MODEL HERO ── */
-  .model-hero {
-    background: ${lightBg};
-    border-bottom: 3px solid ${accentHex};
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .model-name {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: 36px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: ${accentHex};
-    line-height: 1;
-  }
-  .model-sub {
-    font-size: 12px;
-    color: #777;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-top: 4px;
-    font-family: 'Barlow Condensed', sans-serif;
-  }
-  .base-price-label {
-    font-size: 11px;
-    color: #888;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    font-family: 'Barlow Condensed', sans-serif;
-    text-align: right;
-  }
-  .base-price-val {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: 32px;
-    color: ${accentHex};
-    letter-spacing: 1px;
-    text-align: right;
-  }
-  .iwwf-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #555;
-    line-height: 1.4;
-    text-align: right;
-  }
-  .iwwf-sub { font-size: 10px; color: #888; letter-spacing: 0.5px; margin-top: 2px; text-align: right; }
-
-  /* ── CUSTOMER BAND ── */
-  .customer-band {
-    background: #f7f9fc;
-    border-bottom: 1px solid #e0e8f0;
-    padding: 14px 40px;
-    display: flex;
-    gap: 32px;
-    align-items: center;
-  }
-  .cust-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #aaa;
-    margin-bottom: 2px;
-  }
-  .cust-value { font-size: 14px; font-weight: 600; color: #1a1a2e; }
-  .cust-sub { font-size: 12px; color: #666; margin-top: 1px; }
-
-  /* ── BODY ── */
-  .body-wrap { padding: 28px 40px 24px; display: flex; gap: 28px; align-items: flex-start; }
-  .options-col { flex: 1; min-width: 0; }
-  .section-heading {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: ${accentHex};
-    border-bottom: 2px solid ${accentHex};
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-  }
-  table.options-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  tr.cat-row td {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #aaa;
-    padding: 10px 0 3px;
-  }
-  tr.item-row td {
-    padding: 4px 0;
-    border-bottom: 1px solid #f0f0f0;
-    vertical-align: top;
-    color: #333;
-    line-height: 1.35;
-  }
-  td.price-col {
-    text-align: right;
-    white-space: nowrap;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    color: #222;
-    padding-left: 12px;
-    width: 90px;
-  }
-  td.price-col.neg { color: #1a7a4a; }
-
-  /* ── TOTALS PANEL ── */
-  .totals-col { width: 220px; flex-shrink: 0; }
-  .totals-box { background: #f7f9fc; border: 1px solid #e0e8f0; border-radius: 6px; overflow: hidden; }
-  .totals-section-hdr {
-    background: ${accentHex};
-    color: white;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 7px 14px;
-  }
-  .tot-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 8px 14px;
-    border-bottom: 1px solid #eaeff5;
-    font-size: 13px;
-  }
-  .tot-line .lbl { color: #666; font-size: 12px; }
-  .tot-line .val { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px; color: #222; }
-  .tot-line.disc .lbl { color: #1a7a4a; }
-  .tot-line.disc .val { color: #1a7a4a; }
-  .tot-line.dealer-price-line { background: #fff8f0; border-top: 2px solid #e0e8f0; }
-  .tot-line.dealer-price-line .lbl { color: #c23a00; font-weight: 700; }
-  .tot-line.dealer-price-line .val { color: #c23a00; }
-  .tot-line.dealer-margin-line { background: #fff8f0; border-bottom: none; }
-  .tot-line.dealer-margin-line .lbl { color: #888; font-size: 11px; }
-  .grand-line {
-    background: linear-gradient(135deg, ${accentHex}, ${accent2Hex});
-    padding: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
-  .grand-line .lbl {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.8);
-  }
-  .grand-line .val {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: 24px;
-    color: white;
-    letter-spacing: 1px;
-  }
-  .gst-note { font-size: 10px; color: #aaa; text-align: right; padding: 6px 14px 0; }
-
-  /* ── FOOTER ── */
-  .page-footer {
-    border-top: 1px solid #e0e8f0;
-    padding: 14px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-  }
-  .footer-disclaimer { font-size: 10px; color: #bbb; max-width: 480px; line-height: 1.5; }
-  .footer-brand {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: ${accentHex};
-    opacity: 0.6;
+  // ── DEALER BAND ──────────────────────────────────────────────
+  if (dealerBlock.active) {
+    _a('<div class="dealer-band">');
+    _a('<div class="dealer-band-hdr"><span>Dealer Copy — Confidential</span><span class="sub">' + brandName + ' &nbsp;&middot;&nbsp; MY26 ' + seriesName + '</span></div>');
+    _a('<div class="dealer-band-body">');
+    _a('<div class="dealer-cell"><div class="dealer-cell-label">Customer Price (inc. GST)</div><div class="dealer-cell-val">' + fmtFull(grand) + '</div><div class="dealer-cell-sub">Drive away price</div></div>');
+    _a('<div class="dealer-cell"><div class="dealer-cell-label">Dealer Cost (inc. GST)</div><div class="dealer-cell-val">' + fmtFull(Math.round(dealerBlock.dealerPriceIncGst)) + '</div><div class="dealer-cell-sub">Your total cost</div></div>');
+    const gpClass = dealerBlock.grossDollar >= 0 ? 'gp-positive' : 'gp-negative';
+    _a('<div class="dealer-cell ' + gpClass + '"><div class="dealer-cell-label">Gross Profit (ex. GST)</div><div class="dealer-cell-val">' + dealerBlock.sign + fmt(Math.abs(Math.round(dealerBlock.grossDollar))) + '</div><div class="dealer-cell-sub">' + (dealerBlock.grossPct * 100).toFixed(1) + '% gross margin</div></div>');
+    _a('</div>');
+    if (discountAmt > 0 || factoryIncentive > 0) {
+      _a('<div class="dealer-extra-row">');
+      if (discountAmt > 0) _a('<span><strong>Dealer Adjustment:</strong> −' + fmt(discountAmt) + ' applied to customer price</span>');
+      if (factoryIncentive > 0) _a('<span><strong>Factory Incentive:</strong> −' + fmt(factoryIncentive) + ' ex-GST applied to dealer cost</span>');
+      _a('</div>');
+    }
+    _a('</div>');
   }
 
-  /* ── PDF BAR — hidden at print ── */
-  @media print {
-    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .pdf-bar { display: none !important; }
-    body { padding-top: 0 !important; }
-  }
-  .pdf-bar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 9999;
-    background: #0a1628;
-    border-bottom: 2px solid ${accentHex};
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    font-family: 'Barlow Condensed', sans-serif;
-  }
-  .pdf-bar-info { display: flex; flex-direction: column; gap: 2px; }
-  .pdf-bar-title { font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: ${accentHex}; }
-  .pdf-bar-hint { font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 0.5px; }
-  .pdf-save-btn {
-    background: linear-gradient(90deg, ${accentHex}, ${accent2Hex});
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 24px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    white-space: nowrap;
-    -webkit-tap-highlight-color: transparent;
-  }
-  body.has-bar { padding-top: 56px; }
-</style>
-</head>
-<body class="has-bar">
+  // ── FOOTER ───────────────────────────────────────────────────
+  _a('<div class="page-footer">');
+  _a('<div class="footer-disclaimer">All pricing is in Australian Dollars and includes GST. Prices are subject to change without notice. This quote is valid for 30 days from the date of issue.</div>');
+  _a('<div class="footer-brand">' + brandName + '</div>');
+  _a('</div></body></html>');
 
-<!-- PDF SAVE BAR -->
-<div class="pdf-bar">
-  <div class="pdf-bar-info">
-    <div class="pdf-bar-title">&#128196; Quote Ready</div>
-    <div class="pdf-bar-hint">iOS: tap Share → Print → Save as PDF</div>
-  </div>
-  <button class="pdf-save-btn" onclick="window.print()">&#8595; Save as PDF</button>
-</div>
+  const html = H.join('\n');
 
-<!-- HEADER -->
-<div class="page-header">
-  <div class="brand-block">
-    <div class="brand-name">${brandName}</div>
-    <div class="brand-series">MY26 ${seriesName} Series</div>
-  </div>
-  <div class="quote-label-block">
-    <div class="quote-label">${dealerBlock.active ? 'Dealer Copy — Confidential' : 'Customer Quote'}</div>
-    <div class="quote-date">${dateStr}</div>
-  </div>
-</div>
-
-<!-- MODEL HERO -->
-<div class="model-hero">
-  <div>
-    <div class="model-name">${model}</div>
-    <div class="model-sub">${seriesName} Series &nbsp;·&nbsp; MY26</div>
-  </div>
-  ${model === 'TXI Open Ed.' ? `
-  <div class="iwwf-badge">
-    <div class="iwwf-title">Official Tow Boat<br>IWWF World Water Ski Championships</div>
-    <div class="iwwf-sub">International Waterski &amp; Wakeboard Federation</div>
-  </div>` : ''}
-</div>
-
-${custParts.length ? `
-<!-- CUSTOMER BAND -->
-<div class="customer-band">
-  <div>
-    <div class="cust-label">Prepared for</div>
-    <div class="cust-value">${customer.name||''}</div>
-    <div class="cust-sub">${[customer.mobile, customer.email].filter(Boolean).join(' &nbsp;·&nbsp; ')}</div>
-  </div>
-  ${customer.postcode ? `<div><div class="cust-label">Postcode</div><div class="cust-value">${customer.postcode}</div></div>` : ''}
-</div>` : ''}
-
-<!-- BODY -->
-<div class="body-wrap">
-
-  <!-- OPTIONS LIST -->
-  <div class="options-col">
-    <div class="section-heading">Selected Options &amp; Equipment</div>
-    ${optionsRows ? `<table class="options-table">${optionsRows}</table>` : '<p style="color:#aaa;font-size:13px;padding:8px 0">No options selected — base specification only.</p>'}
-  </div>
-
-  <!-- TOTALS PANEL -->
-  <div class="totals-col">
-    <div class="totals-box">
-      <div class="totals-section-hdr">Price Summary</div>
-      <div class="tot-line">
-        <span class="lbl">Base Price</span>
-        <span class="val">${fmtFull(base)}</span>
-      </div>
-      <div class="tot-line">
-        <span class="lbl">Options</span>
-        <span class="val">${optsTotal === 0 ? '—' : (optsTotal > 0 ? '+' : '−') + fmt(Math.abs(optsTotal))}</span>
-      </div>
-      <div class="tot-line">
-        <span class="lbl">${delivLabel}</span>
-        <span class="val">+${fmt(DELIVERY_CHARGE)}</span>
-      </div>
-      ${(factoryIncentive > 0 && dealerBlock.active) ? `
-      <div class="tot-line" style="border-bottom:2px solid #eaeff5;">
-        <span class="lbl" style="color:#666">MSRP Subtotal</span>
-        <span class="val" style="color:#444">${fmtFull(base + optsTotal + DELIVERY_CHARGE)}</span>
-      </div>
-      <div class="tot-line" style="background:#fff8f0">
-        <span class="lbl" style="color:#e85d20">Factory Incentive</span>
-        <span class="val" style="color:#e85d20">\u2212${fmt(factoryIncentive)} <span style="font-size:10px;font-weight:500;opacity:0.7">ex-GST</span></span>
-      </div>` : (discountAmt > 0 ? `
-      <div class="tot-line" style="border-bottom:2px solid #eaeff5;">
-        <span class="lbl" style="color:#666">MSRP Subtotal</span>
-        <span class="val" style="color:#444">${fmtFull(base + optsTotal + DELIVERY_CHARGE)}</span>
-      </div>` : '')}
-      ${discountAmt > 0 ? `
-      <div class="tot-line disc">
-        <span class="lbl">Dealer Adjustment</span>
-        <span class="val">\u2212${fmt(discountAmt)}</span>
-      </div>` : ''}
-      <div class="grand-line">
-        <span class="lbl">Total (inc. GST)</span>
-        <span class="val">${fmtFull(grand)}</span>
-      </div>
-      ${dealerBlock.active ? `
-      <div class="tot-line dealer-price-line">
-        <span class="lbl">Dealer Price (inc. GST)</span>
-        <span class="val">${fmtFull(Math.round(dealerBlock.dealerPriceIncGst))}</span>
-      </div>
-      <div class="tot-line dealer-margin-line">
-        <span class="lbl">Gross Margin (ex. GST)</span>
-        <span class="val" style="color:${dealerBlock.mc}">${dealerBlock.sign}${fmt(Math.abs(Math.round(dealerBlock.grossDollar)))} &nbsp;<span style="font-size:11px;font-weight:600">${(dealerBlock.grossPct*100).toFixed(1)}%</span></span>
-      </div>` : ''}
-    </div>
-    <div class="gst-note">All prices include GST</div>
-  </div>
-
-</div>
-
-<!-- FOOTER -->
-<div class="page-footer">
-  <div class="footer-disclaimer">
-    All pricing is in Australian Dollars and includes GST. Prices are subject to change without notice.
-    This quote is valid for 30 days from the date of issue. Images are for illustration purposes only.
-    Specifications and availability may vary.
-  </div>
-  <div class="footer-brand">${brandName}</div>
-</div>
-
-</body>
-</html>`;
-
-  // ── Render HTML → PDF using jsPDF + html2canvas ──────────────
+  // ── Build iframe content as a Blob URL (avoids script-tag parsing issues) ──
   const filename = [customer.name, model, customer.mobile]
-    .filter(Boolean).map(s => s.replace(/[^a-zA-Z0-9]/g,'_')).join('_') + '.pdf';
+    .filter(Boolean).map(function(s){ return s.replace(/[^a-zA-Z0-9]/g,'_'); }).join('_') + '.pdf';
 
-  showToast('Generating PDF…', 'info', 8000);
+  showToast('Generating PDF\u2026', 'info', 10000);
 
-  const loadScript = (src) => new Promise((res, rej) => {
-    if (document.querySelector(`script[src="${src}"]`)) { res(); return; }
-    const el = document.createElement('script');
-    el.src = src; el.onload = res; el.onerror = rej;
-    document.head.appendChild(el);
-  });
+  // The render script runs inside the iframe — note: no template literals here
+  var safeFilename = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
+  var renderJs = [
+    'window.addEventListener("load",function(){',
+    '  function loadJS(src,cb){',
+    '    var s=document.createElement("script");',
+    '    s.src=src;s.onload=cb;',
+    '    s.onerror=function(){parent.postMessage({type:"pdf-error",msg:"Library failed to load"},"*");};',
+    '    document.head.appendChild(s);',
+    '  }',
+    '  loadJS("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",function(){',
+    '    loadJS("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",function(){',
+    '      html2canvas(document.body,{scale:2,useCORS:true,allowTaint:true,backgroundColor:"#ffffff",width:794,windowWidth:794,logging:false})',
+    '      .then(function(canvas){',
+    '        var doc=new window.jspdf.jsPDF({orientation:"portrait",unit:"mm",format:"a4"});',
+    '        var PW=210,PH=297,cW=canvas.width,cH=canvas.height;',
+    '        var ratio=PW/(cW/2),totalH=(cH/2)*ratio,yOff=0,pg=0;',
+    '        while(yOff<totalH){',
+    '          if(pg>0)doc.addPage();',
+    '          var slH=Math.min(PH,totalH-yOff),sY=(yOff/ratio)*2,sH=(slH/ratio)*2;',
+    '          var sl=document.createElement("canvas");sl.width=cW;sl.height=Math.ceil(sH);',
+    '          sl.getContext("2d").drawImage(canvas,0,sY,cW,sH,0,0,cW,Math.ceil(sH));',
+    '          doc.addImage(sl.toDataURL("image/jpeg",0.95),"JPEG",0,0,PW,slH);',
+    '          yOff+=PH;pg++;',
+    '        }',
+    '        parent.postMessage({type:"pdf-done",data:doc.output("datauristring"),filename:"PDFFILENAME"},"*");',
+    '      }).catch(function(e){parent.postMessage({type:"pdf-error",msg:e.message},"*");});',
+    '    });',
+    '  });',
+    '});'
+  ].join('\n').replace('PDFFILENAME', safeFilename);
 
-  // ── Open new tab and do all rendering there ──────────────────
-  const previewWin = window.open('', '_blank');
-  if (!previewWin) { showToast('Allow pop-ups to export PDF', 'error', 4000); return; }
+  // Inject the render script into the html string by appending before </body>
+  // Use a Blob so the iframe src does not contain literal script tags in the outer document
+  var fullHtml = html + '<script>' + renderJs + '<\/script>';
+  var blob = new Blob([fullHtml], { type: 'text/html' });
+  var blobUrl = URL.createObjectURL(blob);
 
-  // Inject render script into the HTML — runs inside the new tab
-  const renderScript = `
-    <script>
-    window.onload = function() {
-      var statusEl = document.getElementById('pdf-status');
-      function setStatus(msg) { if(statusEl) statusEl.textContent = msg; }
-      setStatus('Loading libraries\u2026');
+  var iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;height:2000px;border:none;visibility:hidden;';
+  document.body.appendChild(iframe);
 
-      function loadScript(src, cb) {
-        var s = document.createElement('script');
-        s.src = src;
-        s.onload = cb;
-        s.onerror = function() { setStatus('Failed to load PDF library. Check internet connection.'); };
-        document.head.appendChild(s);
-      }
-
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', function() {
-        loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', function() {
-          setStatus('Rendering\u2026');
-          var bar = document.getElementById('pdf-status-bar');
-          var body = document.body;
-          if(bar) bar.style.display = 'none';
-          body.style.paddingTop = '0';
-
-          html2canvas(body, {
-            scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: '#ffffff',
-            width: 794,
-            windowWidth: 794,
-            logging: false,
-          }).then(function(canvas) {
-            var jsPDF = window.jspdf.jsPDF;
-            var doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
-            var PW=210, PH=297;
-            var canvasW=canvas.width, canvasH=canvas.height;
-            var ratio=PW/(canvasW/2);
-            var totalH=(canvasH/2)*ratio;
-            var yOffset=0, pageNum=0;
-            while(yOffset<totalH) {
-              if(pageNum>0) doc.addPage();
-              var remaining=totalH-yOffset;
-              var sliceH=Math.min(PH,remaining);
-              var srcY=(yOffset/ratio)*2;
-              var srcH=(sliceH/ratio)*2;
-              var slice=document.createElement('canvas');
-              slice.width=canvasW; slice.height=Math.ceil(srcH);
-              slice.getContext('2d').drawImage(canvas,0,srcY,canvasW,srcH,0,0,canvasW,Math.ceil(srcH));
-              doc.addImage(slice.toDataURL('image/jpeg',0.95),'JPEG',0,0,PW,sliceH);
-              yOffset+=PH; pageNum++;
-            }
-            doc.save('${filename}');
-            setStatus('PDF downloaded \u2713');
-            if(bar){ bar.style.display='flex'; bar.style.background='#0d3d1f'; bar.querySelector('.pdf-bar-title').textContent='\u2713 PDF Downloaded'; bar.querySelector('.pdf-bar-hint').textContent='Check your Downloads folder'; bar.querySelector('.pdf-save-btn').style.display='none'; }
-          }).catch(function(e){
-            setStatus('Render error: '+e.message);
-          });
-        });
-      });
-    };
-    <\/script>
-  `;
-
-  // Inject status bar and render script into html
-  const htmlWithScript = html
-    .replace('<div class="pdf-bar">', '<div class="pdf-bar" id="pdf-status-bar">')
-    .replace('<div class="pdf-bar-title">&#128196; Quote Ready</div>', '<div class="pdf-bar-title" id="pdf-status">Preparing PDF\u2026</div>')
-    .replace('</body>', renderScript + '\n</body>');
-
-  previewWin.document.write(htmlWithScript);
-  previewWin.document.close();
+  var onMsg = function(e) {
+    if (!e.data || (e.data.type !== 'pdf-done' && e.data.type !== 'pdf-error')) return;
+    window.removeEventListener('message', onMsg);
+    document.body.removeChild(iframe);
+    URL.revokeObjectURL(blobUrl);
+    if (e.data.type === 'pdf-done') {
+      var a = document.createElement('a');
+      a.href = e.data.data;
+      a.download = e.data.filename;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      showToast('PDF downloaded \u2713', 'success');
+    } else {
+      showToast('PDF failed: ' + e.data.msg, 'error', 5000);
+    }
+  };
+  window.addEventListener('message', onMsg);
+  iframe.src = blobUrl;
 }
-
 
 
 // ════════════════════════════════════════════════════════════
