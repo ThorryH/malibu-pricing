@@ -3410,106 +3410,84 @@ ${custParts.length ? `
     document.head.appendChild(el);
   });
 
-  // Open preview tab immediately so browser doesn't block the popup
+  // ── Open new tab and do all rendering there ──────────────────
   const previewWin = window.open('', '_blank');
-  if (previewWin) {
-    previewWin.document.write('<html><head><title>Generating PDF…</title><style>body{margin:0;background:#0a1628;display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#c8991a;font-size:18px;letter-spacing:2px;text-transform:uppercase;}</style></head><body>Generating PDF…</body></html>');
-    previewWin.document.close();
-  }
+  if (!previewWin) { showToast('Allow pop-ups to export PDF', 'error', 4000); return; }
 
-  Promise.all([
-    loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
-    loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
-  ]).then(() => {
-    const { jsPDF } = window.jspdf;
+  // Inject render script into the HTML — runs inside the new tab
+  const renderScript = `
+    <script>
+    window.onload = function() {
+      var statusEl = document.getElementById('pdf-status');
+      function setStatus(msg) { if(statusEl) statusEl.textContent = msg; }
+      setStatus('Loading libraries\u2026');
 
-    // Render into a hidden off-screen iframe so fonts load correctly
-    const iframe = document.createElement('iframe');
-    iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;height:1123px;border:none;visibility:hidden;';
-    document.body.appendChild(iframe);
-
-    iframe.onload = () => {
-      // Wait for fonts to load inside the iframe
-      const iDoc = iframe.contentDocument;
-      const iWin = iframe.contentWindow;
-
-      const doRender = () => {
-        // Remove the pdf-bar before capture
-        const bar = iDoc.querySelector('.pdf-bar');
-        if (bar) bar.remove();
-        const body = iDoc.body;
-        body.style.paddingTop = '0';
-        body.classList.remove('has-bar');
-
-        html2canvas(body, {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          backgroundColor: '#ffffff',
-          width: 794,
-          windowWidth: 794,
-          logging: false,
-        }).then(canvas => {
-          const imgData = canvas.toDataURL('image/jpeg', 0.95);
-          const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
-          const PW = 210, PH = 297;
-
-          // Scale canvas to A4, paginating if tall
-          const canvasW = canvas.width;
-          const canvasH = canvas.height;
-          const ratio   = PW / (canvasW / 2); // /2 because scale:2
-          const totalH  = (canvasH / 2) * ratio;
-          const pageH   = PH;
-          let yOffset   = 0;
-          let pageNum   = 0;
-
-          while (yOffset < totalH) {
-            if (pageNum > 0) doc.addPage();
-
-            // Clip height for this page
-            const remaining = totalH - yOffset;
-            const sliceH    = Math.min(pageH, remaining);
-
-            // Pixel slice from canvas
-            const srcY      = (yOffset / ratio) * 2;   // back to canvas pixels
-            const srcH      = (sliceH / ratio) * 2;
-
-            const slice     = document.createElement('canvas');
-            slice.width     = canvasW;
-            slice.height    = srcH;
-            slice.getContext('2d').drawImage(canvas, 0, srcY, canvasW, srcH, 0, 0, canvasW, srcH);
-            const sliceData = slice.toDataURL('image/jpeg', 0.95);
-
-            doc.addImage(sliceData, 'JPEG', 0, 0, PW, sliceH);
-            yOffset += pageH;
-            pageNum++;
-          }
-
-          document.body.removeChild(iframe);
-          doc.save(filename);
-          showToast('PDF downloaded ✓', 'success');
-        }).catch(err => {
-          document.body.removeChild(iframe);
-          console.error('html2canvas error:', err);
-          showToast('PDF generation failed — ' + err.message, 'error', 5000);
-        });
-      };
-
-      // Give fonts 800ms to load inside iframe
-      if (iDoc.fonts && iDoc.fonts.ready) {
-        iDoc.fonts.ready.then(doRender);
-      } else {
-        setTimeout(doRender, 800);
+      function loadScript(src, cb) {
+        var s = document.createElement('script');
+        s.src = src;
+        s.onload = cb;
+        s.onerror = function() { setStatus('Failed to load PDF library. Check internet connection.'); };
+        document.head.appendChild(s);
       }
+
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', function() {
+        loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', function() {
+          setStatus('Rendering\u2026');
+          var bar = document.getElementById('pdf-status-bar');
+          var body = document.body;
+          if(bar) bar.style.display = 'none';
+          body.style.paddingTop = '0';
+
+          html2canvas(body, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            width: 794,
+            windowWidth: 794,
+            logging: false,
+          }).then(function(canvas) {
+            var jsPDF = window.jspdf.jsPDF;
+            var doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+            var PW=210, PH=297;
+            var canvasW=canvas.width, canvasH=canvas.height;
+            var ratio=PW/(canvasW/2);
+            var totalH=(canvasH/2)*ratio;
+            var yOffset=0, pageNum=0;
+            while(yOffset<totalH) {
+              if(pageNum>0) doc.addPage();
+              var remaining=totalH-yOffset;
+              var sliceH=Math.min(PH,remaining);
+              var srcY=(yOffset/ratio)*2;
+              var srcH=(sliceH/ratio)*2;
+              var slice=document.createElement('canvas');
+              slice.width=canvasW; slice.height=Math.ceil(srcH);
+              slice.getContext('2d').drawImage(canvas,0,srcY,canvasW,srcH,0,0,canvasW,Math.ceil(srcH));
+              doc.addImage(slice.toDataURL('image/jpeg',0.95),'JPEG',0,0,PW,sliceH);
+              yOffset+=PH; pageNum++;
+            }
+            doc.save('${filename}');
+            setStatus('PDF downloaded \u2713');
+            if(bar){ bar.style.display='flex'; bar.style.background='#0d3d1f'; bar.querySelector('.pdf-bar-title').textContent='\u2713 PDF Downloaded'; bar.querySelector('.pdf-bar-hint').textContent='Check your Downloads folder'; bar.querySelector('.pdf-save-btn').style.display='none'; }
+          }).catch(function(e){
+            setStatus('Render error: '+e.message);
+          });
+        });
+      });
     };
+    <\/script>
+  `;
 
-    iframe.srcdoc = html;
+  // Inject status bar and render script into html
+  const htmlWithScript = html
+    .replace('<div class="pdf-bar">', '<div class="pdf-bar" id="pdf-status-bar">')
+    .replace('<div class="pdf-bar-title">&#128196; Quote Ready</div>', '<div class="pdf-bar-title" id="pdf-status">Preparing PDF\u2026</div>')
+    .replace('</body>', renderScript + '\n</body>');
 
-  }).catch(err => {
-    console.error('Script load error:', err);
-    showToast('PDF failed — check internet connection', 'error', 4000);
-  });
+  previewWin.document.write(htmlWithScript);
+  previewWin.document.close();
 }
+
 
 
 // ════════════════════════════════════════════════════════════
