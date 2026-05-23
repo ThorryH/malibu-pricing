@@ -3611,10 +3611,14 @@ function exportQuotePDF() {
           doc.addImage(sl.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, PW, slH);
           yOff += PH; pg++;
         }
+        // Use Blob URL for download — data: URI clicks are blocked in modern browsers
+        var pdfBlob = new Blob([doc.output('arraybuffer')], { type: 'application/pdf' });
+        var blobUrl = URL.createObjectURL(pdfBlob);
         var a = document.createElement('a');
-        a.href = doc.output('datauristring');
+        a.href = blobUrl;
         a.download = safeFilename;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 10000);
         showToast('PDF downloaded ✓', 'success');
       }).catch(function(e) {
         if (document.body.contains(renderDiv)) document.body.removeChild(renderDiv);
