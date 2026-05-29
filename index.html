@@ -3473,6 +3473,18 @@ function exportQuotePDF() {
   _a('.gp-positive .dealer-cell-val { color: #1a7a4a; } .gp-negative .dealer-cell-val { color: #c23a00; }');
   _a('.dealer-extra-row { background: #fff0e8; border-top: 1px solid #f0d8c8; padding: 7px 16px; font-size: 11px; color: #805030; display: flex; gap: 24px; flex-wrap: wrap; }');
   _a('.dealer-extra-row strong { color: #c23a00; }');
+  _a('.dealer-totals-box { background: #fff8f0; border: 1.5px solid #c23a00; border-radius: 6px; overflow: hidden; margin-top: 10px; }');
+  _a('.dealer-totals-hdr { background: #c23a00; color: white; font-family: "Barlow Condensed", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 7px 14px; }');
+  _a('.dtot-line { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 14px; border-bottom: 1px solid #f0d8c8; font-size: 13px; }');
+  _a('.dtot-line .lbl { color: #a05030; font-size: 11px; } .dtot-line .val { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 13px; color: #3a1800; }');
+  _a('.dtot-line.incentive .lbl { color: #e85d20; } .dtot-line.incentive .val { color: #e85d20; }');
+  _a('.dtot-line.adj .lbl { color: #1a7a4a; } .dtot-line.adj .val { color: #1a7a4a; }');
+  _a('.dealer-grand-line { background: linear-gradient(135deg, #c23a00, #8a2000); padding: 12px 14px; display: flex; justify-content: space-between; align-items: baseline; }');
+  _a('.dealer-grand-line .lbl { font-family: "Barlow Condensed", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.75); }');
+  _a('.dealer-grand-line .val { font-family: "Barlow Condensed", sans-serif; font-weight: 900; font-size: 20px; color: white; letter-spacing: 1px; }');
+  _a('.gp-line { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 14px; background: #fff0e8; }');
+  _a('.gp-line .lbl { color: #a05030; font-size: 11px; } .gp-line .val { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 13px; }');
+  _a('.gp-line.positive .val { color: #1a7a4a; } .gp-line.negative .val { color: #c23a00; }');
   _a('.page-footer { border-top: 1px solid #e0e8f0; padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }');
   _a('.footer-disclaimer { font-size: 10px; color: #bbb; max-width: 480px; line-height: 1.5; }');
   _a('.footer-brand { font-family: "Barlow Condensed", sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: ' + acCss + '; opacity: 0.6; }');
@@ -3526,7 +3538,28 @@ function exportQuotePDF() {
   }
   if (discountAmt > 0) _a('<div class="tot-line disc"><span class="lbl">Dealer Adjustment</span><span class="val">−' + fmt(discountAmt) + '</span></div>');
   _a('<div class="grand-line"><span class="lbl">Total (inc. GST)</span><span class="val">' + fmtFull(grand) + '</span></div>');
-  _a('</div><div class="gst-note">All prices include GST</div></div></div>');
+  _a('</div><div class="gst-note">All prices include GST</div></div>');
+  // ── DEALER TOTALS BOX (dealer mode only) ─────────────────────
+  if (dealerBlock.active) {
+    const _dcExGst = Math.round(dealerBlock.dealerPriceIncGst / (1 + GST_RATE));
+    const _dcIncGst = Math.round(dealerBlock.dealerPriceIncGst);
+    const _gpClass = dealerBlock.grossDollar >= 0 ? 'positive' : 'negative';
+    const _gpSign  = dealerBlock.grossDollar >= 0 ? '+' : '−';
+    _a('<div class="dealer-totals-box">');
+    _a('<div class="dealer-totals-hdr">Dealer Summary — Confidential</div>');
+    _a('<div class="dtot-line"><span class="lbl">Dealer Cost (ex. GST)</span><span class="val">' + fmt(_dcExGst) + '</span></div>');
+    _a('<div class="dtot-line"><span class="lbl">Dealer Cost (inc. GST)</span><span class="val">' + fmt(_dcIncGst) + '</span></div>');
+    if (factoryIncentive > 0) {
+      _a('<div class="dtot-line incentive"><span class="lbl">Factory Incentive</span><span class="val">−' + fmt(factoryIncentive) + ' ex-GST</span></div>');
+    }
+    if (discountAmt > 0) {
+      _a('<div class="dtot-line adj"><span class="lbl">Dealer Adjustment</span><span class="val">−' + fmt(discountAmt) + '</span></div>');
+    }
+    _a('<div class="dealer-grand-line"><span class="lbl">Customer Price (inc. GST)</span><span class="val">' + fmtFull(grand) + '</span></div>');
+    _a('<div class="gp-line ' + _gpClass + '"><span class="lbl">Gross Profit (ex. GST)</span><span class="val">' + _gpSign + fmt(Math.abs(Math.round(dealerBlock.grossDollar))) + ' &nbsp;/&nbsp; ' + (dealerBlock.grossPct * 100).toFixed(1) + '% GM</span></div>');
+    _a('</div>');
+  }
+  _a('</div></div>');
 
   // ── DEALER BAND ──────────────────────────────────────────────
   if (dealerBlock.active) {
