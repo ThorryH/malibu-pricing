@@ -3588,7 +3588,7 @@ function exportQuotePDF() {
 
   // ── Render in a hidden div using libs loaded in <head> — avoids blob iframe CSP issues ──
   const filename = [model, customer.name, customer.mobile]
-    .filter(Boolean).map(function(s){ return s.replace(/[^a-zA-Z0-9]/g,'_'); }).join('_') + '.pdf';
+    .filter(Boolean).map(function(s){ return s.replace(/[^a-zA-Z0-9]/g,'_'); }).join('_') + (dealerBlock.active ? '_Dealer' : '') + '.pdf';
 
   showToast('Generating PDF\u2026', 'info', 10000);
 
