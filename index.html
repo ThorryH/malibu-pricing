@@ -3540,25 +3540,37 @@ function exportQuotePDF() {
   }
   if (discountAmt > 0) _a('<div class="tot-line disc"><span class="lbl">Dealer Adjustment</span><span class="val">−' + fmt(discountAmt) + '</span></div>');
   _a('<div class="grand-line"><span class="lbl">Total (inc. GST)</span><span class="val">' + fmtFull(grand) + '</span></div>');
-  _a('</div><div class="gst-note">All prices include GST</div></div>');
-  // ── DEALER TOTALS BOX (dealer mode only) ─────────────────────
+  _a('</div><div class="gst-note">All prices include GST</div>');
+  // ── DEALER TOTALS BOX — stacked below price summary, same column ─
   if (dealerBlock.active) {
     const _dcExGst = Math.round(dealerBlock.dealerPriceIncGst / (1 + GST_RATE));
     const _dcIncGst = Math.round(dealerBlock.dealerPriceIncGst);
     const _gpClass = dealerBlock.grossDollar >= 0 ? 'positive' : 'negative';
     const _gpSign  = dealerBlock.grossDollar >= 0 ? '+' : '−';
+    const _gpDollar = Math.abs(Math.round(dealerBlock.grossDollar));
+    const _gmPct = (dealerBlock.grossPct * 100).toFixed(1);
     _a('<div class="dealer-totals-box">');
     _a('<div class="dealer-totals-hdr">Dealer Summary — Confidential</div>');
+    // Dealer cost ex + inc GST
     _a('<div class="dtot-line"><span class="lbl">Dealer Cost (ex. GST)</span><span class="val">' + fmt(_dcExGst) + '</span></div>');
     _a('<div class="dtot-line"><span class="lbl">Dealer Cost (inc. GST)</span><span class="val">' + fmt(_dcIncGst) + '</span></div>');
+    // Adjustments — only shown if applied
     if (factoryIncentive > 0) {
       _a('<div class="dtot-line incentive"><span class="lbl">Factory Incentive</span><span class="val">−' + fmt(factoryIncentive) + ' ex-GST</span></div>');
     }
     if (discountAmt > 0) {
       _a('<div class="dtot-line adj"><span class="lbl">Dealer Adjustment</span><span class="val">−' + fmt(discountAmt) + '</span></div>');
     }
-    _a('<div class="dealer-grand-line"><span class="lbl">Customer Price (inc. GST)</span><span class="val">' + fmtFull(grand) + '</span></div>');
-    _a('<div class="gp-line ' + _gpClass + '"><span class="lbl">Gross Profit (ex. GST)</span><span class="val">' + _gpSign + fmt(Math.abs(Math.round(dealerBlock.grossDollar))) + ' &nbsp;/&nbsp; ' + (dealerBlock.grossPct * 100).toFixed(1) + '% GM</span></div>');
+    // Dealer Price (inc. GST) — matches live UI label exactly, orange
+    _a('<div class="dealer-grand-line"><span class="lbl">Dealer Price (inc. GST)</span><span class="val">' + fmtFull(_dcIncGst) + '</span></div>');
+    // Gross Margin — matches live UI: % large, GP$ sub, both ex-GST
+    _a('<div class="gp-line ' + _gpClass + '">');
+    _a('<span class="lbl">Gross Margin (ex. GST)</span>');
+    _a('<span style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">');
+    _a('<span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;line-height:1;">' + _gmPct + '%</span>');
+    _a('<span style="font-size:10px;font-weight:600;opacity:0.85;">' + _gpSign + fmt(_gpDollar) + ' ex-GST</span>');
+    _a('</span>');
+    _a('</div>');
     _a('</div>');
   }
   _a('</div></div>');
