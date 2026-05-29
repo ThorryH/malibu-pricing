@@ -3423,7 +3423,7 @@ function exportQuotePDF() {
 
   // ── CSS ──────────────────────────────────────────────────────
   _a('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">');
-  _a('<title>' + [customer.name,model,customer.mobile].filter(Boolean).map(function(s){return s.replace(/[^a-zA-Z0-9]/g,'_');}).join('_') + '</title>');
+  _a('<title>' + [model,customer.name,customer.mobile].filter(Boolean).map(function(s){return s.replace(/[^a-zA-Z0-9]/g,'_');}).join('_') + '</title>');
   _a('<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">');
   _a('<style>');
   _a('* { margin:0; padding:0; box-sizing:border-box; }');
@@ -3580,7 +3580,7 @@ function exportQuotePDF() {
   const html = H.join('\n');
 
   // ── Render in a hidden div using libs loaded in <head> — avoids blob iframe CSP issues ──
-  const filename = [customer.name, model, customer.mobile]
+  const filename = [model, customer.name, customer.mobile]
     .filter(Boolean).map(function(s){ return s.replace(/[^a-zA-Z0-9]/g,'_'); }).join('_') + '.pdf';
 
   showToast('Generating PDF\u2026', 'info', 10000);
@@ -3601,14 +3601,23 @@ function exportQuotePDF() {
         var doc = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
         var PW = 210, PH = 297, cW = canvas.width, cH = canvas.height;
         var ratio = PW / (cW / 2), totalH = (cH / 2) * ratio, yOff = 0, pg = 0;
+        // Use a 1px bleed: render each page slice 1px taller than needed so
+        // jpeg compression artefacts at the boundary are fully covered by the
+        // next page, eliminating the visible seam between pages.
+        var BLEED_MM = 0.5;
+        var BLEED_PX = (BLEED_MM / ratio) * 2;
         while (yOff < totalH) {
           if (pg > 0) doc.addPage();
           var slH = Math.min(PH, totalH - yOff);
           var sY = (yOff / ratio) * 2, sH = (slH / ratio) * 2;
+          var bleed = (yOff + slH < totalH) ? BLEED_PX : 0;
           var sl = document.createElement('canvas');
-          sl.width = cW; sl.height = Math.ceil(sH);
-          sl.getContext('2d').drawImage(canvas, 0, sY, cW, sH, 0, 0, cW, Math.ceil(sH));
-          doc.addImage(sl.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, PW, slH);
+          sl.width = cW; sl.height = Math.ceil(sH + bleed);
+          var slCtx = sl.getContext('2d');
+          slCtx.fillStyle = '#ffffff';
+          slCtx.fillRect(0, 0, sl.width, sl.height);
+          slCtx.drawImage(canvas, 0, sY, cW, sH + bleed, 0, 0, cW, Math.ceil(sH + bleed));
+          doc.addImage(sl.toDataURL('image/jpeg', 0.97), 'JPEG', 0, 0, PW, slH + BLEED_MM);
           yOff += PH; pg++;
         }
         // Open PDF in a new tab using a Blob URL
