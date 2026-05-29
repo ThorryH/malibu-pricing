@@ -3598,41 +3598,46 @@ function exportQuotePDF() {
         logging: false
       }).then(function(canvas) {
         document.body.removeChild(renderDiv);
+        // --- Page layout ---
+        // The full rendered canvas is placed across A4 pages with a top and
+        // bottom margin on every page.  The page slice boundary always falls
+        // inside that white margin gap, so content is NEVER cut mid-line.
+        var PW_MM = 210, PH_MM = 297;
+        var MARGIN_MM = 14;                          // white gap top & bottom each page
+        var CONTENT_MM = PH_MM - MARGIN_MM * 2;     // usable image height per page
+        var DPR = 2;                                 // html2canvas scale value
+        var imgW_MM = PW_MM;
+        var imgH_MM = (canvas.height / DPR) * (PW_MM / (canvas.width / DPR));
+        var pxPerMM = (canvas.width / DPR) / PW_MM * DPR;
         var doc = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        var PW = 210, PH = 297, cW = canvas.width, cH = canvas.height;
-        var ratio = PW / (cW / 2), totalH = (cH / 2) * ratio, yOff = 0, pg = 0;
-        // Use a 1px bleed: render each page slice 1px taller than needed so
-        // jpeg compression artefacts at the boundary are fully covered by the
-        // next page, eliminating the visible seam between pages.
-        var BLEED_MM = 0.5;
-        var BLEED_PX = (BLEED_MM / ratio) * 2;
-        while (yOff < totalH) {
+        var yImgOff_MM = 0;
+        var pg = 0;
+        while (yImgOff_MM < imgH_MM) {
           if (pg > 0) doc.addPage();
-          var slH = Math.min(PH, totalH - yOff);
-          var sY = (yOff / ratio) * 2, sH = (slH / ratio) * 2;
-          var bleed = (yOff + slH < totalH) ? BLEED_PX : 0;
+          var sliceH_MM = Math.min(CONTENT_MM, imgH_MM - yImgOff_MM);
+          var sY_px = Math.round(yImgOff_MM * pxPerMM);
+          var sH_px = Math.round(sliceH_MM * pxPerMM);
+          // Slice canvas
           var sl = document.createElement('canvas');
-          sl.width = cW; sl.height = Math.ceil(sH + bleed);
+          sl.width = canvas.width;
+          sl.height = sH_px;
           var slCtx = sl.getContext('2d');
           slCtx.fillStyle = '#ffffff';
           slCtx.fillRect(0, 0, sl.width, sl.height);
-          slCtx.drawImage(canvas, 0, sY, cW, sH + bleed, 0, 0, cW, Math.ceil(sH + bleed));
-          doc.addImage(sl.toDataURL('image/jpeg', 0.97), 'JPEG', 0, 0, PW, slH + BLEED_MM);
-          yOff += PH; pg++;
+          slCtx.drawImage(canvas, 0, sY_px, canvas.width, sH_px, 0, 0, canvas.width, sH_px);
+          // Place image indented by top margin; white bars cover the rest
+          doc.addImage(sl.toDataURL('image/jpeg', 0.97), 'JPEG', 0, MARGIN_MM, PW_MM, sliceH_MM);
+          doc.setFillColor(255, 255, 255);
+          doc.rect(0, 0, PW_MM, MARGIN_MM, 'F');
+          doc.rect(0, MARGIN_MM + sliceH_MM, PW_MM, PH_MM - MARGIN_MM - sliceH_MM, 'F');
+          yImgOff_MM += CONTENT_MM;
+          pg++;
         }
-        // Open PDF in a new tab using a Blob URL
-        var pdfBlob = new Blob([doc.output('arraybuffer')], { type: 'application/pdf' });
-        var blobUrl = URL.createObjectURL(pdfBlob);
-        var newTab = window.open(blobUrl, '_blank');
-        if (!newTab) {
-          // Fallback if popup blocked — trigger download instead
-          var a = document.createElement('a');
-          a.href = blobUrl;
-          a.download = safeFilename;
-          document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        }
-        setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 60000);
-        showToast('PDF opened ✓', 'success');
+        // --- Save with correct filename on all browsers including Safari ---
+        // doc.save() uses FileSaver internally and always triggers a real
+        // download with the supplied name, bypassing Safari blob: URL issues.
+        doc.save(safeFilename);
+        showToast('PDF downloaded ✓', 'success');
       }).catch(function(e) {
         if (document.body.contains(renderDiv)) document.body.removeChild(renderDiv);
         showToast('PDF failed: ' + e.message, 'error', 5000);
