@@ -3455,6 +3455,7 @@ function exportQuotePDF() {
   _a('td.price-col { text-align: right; white-space: nowrap; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 13px; color: #222; padding-left: 12px; width: 90px; }');
   _a('td.price-col.neg { color: #1a7a4a; }');
   _a('.totals-col { width: 220px; flex-shrink: 0; }');
+  _a('.totals-col.dealer-mode { width: 260px; }');
   _a('.totals-box { background: #f7f9fc; border: 1px solid #e0e8f0; border-radius: 6px; overflow: hidden; }');
   _a('.totals-section-hdr { background: ' + acCss + '; color: white; font-family: "Barlow Condensed", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 7px 14px; }');
   _a('.tot-line { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 14px; border-bottom: 1px solid #eaeff5; font-size: 13px; }');
@@ -3527,7 +3528,8 @@ function exportQuotePDF() {
   _a('<div class="body-wrap"><div class="options-col">');
   _a('<div class="section-heading">Selected Options &amp; Equipment</div>');
   _a(optionsRows ? '<table class="options-table">' + optionsRows + '</table>' : '<p style="color:#aaa;font-size:13px;padding:8px 0">No options selected — base specification only.</p>');
-  _a('</div><div class="totals-col"><div class="totals-box">');
+  const _totColClass = dealerBlock.active ? 'totals-col dealer-mode' : 'totals-col';
+  _a('</div><div class="' + _totColClass + '"><div class="totals-box">');
   _a('<div class="totals-section-hdr">Price Summary</div>');
   _a('<div class="tot-line"><span class="lbl">Base Price</span><span class="val">' + fmtFull(base) + '</span></div>');
   _a('<div class="tot-line"><span class="lbl">Options</span><span class="val">' + (optsTotal === 0 ? '—' : (optsTotal > 0 ? '+' : '') + fmt(Math.abs(optsTotal))) + '</span></div>');
