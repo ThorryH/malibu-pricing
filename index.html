@@ -3393,11 +3393,17 @@ function exportQuotePDF() {
   if (dealerMode) {
     let dealerOptsTotal = 0;
     const dealerBase = getDealerBase(series, modelIdx);
+    const modelName = s.models[modelIdx];
     s.categories.forEach((cat, ci) => { cat.items.forEach((item, ii) => {
       const key = `${ci}-${ii}`; const qty = sel.get(key) || 0;
       if (qty > 0) {
-        const dc = getDealerCost(series, ci, ii, modelIdx);
-        if (dc != null) dealerOptsTotal += dc * qty;
+        // Mirror live UI: skip stdModels items (price=0) — cost already in dealer base
+        const isStdMdl = item.stdModels && item.stdModels.includes(modelName);
+        const p = (item.stdPrice && isStdMdl) ? 0 : item.msrp[modelIdx];
+        if (p !== null && p !== 0) {
+          const dc = getDealerCost(series, ci, ii, modelIdx);
+          if (dc != null) dealerOptsTotal += dc * qty;
+        }
       }
     }); });
     if (dealerBase != null) {
