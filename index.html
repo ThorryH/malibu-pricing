@@ -3388,15 +3388,17 @@ function exportQuotePDF() {
   const dateStr = new Date().toLocaleDateString('en-AU', { day:'2-digit', month:'long', year:'numeric' });
   const delivLabel = 'Delivery' + (deliveryState ? ' — ' + deliveryState : '');
   const custParts  = [customer.name, customer.mobile, customer.email, customer.postcode ? customer.postcode : ''].filter(Boolean);
-  // Dealer block
+  // Dealer block — uses getDealerBase/getDealerCost (same source as live UI)
   let dealerBlock = { active: false };
   if (dealerMode) {
     let dealerOptsTotal = 0;
-    let dealerBase = s.base.dealer ? s.base.dealer[modelIdx] : null;
-    s.categories.forEach((cat,ci) => { cat.items.forEach((item,ii) => {
-      const key = `${ci}-${ii}`; const qty = sel.get(key)||0;
-      if (qty > 0 && item.dealer && item.dealer[modelIdx] != null)
-        dealerOptsTotal += item.dealer[modelIdx] * qty;
+    const dealerBase = getDealerBase(series, modelIdx);
+    s.categories.forEach((cat, ci) => { cat.items.forEach((item, ii) => {
+      const key = `${ci}-${ii}`; const qty = sel.get(key) || 0;
+      if (qty > 0) {
+        const dc = getDealerCost(series, ci, ii, modelIdx);
+        if (dc != null) dealerOptsTotal += dc * qty;
+      }
     }); });
     if (dealerBase != null) {
       const dealerCostExGst = dealerBase + dealerOptsTotal - factoryIncentive;
