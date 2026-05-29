@@ -3589,7 +3589,7 @@ function exportQuotePDF() {
   function _pdfDoRender(renderDiv, safeFilename) {
     setTimeout(function() {
       html2canvas(renderDiv, {
-        scale: 2,
+        scale: 4,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
@@ -3605,7 +3605,7 @@ function exportQuotePDF() {
         var PW_MM = 210, PH_MM = 297;
         var MARGIN_MM = 14;                          // white gap top & bottom each page
         var CONTENT_MM = PH_MM - MARGIN_MM * 2;     // usable image height per page
-        var DPR = 2;                                 // html2canvas scale value
+        var DPR = 4;                                 // html2canvas scale value
         var imgW_MM = PW_MM;
         var imgH_MM = (canvas.height / DPR) * (PW_MM / (canvas.width / DPR));
         var pxPerMM = (canvas.width / DPR) / PW_MM * DPR;
