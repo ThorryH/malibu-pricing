@@ -1665,10 +1665,14 @@ function loadQuoteObject(q, rowId) {
       sel = new Map(_snap);
       discountAmt = q.discount || 0;
       factoryIncentive = 0; // legacy snap — no FI stored
+      DELIVERY_CHARGE = (q.delivery != null) ? q.delivery : DELIVERY_DEFAULT;
+      deliveryState = '';
     } else {
       sel = new Map(_snap.sel || []);
       discountAmt = _snap.discount || 0;
       factoryIncentive = _snap.factoryIncentive || 0;
+      DELIVERY_CHARGE = (_snap.delivery != null) ? _snap.delivery : DELIVERY_DEFAULT;
+      deliveryState = _snap.deliveryState || '';
     }
   } catch(e) { sel = new Map(); autoSelectStd(); discountAmt = 0; factoryIncentive = 0; }
   document.body.className = series==='axis'?'theme-axis':series==='response'?'theme-response':'';
@@ -1703,7 +1707,8 @@ function startNewQuote() {
   series = 'wakesetter'; modelIdx = 0;
   sel.clear(); collapsed.clear();
   discountAmt = 0; factoryIncentive = 0;
-  try { localStorage.removeItem('mb_discount'); localStorage.removeItem('mb_factory_incentive'); } catch(e){}
+  DELIVERY_CHARGE = DELIVERY_DEFAULT; deliveryState = '';
+  try { localStorage.removeItem('mb_discount'); localStorage.removeItem('mb_factory_incentive'); localStorage.setItem('mb_delivery', String(DELIVERY_DEFAULT)); localStorage.setItem('mb_delivery_state',''); } catch(e){}
   autoSelectStd();
   document.body.className = '';
   showView('builder');
@@ -3253,7 +3258,7 @@ async function saveQuote() {
     series, model, base, optsTotal,
     delivery: DELIVERY_CHARGE, discount: discountAmt||0, grand,
     customer: { ...customer },
-    snap: JSON.stringify({sel:[...sel], discount:discountAmt||0, factoryIncentive:factoryIncentive||0}),
+    snap: JSON.stringify({sel:[...sel], discount:discountAmt||0, factoryIncentive:factoryIncentive||0, delivery:DELIVERY_CHARGE, deliveryState:deliveryState||''}),
   };
 
   if (!isSsConfigured()) {
