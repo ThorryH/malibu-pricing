@@ -1658,7 +1658,19 @@ function loadQuoteObject(q, rowId) {
   const models = data[series]?.models || [];
   modelIdx = models.indexOf(q.model);
   if (modelIdx < 0) modelIdx = 0;
-  try { sel = new Map(JSON.parse(q.snap||'[]')); } catch(e) { sel = new Map(); autoSelectStd(); }
+  try {
+    const _snap = JSON.parse(q.snap||'[]');
+    // snap may be legacy array or new object format
+    if (Array.isArray(_snap)) {
+      sel = new Map(_snap);
+      discountAmt = q.discount || 0;
+      factoryIncentive = 0; // legacy snap — no FI stored
+    } else {
+      sel = new Map(_snap.sel || []);
+      discountAmt = _snap.discount || 0;
+      factoryIncentive = _snap.factoryIncentive || 0;
+    }
+  } catch(e) { sel = new Map(); autoSelectStd(); discountAmt = 0; factoryIncentive = 0; }
   document.body.className = series==='axis'?'theme-axis':series==='response'?'theme-response':'';
   collapsed.clear();
   showView('builder');
@@ -1690,6 +1702,8 @@ function startNewQuote() {
   currentQuoteRowId = null;
   series = 'wakesetter'; modelIdx = 0;
   sel.clear(); collapsed.clear();
+  discountAmt = 0; factoryIncentive = 0;
+  try { localStorage.removeItem('mb_discount'); localStorage.removeItem('mb_factory_incentive'); } catch(e){}
   autoSelectStd();
   document.body.className = '';
   showView('builder');
@@ -3239,7 +3253,7 @@ async function saveQuote() {
     series, model, base, optsTotal,
     delivery: DELIVERY_CHARGE, discount: discountAmt||0, grand,
     customer: { ...customer },
-    snap: JSON.stringify([...sel]),
+    snap: JSON.stringify({sel:[...sel], discount:discountAmt||0, factoryIncentive:factoryIncentive||0}),
   };
 
   if (!isSsConfigured()) {
