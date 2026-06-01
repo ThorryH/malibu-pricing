@@ -1674,7 +1674,14 @@ function loadQuoteObject(q, rowId) {
       DELIVERY_CHARGE = (_snap.delivery != null) ? _snap.delivery : DELIVERY_DEFAULT;
       deliveryState = _snap.deliveryState || '';
     }
-  } catch(e) { sel = new Map(); autoSelectStd(); discountAmt = 0; factoryIncentive = 0; }
+  } catch(e) { sel = new Map(); autoSelectStd(); discountAmt = 0; factoryIncentive = 0; DELIVERY_CHARGE = DELIVERY_DEFAULT; deliveryState = ''; }
+  // Sync restored values to localStorage so they persist if user navigates
+  try {
+    localStorage.setItem('mb_discount', String(discountAmt));
+    localStorage.setItem('mb_factory_incentive', String(factoryIncentive));
+    localStorage.setItem('mb_delivery', String(DELIVERY_CHARGE));
+    localStorage.setItem('mb_delivery_state', deliveryState);
+  } catch(e) {}
   document.body.className = series==='axis'?'theme-axis':series==='response'?'theme-response':'';
   collapsed.clear();
   showView('builder');
@@ -3256,7 +3263,8 @@ async function saveQuote() {
     id: currentQuoteRowId || Date.now(),
     date: new Date().toLocaleDateString('en-AU',{day:'2-digit',month:'short',year:'numeric'}),
     series, model, base, optsTotal,
-    delivery: DELIVERY_CHARGE, discount: discountAmt||0, grand,
+    delivery: DELIVERY_CHARGE, deliveryState: deliveryState||'',
+    discount: discountAmt||0, factoryIncentive: factoryIncentive||0, grand,
     customer: { ...customer },
     snap: JSON.stringify({sel:[...sel], discount:discountAmt||0, factoryIncentive:factoryIncentive||0, delivery:DELIVERY_CHARGE, deliveryState:deliveryState||''}),
   };
