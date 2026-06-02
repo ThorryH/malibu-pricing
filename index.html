@@ -3637,8 +3637,9 @@ function exportQuotePDF() {
         // bottom margin on every page.  The page slice boundary always falls
         // inside that white margin gap, so content is NEVER cut mid-line.
         var PW_MM = 210, PH_MM = 297;
-        var MARGIN_MM = 14;                          // white gap top & bottom each page
-        var CONTENT_MM = PH_MM - MARGIN_MM * 2;     // usable image height per page
+        var MARGIN_MM = 16;                          // white gap top & bottom each page
+        var CONTENT_MM = PH_MM - MARGIN_MM * 2;     // usable image height per page (265mm)
+        var OVERLAP_MM = 6;                          // extra px sampled beyond slice so boundary lands in margin
         var DPR = 4;                                 // html2canvas scale value
         var imgW_MM = PW_MM;
         var imgH_MM = (canvas.height / DPR) * (PW_MM / (canvas.width / DPR));
@@ -3648,10 +3649,12 @@ function exportQuotePDF() {
         var pg = 0;
         while (yImgOff_MM < imgH_MM) {
           if (pg > 0) doc.addPage();
-          var sliceH_MM = Math.min(CONTENT_MM, imgH_MM - yImgOff_MM);
+          var contentH_MM = Math.min(CONTENT_MM, imgH_MM - yImgOff_MM);
+          // Sample slightly beyond the content slice so any cut falls in the white margin
+          var sliceH_MM = Math.min(contentH_MM + OVERLAP_MM, imgH_MM - yImgOff_MM);
           var sY_px = Math.round(yImgOff_MM * pxPerMM);
           var sH_px = Math.round(sliceH_MM * pxPerMM);
-          // Slice canvas
+          // Slice canvas (with overlap)
           var sl = document.createElement('canvas');
           sl.width = canvas.width;
           sl.height = sH_px;
@@ -3659,11 +3662,11 @@ function exportQuotePDF() {
           slCtx.fillStyle = '#ffffff';
           slCtx.fillRect(0, 0, sl.width, sl.height);
           slCtx.drawImage(canvas, 0, sY_px, canvas.width, sH_px, 0, 0, canvas.width, sH_px);
-          // Place image indented by top margin; white bars cover the rest
+          // Place image at top margin; white bars cover margin zones and any overlap bleed
           doc.addImage(sl.toDataURL('image/jpeg', 0.97), 'JPEG', 0, MARGIN_MM, PW_MM, sliceH_MM);
           doc.setFillColor(255, 255, 255);
-          doc.rect(0, 0, PW_MM, MARGIN_MM, 'F');
-          doc.rect(0, MARGIN_MM + sliceH_MM, PW_MM, PH_MM - MARGIN_MM - sliceH_MM, 'F');
+          doc.rect(0, 0, PW_MM, MARGIN_MM, 'F');                                            // top margin
+          doc.rect(0, MARGIN_MM + contentH_MM, PW_MM, PH_MM - MARGIN_MM - contentH_MM, 'F'); // bottom margin + overlap
           yImgOff_MM += CONTENT_MM;
           pg++;
         }
