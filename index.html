@@ -1344,6 +1344,7 @@ let dealerMode  = false;              // hidden dealer view toggle
 let brandTapCount = 0, brandTapTimer = null;
 let edgeTapCount = 0, edgeTapTimer = null;
 let currentQuoteRowId = null; // Smartsheet row ID of the currently loaded quote
+let savedQuoteName = null; // Customer name that was used when the quote was last saved
 
 // Customer for current session
 let customer = { name:'', email:'', mobile:'', postcode:'' };
@@ -1653,6 +1654,7 @@ function loadQuoteObject(q, rowId) {
   // Restore customer
   customer = { ...{ name:'', email:'', mobile:'', postcode:'' }, ...(q.customer||{}) };
   currentQuoteRowId = rowId || null;
+  savedQuoteName = customer.name || null;
   // Restore series/model/selections
   series = q.series || 'wakesetter';
   const models = data[series]?.models || [];
@@ -1711,7 +1713,7 @@ function startNewQuote() {
     postcode: $('nqPostcode').value.trim(),
   };
   currentQuoteRowId = null;
-  series = 'wakesetter'; modelIdx = 0;
+  savedQuoteName = null;
   sel.clear(); collapsed.clear();
   discountAmt = 0; factoryIncentive = 0;
   DELIVERY_CHARGE = DELIVERY_DEFAULT; deliveryState = '';
@@ -2767,7 +2769,6 @@ const rawData = {
         { name: 'Hardware: Pull-up Cleats (Per Pair)', msrp:[667], multi:true },
         { name: 'Hardware: Dual Battery with Selector', msrp:[2291] },
         { name: 'Hardware: Hot Water Shower', msrp:[1968] },
-        { name: 'Hardware: Wideview Rear Camera', msrp:[1134], wideviewGroup:'resp' },
         { name: 'Hardware: Heater - Two Outlet', msrp:[2243], heaterGroup:'response' },
       ]},
       { name: 'Interior / Cockpit', items: [
@@ -3259,8 +3260,12 @@ async function saveQuote() {
   s.categories.forEach((cat,ci)=>{ cat.items.forEach((item,ii)=>{ const key=`${ci}-${ii}`; const qty=sel.get(key)||0; if(qty>0){ const isStdMdl=item.stdModels&&item.stdModels.includes(modelName); const p=(item.stdPrice&&isStdMdl)?0:item.msrp[modelIdx]; if(p!==null){ optsTotal+=p*qty; items.push({name:item.name,price:p*qty,qty}); } } }); });
   const grand=(base+optsTotal+DELIVERY_CHARGE)-discountAmt;
 
+  // If a quote is already saved but the customer name has changed, save as a brand new quote
+  const nameChanged = currentQuoteRowId && savedQuoteName !== null && customer.name !== savedQuoteName;
+  const effectiveRowId = nameChanged ? null : (currentQuoteRowId || null);
+
   const quote = {
-    id: currentQuoteRowId || Date.now(),
+    id: effectiveRowId || Date.now(),
     date: new Date().toLocaleDateString('en-AU',{day:'2-digit',month:'short',year:'numeric'}),
     series, model, base, optsTotal,
     delivery: DELIVERY_CHARGE, deliveryState: deliveryState||'',
@@ -3287,7 +3292,7 @@ async function saveQuote() {
         columnMap,
         quote,
         items,
-        rowId: currentQuoteRowId || null,
+        rowId: effectiveRowId,
         appUrl: siteUrl || window.location.origin,
       })
     });
@@ -3295,8 +3300,9 @@ async function saveQuote() {
     if (!res.ok) throw new Error(data2.error || 'Save failed');
 
     currentQuoteRowId = data2.rowId || currentQuoteRowId;
+    savedQuoteName = customer.name;
     $('saveStatus').textContent = '✓ saved';
-    showToast('Quote saved to Smartsheet', 'success');
+    showToast(nameChanged ? 'Name changed — saved as new quote' : 'Quote saved to Smartsheet', 'success');
     setTimeout(()=>{ $('saveStatus').textContent=''; },3000);
   } catch(err) {
     $('saveStatus').textContent = '✗ error';
