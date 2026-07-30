@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BUILD: v32-pp-bags-1000 -->
+<!-- BUILD: v40-sticker-clean -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -344,6 +344,7 @@
   .btn-export { background:linear-gradient(90deg,#2ec87a,#1a9a5a); color:#0a1628; font-weight:800; }
   .btn-export.axis-brand { background:linear-gradient(90deg,#2ec87a,#1a9a5a); }
   .btn-export.response-brand { background:linear-gradient(90deg,#2ec87a,#1a9a5a); }
+  .btn-sticker { background:linear-gradient(90deg,#7c3aed,#5b21b6); color:white; font-weight:800; }
   .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:160px; color:var(--gray-dark); text-align:center; padding:20px; gap:8px; }
   .empty-icon { font-size:30px; opacity:0.3; }
   .empty-text { font-family:Barlow Condensed,sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; font-weight:600; }
@@ -1118,7 +1119,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
       <div class="print-hdr"><h1 id="printBrand">Malibu Boats MY26 Pricing</h1><p id="printDate"></p></div>
       <div class="print-cust" id="printCust"></div>
       <div class="quote-header">
-        <div class="quote-title">Customer Quote</div>
+        <div class="quote-title" onclick="quoteTitleTap()">Customer Quote</div>
         <div class="quote-model-name" id="quoteModelName">Select a model to begin</div>
       </div>
       <!-- Customer bar — shows who this quote is for -->
@@ -1174,6 +1175,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
           <span class="save-status" id="saveStatus"></span>
         </button>
         <button class="action-btn btn-export" id="exportBtn" onclick="exportQuotePDF()">Export</button>
+        <button class="action-btn btn-sticker" id="stickerBtn" onclick="exportWindowSticker()" style="display:none">Sticker</button>
         <button class="action-btn btn-print" id="printBtn" onclick="printQuote()">Print</button>
       </div>
     </div>
@@ -1746,6 +1748,23 @@ function saveEditCustomer() {
 }
 
 // ════════════════════════════════════════════════════════════
+// SECRET STICKER BUTTON (triple-tap "Customer Quote" title)
+let quoteTitleTapCount = 0, quoteTitleTapTimer = null;
+function quoteTitleTap() {
+  quoteTitleTapCount++;
+  clearTimeout(quoteTitleTapTimer);
+  quoteTitleTapTimer = setTimeout(()=>{ quoteTitleTapCount=0; }, 600);
+  if (quoteTitleTapCount === 3) {
+    quoteTitleTapCount = 0;
+    const btn = $('stickerBtn');
+    if (btn) {
+      const visible = btn.style.display !== 'none';
+      btn.style.display = visible ? 'none' : '';
+      showToast(visible ? 'Sticker button hidden' : 'Sticker button visible', 'info');
+    }
+  }
+}
+
 // SECRET SETTINGS (triple-tap brand name)
 // ════════════════════════════════════════════════════════════
 function brandTap() {
@@ -3723,6 +3742,239 @@ function exportQuotePDF() {
   }
 }
 
+
+// ════════════════════════════════════════════════════════════
+// WINDOW STICKER — single-page A4 PDF for fully-optioned boat
+// ════════════════════════════════════════════════════════════
+function exportWindowSticker() {
+  const s         = data[series];
+  const model     = s.models[modelIdx];
+  const base      = s.base.msrp[modelIdx];
+  if (!base) { showToast('Select a model first', 'error'); return; }
+
+  // Brand palette (mirrors exportQuotePDF)
+  const isAxis     = series === 'axis';
+  const isResponse = series === 'response';
+  const accentHex  = isAxis ? '#d94e18' : isResponse ? '#b07820' : '#1a6fa3';
+  const accent2Hex = isAxis ? '#c23a00' : isResponse ? '#8a5c10' : '#0d4f8a';
+  const brandName  = isAxis ? 'Axis Wake Boats' : 'Malibu Boats';
+  const seriesName = isAxis ? 'Axis' : isResponse ? 'Response' : 'Wakesetter';
+
+  // Collect selected items
+  let optsTotal = 0;
+  const allItems = [];   // { label, price, incl, neg }
+  s.categories.forEach(function(cat, ci) {
+    cat.items.forEach(function(item, ii) {
+      const key = ci + '-' + ii;
+      const qty = sel.get(key) || 0;
+      if (qty > 0) {
+        const isStdMdl = item.stdModels && item.stdModels.includes(model);
+        const p = (item.stdPrice && isStdMdl) ? 0 : item.msrp[modelIdx];
+        const ql = qty > 1 ? ' x' + qty : '';
+        if (p !== null && p !== 0) {
+          optsTotal += p * qty;
+          allItems.push({ label: item.name + ql, price: p * qty, incl: false, neg: p < 0 });
+        } else {
+          allItems.push({ label: item.name, price: 0, incl: true, neg: false });
+        }
+      }
+    });
+  });
+
+  const grand       = (base + optsTotal + DELIVERY_CHARGE) - discountAmt;
+  const grandExGst  = Math.round(grand / (1 + GST_RATE));
+  const dateStr     = new Date().toLocaleDateString('en-AU', { day:'2-digit', month:'long', year:'numeric' });
+  const delivLabel  = 'Delivery' + (deliveryState ? ' \u2014 ' + deliveryState : '');
+
+  // Split items into two balanced columns
+  const half    = Math.ceil(allItems.length / 2);
+  const colA    = allItems.slice(0, half);
+  const colB    = allItems.slice(half);
+
+  function itemRow(it) {
+    return '<tr>' +
+      '<td style="padding:4px 8px 4px 0;font-size:10.5px;color:#2a2a3e;line-height:1.3;border-bottom:1px solid #edf0f5;">' + it.label + '</td>' +
+      '</tr>';
+  }
+
+  var colARows = colA.map(itemRow).join('');
+  var colBRows = colB.map(itemRow).join('');
+
+  // Build HTML via array push — no nested template literals
+  var H = [];
+  var _a = function(s) { H.push(s); };
+  var ac = accentHex;
+  var ac2 = accent2Hex;
+
+  _a('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">');
+  _a('<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">');
+  _a('<style>');
+  _a('* { margin:0; padding:0; box-sizing:border-box; }');
+  _a('@page { size: A4 portrait; margin: 0; }');
+  _a('html,body { width:794px; height:1123px; overflow:hidden; background:white; font-family:Barlow,sans-serif; color:#1a1a2e; -webkit-print-color-adjust:exact; print-color-adjust:exact; }');
+  // Outer wrapper forces true single page
+  _a('.sticker { width:794px; height:1123px; display:flex; flex-direction:column; }');
+  // Header stripe
+  _a('.ws-header { background:linear-gradient(135deg,' + ac + ' 0%,' + ac2 + ' 100%); padding:22px 36px 18px; display:flex; justify-content:space-between; align-items:flex-end; flex-shrink:0; }');
+  _a('.ws-brand { font-family:Barlow Condensed,sans-serif; font-weight:900; font-size:34px; letter-spacing:3px; text-transform:uppercase; color:white; line-height:1; }');
+  _a('.ws-brand-sub { font-family:Barlow Condensed,sans-serif; font-weight:400; font-size:14px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.65); margin-top:4px; }');
+  _a('.ws-label { text-align:right; font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.6); }');
+  _a('.ws-date { font-size:13px; color:rgba(255,255,255,0.8); margin-top:2px; }');
+  // Model hero — flex row, price summary floated to right in white space
+  _a('.ws-model { background:#f7f9fc; border-bottom:3px solid ' + ac + '; padding:16px 36px; display:flex; justify-content:space-between; align-items:flex-start; flex-shrink:0; }');
+  _a('.ws-model-name { font-family:Barlow Condensed,sans-serif; font-weight:900; font-size:44px; letter-spacing:2px; text-transform:uppercase; color:' + ac + '; line-height:1; }');
+  _a('.ws-model-tag { font-family:Barlow Condensed,sans-serif; font-size:26px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#888; margin-top:4px; }');
+  // Price summary block — sits top-right inside model hero
+  _a('.ws-price-hero { text-align:right; }');
+  _a('.wph-line { display:flex; justify-content:flex-end; align-items:baseline; gap:10px; padding:4px 0; border-bottom:1px solid #e0e8f0; }');
+  _a('.wph-line:last-of-type { border-bottom:none; }');
+  _a('.wph-lbl { font-size:13px; color:#888; letter-spacing:0.5px; }');
+  _a('.wph-val { font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:17px; color:#1a1a2e; }');
+  _a('.wph-disc .wph-lbl { color:#1a7a4a; } .wph-disc .wph-val { color:#1a7a4a; }');
+  _a('.wph-grand { background:linear-gradient(135deg,' + ac + ',' + ac2 + '); border-radius:6px; padding:12px 16px; margin-top:10px; text-align:right; }');
+  _a('.wph-grand-lbl { font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.7); }');
+  _a('.wph-grand-val { font-family:Barlow Condensed,sans-serif; font-weight:900; font-size:40px; color:white; letter-spacing:1px; line-height:1; margin-top:3px; }');
+  _a('.wph-grand-sub { font-size:12px; color:rgba(255,255,255,0.65); margin-top:4px; }');
+  _a('.wph-grand-exgst { font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:16px; color:rgba(255,255,255,0.8); margin-top:6px; border-top:1px solid rgba(255,255,255,0.2); padding-top:6px; display:flex; justify-content:space-between; gap:16px; }');
+  // Customer band
+  _a('.ws-customer { background:#fff; border-bottom:1px solid #e8edf5; padding:9px 36px; display:flex; align-items:center; gap:24px; flex-shrink:0; }');
+  _a('.ws-cust-for { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#aaa; }');
+  _a('.ws-cust-name { font-family:Barlow Condensed,sans-serif; font-weight:700; font-size:22px; color:#1a1a2e; }');
+  _a('.ws-cust-detail { font-size:13px; color:#888; margin-top:1px; }');
+  // Body: two-col options + price block
+  _a('.ws-body { flex:1; display:flex; padding:0; min-height:0; }');
+  _a('.ws-opts { flex:1; display:grid; grid-template-columns:1fr 1fr; gap:0 16px; padding:14px 36px 10px; overflow:hidden; align-content:start; }');
+  _a('.ws-col { min-width:0; }');
+  _a('.ws-opts-hdr { grid-column:1/-1; font-family:Barlow Condensed,sans-serif; font-size:9px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:' + ac + '; border-bottom:2px solid ' + ac + '; padding-bottom:5px; margin-bottom:8px; }');
+  _a('table.opt-col { width:100%; border-collapse:collapse; }');
+  // Footer
+  _a('.ws-footer { border-top:1px solid #e0e8f0; padding:8px 36px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0; background:white; }');
+  _a('.ws-footer-disc { font-size:9px; color:#bbb; line-height:1.5; max-width:480px; }');
+  _a('.ws-footer-brand { font-family:Barlow Condensed,sans-serif; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:' + ac + '; opacity:0.55; }');
+  _a('</style></head><body>');
+
+  _a('<div class="sticker">');
+
+  // Header
+  _a('<div class="ws-header">');
+  _a('<div><div class="ws-brand">' + brandName + '</div><div class="ws-brand-sub">Handcrafted in Australia</div></div>');
+  _a('<div></div>');
+  _a('</div>');
+
+  // Model hero — left: model name + series; right: price summary
+  _a('<div class="ws-model">');
+  _a('<div><div class="ws-model-name">' + model + '</div><div class="ws-model-tag">2026 &nbsp;&middot;&nbsp; ' + seriesName + ' Series</div></div>');
+  _a('<div class="ws-price-hero">');
+  _a('<div class="wph-line"><span class="wph-lbl">Base Price</span><span class="wph-val">' + fmtFull(base) + '</span></div>');
+  _a('<div class="wph-line"><span class="wph-lbl">Options Total</span><span class="wph-val">' + (optsTotal === 0 ? '&mdash;' : (optsTotal > 0 ? '+' : '') + fmt(Math.abs(optsTotal))) + '</span></div>');
+  _a('<div class="wph-line"><span class="wph-lbl">' + delivLabel + '</span><span class="wph-val">+' + fmt(DELIVERY_CHARGE) + '</span></div>');
+  if (discountAmt > 0) {
+    _a('<div class="wph-line wph-disc"><span class="wph-lbl">Dealer Adjustment</span><span class="wph-val">&minus;' + fmt(discountAmt) + '</span></div>');
+  }
+  _a('<div class="wph-grand">');
+  _a('<div class="wph-grand-lbl">Total Drive Away (inc. GST)</div>');
+  _a('<div class="wph-grand-val">' + fmtFull(grand) + '</div>');
+  _a('<div class="wph-grand-sub">All prices include GST</div>');
+  _a('</div>');
+  _a('</div>');
+  _a('</div>');
+
+  // Customer band (always shown; name fallback to dash if none)
+  _a('<div class="ws-customer">');
+  _a('<div>');
+  _a('<div class="ws-cust-name">' + (customer.name || '&mdash;') + '</div>');
+  if (customer.email) {
+    _a('<div class="ws-cust-detail">' + customer.email + '</div>');
+  }
+  _a('</div>');
+  if (customer.postcode) {
+    _a('<div style="margin-left:auto;text-align:right;"><div class="ws-cust-name">' + customer.postcode + '</div></div>');
+  }
+  _a('</div>');
+
+  // Body — options full width (price is now in model hero)
+  _a('<div class="ws-body">');
+  _a('<div class="ws-opts">');
+  _a('<div class="ws-opts-hdr">Selected Options &amp; Equipment</div>');
+  _a('<div class="ws-col"><table class="opt-col"><tbody>' + (colARows || '<tr><td style="padding:4px 0;font-size:10.5px;color:#aaa;">Base specification only</td></tr>') + '</tbody></table></div>');
+  _a('<div class="ws-col"><table class="opt-col"><tbody>' + colBRows + '</tbody></table></div>');
+  _a('</div>');
+  _a('</div>'); // ws-body
+
+  // Footer
+  _a('<div class="ws-footer">');
+  _a('<div class="ws-footer-disc">MSRP pricing in AUD including GST. Prices are subject to change without notice. Options and specifications may vary. This sticker was generated on ' + dateStr + '.</div>');
+  _a('<div class="ws-footer-brand">' + brandName + '</div>');
+  _a('</div>');
+
+  _a('</div>'); // sticker
+  _a('</body></html>');
+
+  var html = H.join('\n');
+
+  var filename = [model, customer.name || 'WindowSticker']
+    .filter(Boolean)
+    .map(function(x){ return x.replace(/[^a-zA-Z0-9]/g,'_'); })
+    .join('_') + '_Sticker.pdf';
+  var safeFilename = filename.replace(/[^a-zA-Z0-9._-]/g,'_');
+
+  showToast('Generating Window Sticker\u2026', 'info', 10000);
+
+  function _stickerRender(renderDiv) {
+    setTimeout(function() {
+      html2canvas(renderDiv, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        width: 794,
+        height: 1123,
+        windowWidth: 794,
+        windowHeight: 1123,
+        logging: false
+      }).then(function(canvas) {
+        document.body.removeChild(renderDiv);
+        var doc = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        var imgData = canvas.toDataURL('image/jpeg', 0.97);
+        doc.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        doc.save(safeFilename);
+        showToast('Window Sticker downloaded \u2713', 'success');
+      }).catch(function(e) {
+        if (document.body.contains(renderDiv)) document.body.removeChild(renderDiv);
+        showToast('Sticker failed: ' + e.message, 'error', 5000);
+      });
+    }, 300);
+  }
+
+  function _launchSticker() {
+    var rd = document.createElement('div');
+    rd.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;height:1123px;background:white;z-index:-1;pointer-events:none;overflow:hidden;';
+    rd.innerHTML = html;
+    document.body.appendChild(rd);
+    _stickerRender(rd);
+  }
+
+  if (typeof html2canvas !== 'undefined' && typeof window.jspdf !== 'undefined') {
+    _launchSticker();
+  } else {
+    var _loaded = { h2c: typeof html2canvas !== 'undefined', jspdf: typeof window.jspdf !== 'undefined' };
+    var _errored = false;
+    function _checkReady() { if (!_errored && _loaded.h2c && _loaded.jspdf) _launchSticker(); }
+    function _dynLoad(src, key) {
+      if (_loaded[key]) { _checkReady(); return; }
+      var sc = document.createElement('script');
+      sc.src = src;
+      sc.onload = function() { _loaded[key] = true; _checkReady(); };
+      sc.onerror = function() {
+        if (_errored) return; _errored = true;
+        showToast('PDF library failed to load. Check internet connection.', 'error', 6000);
+      };
+      document.head.appendChild(sc);
+    }
+    _dynLoad('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', 'h2c');
+    _dynLoad('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', 'jspdf');
+  }
+}
 
 // ════════════════════════════════════════════════════════════
 // INIT — all DOM interactions go here, after full script parse
